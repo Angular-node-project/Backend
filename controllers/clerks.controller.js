@@ -21,6 +21,7 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
+    
     return router;
 
 })()

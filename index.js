@@ -31,8 +31,7 @@ app.use(
 
 const routes = {
     public: {
-        'clerks.controller.js': '/api/clerk'
-        
+        'clerks.controller.js': '/api/admin/clerk'
     },
     protected: {
     }
