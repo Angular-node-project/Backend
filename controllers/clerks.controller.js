@@ -21,7 +21,15 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    
+    router.get("/",async(req,res,next)=>{
+        try{
+            const clerks=await clerkService.getUser();
+            return res.status(201).json(unifiedResponse(201, 'Clerks Retrived successfully', clerks));
+
+        }catch(err){
+            handleError(res, err);
+        }
+    })
     return router;
 
 })()
