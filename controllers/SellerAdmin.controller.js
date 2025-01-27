@@ -1,4 +1,4 @@
-const sellerservice=require("../services/ManageSellers.service");
+const sellerservice=require("../services/SellerAdmin.service");
 const  { unifiedResponse, handleError } = require('../utils/responseHandler');
 module.exports=(()=>{
     const router=require ("express").Router();
@@ -13,33 +13,13 @@ module.exports=(()=>{
         }
      
     })
-    router.get("/activesellers",async(req,res,next)=>{
+    
+    router.get("/:status",async(req,res,next)=>{
         try
         {
-            const Sellers= await sellerservice.getActiveSellers();
-            return res.status(201).json(unifiedResponse(201, 'Active Sellers Retrived successfully', Sellers));
-        }
-       catch (err) {
-            handleError(res, err);
-        }
-     
-    })
-    router.get("/inactivesellers",async(req,res,next)=>{
-        try
-        {
-            const Sellers= await sellerservice.getInActiveSellers();
-            return res.status(201).json(unifiedResponse(201, 'Inactive Sellers Retrived successfully', Sellers));
-        }
-       catch (err) {
-            handleError(res, err);
-        }
-     
-    })
-    router.get("/pendingsellers",async(req,res,next)=>{
-        try
-        {
-            const Sellers= await sellerservice.getPendingSellers();
-            return res.status(201).json(unifiedResponse(201, 'Pending Sellers Retrived successfully', Sellers));
+            const status=req.params.status;
+            const Sellers= await sellerservice.getSellersByStatus(status);
+            return res.status(201).json(unifiedResponse(201, ' Sellers Retrived successfully', Sellers));
         }
        catch (err) {
             handleError(res, err);
@@ -84,18 +64,18 @@ module.exports=(()=>{
         }
      
     })
-    router.get("/:id",async(req,res,next)=>{
+    router.get("/byid/:id",async(req,res,next)=>{
         try
         {
             const sellerid=req.params.id;
-            const Seller= await sellerservice.getSeller(sellerid);
+            const Seller= await sellerservice.getSellerbyid(sellerid);
             if(Seller)
             {
             return res.status(201).json(unifiedResponse(201, 'Seller Retrived successfully', Seller));
             }
             else
             {
-                return res.status(403).json(unifiedResponse(403, 'Seller not found'));
+                return res.status(403).json(unifiedResponse(403, 'Seller notss found'));
             }
         }
        catch (err) {

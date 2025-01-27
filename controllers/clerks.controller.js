@@ -23,17 +23,17 @@ module.exports = (() => {
     })
     router.get("/",async(req,res,next)=>{
         try{
-            const user=await clerkService.getUser();
+            const user=await clerkService.getUsers();
             return res.status(201).json(unifiedResponse(201, 'Clerks Retrived successfully', user));
 
         }catch(err){
             handleError(res, err);
         }
     })
-    router.get("/:id",async(req,res,next)=>{
+    router.get("/byid/:id",async(req,res,next)=>{
         try{
             const userid=req.params.id;
-            const user=await clerkService.getUser(userid);
+            const user=await clerkService.getUserbyid(userid);
             if(user)
             {
             return res.status(201).json(unifiedResponse(201, 'Clerk Retrived successfully',user));
@@ -46,19 +46,12 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.get("/activeUsers",async(req,res,next)=>{
-        try{
-            const user=await clerkService.getactiveUsers();
-            return res.status(201).json(unifiedResponse(201, 'Active Clerks Retrived successfully', user));
 
-        }catch(err){
-            handleError(res, err);
-        }
-    })
-    router.get("/inactiveUsers",async(req,res,next)=>{
+    router.get("/:status",async(req,res,next)=>{
         try{
-            const user=await clerkService.getinactiveUsers();
-            return res.status(201).json(unifiedResponse(201, 'InActive Clerks Retrived successfully', user));
+            const status=req.params.status;
+            const user=await clerkService.getUsersBystatus(status);
+            return res.status(201).json(unifiedResponse(201, 'Clerks Retrived successfully', user));
 
         }catch(err){
             handleError(res, err);

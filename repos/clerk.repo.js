@@ -7,7 +7,7 @@ const createUser=async(userData)=>{
 const getUsers=async()=>{
     return clerk.find({});
 }
-const getUser=async(userid)=>{
+const getUserbyid=async(userid)=>{
     return clerk.findOne({clerk_id:userid});
 }
 const updateUser=async(userid,userData)=>{
@@ -22,11 +22,8 @@ const restoreUser=async(userid)=>{
 
     return clerk.findOneAndUpdate({clerk_id:userid},{status:"active"},{new:true});
 }
-const getactiveUsers=async()=>{
-    return clerk.find({status:"active"});
-}
-const getinactiveUsers=async()=>{
-    return clerk.find({status:"inactive"});
+const getUsersBystatus=async(status)=>{
+    return clerk.find({status:status});
 }
 module.exports=
 {
@@ -34,8 +31,7 @@ module.exports=
     getUsers,
     updateUser,
     softDeleteUser,
-    getinactiveUsers,
-    getactiveUsers,
-    restoreUser,
-    getUser
+    getUsersBystatus,
+    getUserbyid,
+    restoreUser
 }
