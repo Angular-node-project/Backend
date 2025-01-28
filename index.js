@@ -36,8 +36,6 @@ const routes = {
         'category.controller.js': '/api/admin/category',
         'order.controller.js': '/api/order',
         'carts.controller.js': '/api/customer/cart',
-       // 'products.controller.js': '/api/customer/product',
-      //  'customer.product.controller.js':'/api/customer/product',
         'products.customer.controller.js': '/api/customer/product',
         'orders.customer.controller.js':'/api/customer/order',
     },
