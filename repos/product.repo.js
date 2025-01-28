@@ -12,6 +12,19 @@ const selectedProducts=async(data)=>{
     return await product.find({ product_id: { $in: data } });
 
 }
+
+const getActivatedProductsPaginated=async(page,limit)=>{
+    var skip =(page-1)*limit;
+    return await  product.find({status:"active"})
+                         .skip(skip)
+                         .limit(limit)
+                         .exec();  
+}
+
+const countActivatedProducts=async()=>{
+    return await product.countDocuments({status:"active"});
+}
+
 const getproductsbyStatus=async(status)=>{
     return  product.find({status:status});
 }
@@ -27,6 +40,12 @@ const getProductbyid=async(productid)=>{
 const deleteproductbysellerid=async(sellerid)=>{
     return  product.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true});
 }
+
 module.exports={getProducts
     ,selectedProducts,getproductsbyStatus,
-    softdeleteproduct,restoreproduct,getProductbyid,deleteproductbysellerid}
+    softdeleteproduct
+    ,restoreproduct
+    ,getProductbyid
+    ,deleteproductbysellerid
+    ,getActivatedProductsPaginated
+    ,countActivatedProducts}
