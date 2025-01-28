@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const orderSchema = new mongoose.Schema({
     order_id: { type: String,default:()=>uuidv4(), required: true, unique: true },
+    customer_id: { type:String ,required: true },
     address: { type: String, required: true },
     governorate: { type: String, required: true },
     zipcode: { type: Number, required: false },

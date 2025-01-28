@@ -1,21 +1,33 @@
-const orderrepo=require("../repos/order.repo");
+const orderRepo=require("../repos/order.repo");
+const cartRepo=require("../repos/cart.repo");
 const getorders=async()=>{
-    return await orderrepo.getorders();
+    return await orderRepo.getorders();
 }
 const getorderbystatus=async(status)=>{
-    return await orderrepo.getorderbystatus(status);
+    return await orderRepo.getorderbystatus(status);
 }
 const getorderbydid=async(orderid)=>{
-    return await orderrepo.getorderbydid(orderid);
+    return await orderRepo.getorderbydid(orderid);
 }
 const acceptorder=async(orderid)=>{
-    return await orderrepo.acceptorder(orderid);
+    return await orderRepo.acceptorder(orderid);
 }
 const getorderbysellerid=async(sellerid)=>{
-    return await orderrepo.getorderbysellerid(sellerid);
+    return await orderRepo.getorderbysellerid(sellerid);
 }
 const getorderbyproductid=async(productid)=>{
-    return await orderrepo.getorderbyproductid(productid);
+    return await orderRepo.getorderbyproductid(productid);
+}
+
+const addOrder=async(orderData)=>{
+
+    const customerId=orderData.customer_id
+
+    const test=await cartRepo.deleteCart(customerId);
+
+    console.log(test);
+
+    return await orderRepo.createOrder(orderData);
 }
 module.exports={
     getorders,
@@ -23,5 +35,8 @@ module.exports={
     getorderbydid,
     acceptorder,
     getorderbysellerid,
-    getorderbyproductid
+    getorderbyproductid,
+    addOrder
 }
+
+

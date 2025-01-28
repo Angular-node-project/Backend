@@ -17,11 +17,17 @@ const getorderbysellerid=async(sellerid)=>{
 const getorderbyproductid=async(productid)=>{
     return order.find({ "product.product_id":productid});
 }
+const createOrder=async(data)=>{
+
+    return order.create(data);
+}
 module.exports={
     getorders,
     getorderbystatus,
     getorderbydid,
     acceptorder,
     getorderbysellerid,
-    getorderbyproductid
+    getorderbyproductid,
+    createOrder
 }
+
