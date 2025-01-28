@@ -1,5 +1,4 @@
 const Joi = require('joi');
-
 const createclerkDto = Joi.object({
   name: Joi.string().min(3).required(),
   email: Joi.string()

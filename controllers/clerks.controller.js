@@ -1,5 +1,5 @@
 const clerkService=require('../services/clerk.service');
-const {createclerkDto}=require('../validators/clerk.validator');
+const {createclerkDto}=require('../validators/clerk.validator.js');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 
 module.exports = (() => {
