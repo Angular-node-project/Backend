@@ -11,7 +11,7 @@ const app = express();
 
 
 app.use(cors({
-    origin: APP_CONFIG.CORS_ORIGIN|| 'http://localhost:3000',
+    origin: APP_CONFIG.CORS_ORIGIN|| 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true
@@ -34,7 +34,8 @@ const routes = {
         'clerks.controller.js': '/api/admin/clerk',
         'SellerAdmin.controller.js': '/api/sellers',
         'carts.controller.js': '/api/customer/cart',
-        'products.controller.js': '/api/customer/product',
+       // 'products.controller.js': '/api/customer/product',
+        'customer.product.controller.js':'/api/customer/product'
     },
     protected: {
     }
