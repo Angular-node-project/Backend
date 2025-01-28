@@ -31,10 +31,11 @@ app.use(
 
 const routes = {
     public: {
-        'clerks.controller.js': '/api/admin/clerk',
-        'SellerAdmin.controller.js': '/api/admin/sellers',
-        'category.controller.js': '/api/admin/category',
-        'order.controller.js': '/api/order',
+        'clerks.Admin.controller.js': '/api/admin/clerk',
+        'Seller.Admin.controller.js': '/api/admin/sellers',
+        'category.Admin.controller.js': '/api/admin/category',
+        'products.Admin.controller.js': '/api/admin/product',
+        'order.Admin.controller.js': '/api/admin/order',
         'carts.controller.js': '/api/customer/cart',
         'products.customer.controller.js': '/api/customer/product',
         'orders.customer.controller.js':'/api/customer/order',
