@@ -7,6 +7,7 @@ const connectToMongoUsingURI = async ({uri, callback }) => {
       callback();
     });
   } catch (error) {
+    console.log(uri);
     console.log(error?.message);
     throw new Error("Internal server error, can't connect to mongodb");
   }
