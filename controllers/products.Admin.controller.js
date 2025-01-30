@@ -22,8 +22,7 @@ module.exports = (() => {
         }
     })
 
-
-    router.get("/:status", async (req, res, next) => {
+    router.get("/status/:status", async (req, res, next) => {
         try {
             const status = req.params.status;
             const products = await productService.getproductsbyStatus(status)
@@ -68,15 +67,15 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.get("/byid/:id", async (req, res, next) => {
+    router.get("/:id", async (req, res, next) => {
         try {
             const id = req.params.id;
             const products = await productService.getProductbyid(id);
             if (products) {
-                return res.status(201).json(unifiedResponse(201, 'Products retrive successfully', products));
+                return res.status(201).json(unifiedResponse(201, 'Product retrived successfully', products));
             }
             else {
-                return res.status(403).json(unifiedResponse(403, 'Product not found '));
+                return res.status(403).json(unifiedResponse(403, 'Product not found'));
             }
         } catch (err) {
             handleError(res, err);
