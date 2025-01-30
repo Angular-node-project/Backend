@@ -1,5 +1,6 @@
 const productService = require('../services/product.service');
 const orderservice = require("../services/order.service");
+const categoryService=require('../services/category.service');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 
 module.exports = (() => {
@@ -10,7 +11,9 @@ module.exports = (() => {
             if (req.query.page) {
                 var page = parseInt(req.query.page) || 1;
                 var limit = 6;
-                const result = await productService.getPaginatedActiveProductsService(page, limit);
+                const sort=req.query.sort||'';
+                const category=req.query.category||'';
+                const result = await productService.getPaginatedActiveProductsService(page, limit,sort,category);
                 return res.status(201).json(unifiedResponse(201, 'paginated products returned succesfully', result));
             } else {
                 const products = await productService.getProducts();
@@ -22,6 +25,14 @@ module.exports = (() => {
         }
     })
 
+    router.get("/categories", async (req, res, next) => {
+        try {
+                const result = await categoryService.getActiveCategoriesService();
+                return res.status(201).json(unifiedResponse(201, 'all active categories returned successfully', result));
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
 
     router.get("/status/:status", async (req, res, next) => {
         try {

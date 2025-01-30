@@ -5,6 +5,9 @@ const createCategory=async(categorydata)=>{
 const getCategories=async()=>{
     return category.find({});
 }
+const getActiveCategories=async()=>{
+    return category.find({status:'active'});
+}
 const getCategorybyid=async(categoryid)=>{
     return category.find({category_id:categoryid});
 }
@@ -19,5 +22,6 @@ module.exports={
     getCategories,
     getCategorybyid,
     softDeletecategory,
-    restorecategory
+    restorecategory,
+    getActiveCategories
 }

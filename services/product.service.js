@@ -2,9 +2,9 @@ const productrepo = require("../repos/product.repo");
 const getProducts = async () => {
     return await productrepo.getProducts()
 }
-const getPaginatedActiveProductsService = async (page = 1, limit = 6) => {
-    const products = await productrepo.getActivatedProductsPaginated(page, limit);
-    const totalProductsCount = await productrepo.countActivatedProducts();
+const getPaginatedActiveProductsService = async (page = 1, limit = 6,sort='',category='') => {
+    const products = await productrepo.getActivatedProductsPaginated(page, limit,sort,category);
+    const totalProductsCount = await productrepo.countActivatedProducts(category);
     return {
         products,
         currentPage: parseInt(page),
