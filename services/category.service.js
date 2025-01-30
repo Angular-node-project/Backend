@@ -5,6 +5,9 @@ const createCategory=async(categorydata)=>{
 const getCategories=async()=>{
     return await categoryrepo.getCategories();
 }
+const getActiveCategoriesService=async()=>{
+    return await categoryrepo.getActiveCategories();
+}
 const getCategorybyid=async(categoryid)=>{
     return await categoryrepo.getCategorybyid(categoryid);
 }
@@ -19,5 +22,6 @@ module.exports={
     getCategories,
     getCategorybyid,
     softDeletecategory,
-    restorecategory
+    restorecategory,
+    getActiveCategoriesService
 }

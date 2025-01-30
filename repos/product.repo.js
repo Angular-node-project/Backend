@@ -13,16 +13,31 @@ const selectedProducts=async(data)=>{
 
 }
 
-const getActivatedProductsPaginated=async(page,limit)=>{
+const getActivatedProductsPaginated=async(page,limit,sort,category)=>{
     var skip =(page-1)*limit;
-    return await  product.find({status:"active"})
+    const query={status:'active'};
+    let sortQuery={};
+    if(category){
+        query.categories = { $elemMatch: { category_id: category }};
+    }
+    if(sort){
+        const sortOrder=sort==='desc'?-1:1;
+        sortQuery={price:sortOrder}
+    }
+
+    return await  product.find(query)
+                         .sort(sortQuery)
                          .skip(skip)
                          .limit(limit)
                          .exec();  
 }
 
-const countActivatedProducts=async()=>{
-    return await product.countDocuments({status:"active"});
+const countActivatedProducts=async(category)=>{
+    const query={status:'active'};
+    if(category){
+        query.categories={$elemMatch:{category_id:category}}
+    }
+    return await product.countDocuments(query);
 }
 
 const getproductsbyStatus=async(status)=>{
