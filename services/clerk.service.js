@@ -1,6 +1,6 @@
 const clerkRepo=require("../repos/clerk.repo");
 const registerUser=async(userData)=>{
-    return await clerkRepo.registerUser(userData);
+    return await clerkRepo.createUser(userData);
 }
 const getUsers=async()=>{
     return await clerkRepo.getUsers();

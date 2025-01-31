@@ -21,7 +21,21 @@ module.exports = (() => {
       var hashed_password = await bcrypt.hash(value.password, 10);
       value.password = hashed_password;
       const customer = await customerService.registerService(value);
-      return res.status(201).json(unifiedResponse(201, "customer registerd successfully", customer))
+      if (customer) {
+        const claims = {
+          id: customer.customer_id,
+          email: customer.email,
+          name: customer.name,
+          user_type: 'customer'
+        }
+        var token = await jsonwebtoken.signToken({ claims });
+        const respons={
+          customer,
+          token
+        }
+        return res.status(201).json(unifiedResponse(201, "customer registerd successfully", respons))
+      }
+
 
     } catch (err) {
       handleError(res, err);
@@ -47,8 +61,8 @@ module.exports = (() => {
             user_type: 'customer'
           }
 
-         var token= await jsonwebtoken.signToken({claims});
-         return res.status(201).json(unifiedResponse(201,"user logged in successfully",token))
+          var token = await jsonwebtoken.signToken({ claims });
+          return res.status(201).json(unifiedResponse(201, "user logged in successfully", token))
         }
       }
       return res.status(401).json(unifiedResponse(401, "email or password is not correct", null))

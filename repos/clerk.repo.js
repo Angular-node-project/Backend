@@ -1,6 +1,6 @@
 const clerk=require("../models/clerk.model");
 
-const registerUser=async(userData)=>{
+const createUser=async(userData)=>{
 
     return clerk.create(userData);
 }
@@ -35,7 +35,7 @@ const getuserbyemail=async(email)=>{
 }
 module.exports=
 {
-    registerUser,
+    createUser,
     getUsers,
     updateUser,
     softDeleteUser,
