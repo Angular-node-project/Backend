@@ -30,7 +30,7 @@ module.exports = (() => {
             const sellerId = req.params.sellerId;
             const productId = req.params.productId;
             const productData = req.body;
-            const updatedProduct = await productService.updateProduct(sellerId, productId, productData);
+            const updatedProduct = await productService.updateProduct( productId, productData);
             return res.status(201).json(unifiedResponse(201, 'Product updated successfully', updatedProduct));
         } catch (err) {
             handleError(res, err);
