@@ -206,15 +206,12 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.get("/getupdateRequests", async (req, res, next) => {
+    router.get("/All/updateRequests", async (req, res, next) => {
       try {
           const requests = await updateRequestService.getRequests();
-          if (requests) {
+     
               return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
-          }
-          else {
-              return res.status(403).json(unifiedResponse(403, 'Requests not found'));
-          }
+       
       } catch (err) {
           handleError(res, err);
       }
