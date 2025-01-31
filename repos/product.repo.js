@@ -1,4 +1,6 @@
-const product=require("../models/product.model");
+const product = require("../models/product.model");
+
+
 
 
 const createProduct=async(productData)=>{
@@ -23,8 +25,31 @@ const getProducts=async()=>{
 const selectedProducts=async(data)=>{
 
     return await product.find({ product_id: { $in: data } });
-
 }
+
+const getProductsBySeller = async (sellerId) => {
+    const pro= await product.find({ seller_id: sellerId },{});
+    console.log(pro);
+    return pro;
+}
+
+const addProduct = async (sellerId, productData) => {
+    const newProduct = new product({ ...productData, seller_id: sellerId, status: 'pending' });
+    return await newProduct.save();
+}
+
+
+
+
+const deleteProduct = async (sellerId, productId) => {
+    return await product.findOneAndUpdate(
+        { product_id: productId, seller_id: sellerId },
+        { $set: { status: 'inactive' } },
+        { new: true }
+    );
+}
+
+
 
 const getActivatedProductsPaginated=async(page,limit,sort,category)=>{
     var skip =(page-1)*limit;
@@ -70,8 +95,8 @@ const deleteproductbysellerid=async(sellerid)=>{
 }
 
 module.exports={
-    updateProduct
-    ,createProduct
+    
+    createProduct
     ,updateProductRequest
     ,getProducts
     ,selectedProducts,getproductsbyStatus,
@@ -80,4 +105,9 @@ module.exports={
     ,getProductbyid
     ,deleteproductbysellerid
     ,getActivatedProductsPaginated
-    ,countActivatedProducts}
+    ,countActivatedProducts,
+    getProductsBySeller,
+    addProduct,
+    updateProduct,
+    deleteProduct
+}
