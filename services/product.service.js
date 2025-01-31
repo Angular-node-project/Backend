@@ -1,4 +1,10 @@
 const productrepo = require("../repos/product.repo");
+const createProduct=async(productData)=>{
+    return await productrepo.createProduct(productData);
+}
+const updateProduct=async(productid,productData)=>{
+    return await productrepo.updateProduct(productid,productData)
+}
 const getProducts = async () => {
     return await productrepo.getProducts()
 }
@@ -11,6 +17,9 @@ const getPaginatedActiveProductsService = async (page = 1, limit = 6,sort='',cat
         totalPages: Math.ceil(totalProductsCount / limit),
         totalProductsCount
     }
+}
+const updateProductRequest=async(productid,updatedData)=>{
+    return await productrepo.updateProduct(productid,updatedData )
 }
 
 
@@ -31,7 +40,11 @@ const deleteproductbysellerid = async (sellerid) => {
 }
 
 module.exports = {
-    getProducts
+ 
+     getProducts
+     ,updateProduct
+     ,updateProductRequest
+    ,createProduct
     , getProductbyid
     , getproductsbyStatus
     , softdeleteproduct

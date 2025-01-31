@@ -32,7 +32,7 @@ app.use(
 const routes = {
     public: {
         'clerks.Admin.controller.js': '/api/admin/clerk',
-        'Seller.Admin.controller.js': '/api/admin/sellers',
+        'seller.Admin.controller.js': '/api/admin/sellers',
         'category.Admin.controller.js': '/api/admin/category',
         'products.Admin.controller.js': '/api/admin/product',
         'order.Admin.controller.js': '/api/admin/order',

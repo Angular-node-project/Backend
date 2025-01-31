@@ -1,4 +1,4 @@
-const sellersrepo=require("../repos/SellerAdmin.repo");
+const sellersrepo=require("../repos/seller.repo");
 const getSellers=async()=>{
     return await sellersrepo.getSellers();
 }

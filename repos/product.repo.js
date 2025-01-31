@@ -1,5 +1,18 @@
 const product=require("../models/product.model");
 
+
+const createProduct=async(productData)=>{
+    return product.create(productData);
+}
+const updateProduct=async(productid,productData)=>{
+    return product.findOneAndUpdate({product_id:productid},productData,{new:true})
+}
+const updateProductRequest = async (productid,updatedData) => {
+   
+     return  product.findOneAndUpdate({ product_id: productid }, updatedData,{ new: true }  );
+
+};
+
 //* Return all Products
 const getProducts=async()=>{
 
@@ -56,7 +69,11 @@ const deleteproductbysellerid=async(sellerid)=>{
     return  product.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true});
 }
 
-module.exports={getProducts
+module.exports={
+    updateProduct
+    ,createProduct
+    ,updateProductRequest
+    ,getProducts
     ,selectedProducts,getproductsbyStatus,
     softdeleteproduct
     ,restoreproduct
