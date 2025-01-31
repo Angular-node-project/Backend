@@ -44,7 +44,8 @@ module.exports = (() => {
             id: user.clerk_id,
             email: user.email,
             name: user.name,
-            user_type: 'admin'
+            user_type: 'admin',
+            role:'super admin'
           }
 
          var token= await jsonwebtoken.signToken({claims});
