@@ -35,6 +35,7 @@ const routes = {
         'SellerAdmin.controller.js': '/api/sellers',
         'carts.controller.js': '/api/customer/cart',
         'products.controller.js': '/api/customer/product',
+        'products.seller.controller.js': '/api/seller/product',
     },
     protected: {
     }
