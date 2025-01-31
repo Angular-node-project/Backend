@@ -16,6 +16,7 @@ const restoreSeller=async(sellerid)=>{
 }
 module.exports=
 {
+
     getSellers,
     getSellersByStatus,
     softDeleteSeller,

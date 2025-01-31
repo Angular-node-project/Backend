@@ -1,5 +1,10 @@
-const productRepo = require("../repos/product.repo");
-
+const productrepo = require("../repos/product.repo");
+const createProduct=async(productData)=>{
+    return await productrepo.createProduct(productData);
+}
+const updateProduct=async(productid,productData)=>{
+    return await productrepo.updateProduct(productid,productData)
+}
 const getProducts = async () => {
     return await productRepo.getProducts();
 };
@@ -12,9 +17,6 @@ const addProduct = async (sellerId, productData) => {
     return await productRepo.addProduct(sellerId, productData);
 };
 
-const updateProduct = async (sellerId, productId, productData) => {
-    return await productRepo.updateProduct(sellerId, productId, productData);
-};
 
 const deleteProduct = async (sellerId, productId) => {
     return await productRepo.deleteProduct(sellerId, productId);
@@ -31,6 +33,9 @@ const getPaginatedActiveProductsService = async (page = 1, limit = 6,sort='',cat
         totalPages: Math.ceil(totalProductsCount / limit),
         totalProductsCount
     }
+}
+const updateProductRequest=async(productid,updatedData)=>{
+    return await productrepo.updateProduct(productid,updatedData )
 }
 
 const getproductsbyStatus = async (status) => {
@@ -50,7 +55,10 @@ const deleteproductbysellerid = async (sellerid) => {
 }
 
 module.exports = {
-    getProducts
+ 
+     getProducts
+     ,updateProductRequest
+    ,createProduct
     , getProductbyid
     , getproductsbyStatus
     , softdeleteproduct

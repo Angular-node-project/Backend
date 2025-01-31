@@ -2,6 +2,19 @@ const product = require("../models/product.model");
 
 
 
+
+const createProduct=async(productData)=>{
+    return product.create(productData);
+}
+const updateProduct=async(productid,productData)=>{
+    return product.findOneAndUpdate({product_id:productid},productData,{new:true})
+}
+const updateProductRequest = async (productid,updatedData) => {
+   
+     return  product.findOneAndUpdate({ product_id: productid }, updatedData,{ new: true }  );
+
+};
+
 //* Return all Products
 const getProducts=async()=>{
 
@@ -26,13 +39,7 @@ const addProduct = async (sellerId, productData) => {
 }
 
 
-const updateProduct = async (sellerId, productId, productData) => {
-    return await product.findOneAndUpdate(
-        { product_id: productId, seller_id: sellerId },
-        { $set: productData },
-        { new: true }
-    );
-}
+
 
 const deleteProduct = async (sellerId, productId) => {
     return await product.findOneAndUpdate(
@@ -87,8 +94,11 @@ const deleteproductbysellerid=async(sellerid)=>{
     return  product.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true});
 }
 
-
-module.exports={getProducts
+module.exports={
+    
+    createProduct
+    ,updateProductRequest
+    ,getProducts
     ,selectedProducts,getproductsbyStatus,
     softdeleteproduct
     ,restoreproduct
