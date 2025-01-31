@@ -9,7 +9,7 @@ const updateProduct=async(productid,productData)=>{
 }
 const updateProductRequest = async (productid,updatedData) => {
    
-     return  product.findOneAndUpdate({ product_id: productid }, updatedData, { new: true }  );
+     return  product.findOneAndUpdate({ product_id: productid }, updatedData,{ new: true }  );
 
 };
 

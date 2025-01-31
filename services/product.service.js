@@ -19,7 +19,7 @@ const getPaginatedActiveProductsService = async (page = 1, limit = 6,sort='',cat
     }
 }
 const updateProductRequest=async(productid,updatedData)=>{
-    return await productrepo.updateProduct(productid,updatedData)
+    return await productrepo.updateProduct(productid,updatedData )
 }
 
 

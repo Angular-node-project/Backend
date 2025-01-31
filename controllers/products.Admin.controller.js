@@ -141,32 +141,46 @@ module.exports = (() => {
     })
     router.patch("/acceptUpdateRequest/:id/:status", async (req, res, next) => {
       try {
-          const productid = req.params.id;
+          const requestId = req.params.id;
           const status = req.params.status;
-          const updatedData = await updateProductSchema.findOneAndUpdate(
-              { "updatedProduct.product_id": productid },
-              { status: status }, 
+
+          const updatedRequest = await updateProductSchema.findOneAndUpdate(
+              { request_id: requestId },
+              { status: status },
               { new: true }
           );
   
-          if (!updatedData) {
-            console.log('No document found with product_id:', productid);
+          if (!updatedRequest) {
+              console.log(" Update request not found:", requestId);
               return res.status(404).json(unifiedResponse(404, 'Update request not found'));
           }
-          const updatedProduct = await productService.updateProductRequest(
-              productid, 
-              updatedData.updatedProduct 
-          );
-          if (updatedProduct) {
-              return res.status(200).json(unifiedResponse(200, 'Product update accepted successfully', updatedProduct));
-          } else {
-              return res.status(404).json(unifiedResponse(404, 'Product not found'));
-          }
   
+          console.log("Found Update Request:", updatedRequest);
+  
+          if (status === "approve") {
+              const productId = updatedRequest.updatedProduct.product_id;
+              console.log(" Checking Product ID:", `"${productId}"`);
+  
+              const updatedProduct = await productService.updateProductRequest(  updatedRequest.updatedProduct.product_id, 
+                updatedRequest.updatedProduct);
+  
+              if (updatedProduct) {
+                  console.log(" Product updated successfully:", updatedProduct);
+                  return res.status(200).json(unifiedResponse(200, 'Product update accepted successfully', updatedProduct));
+              } else {
+                  console.log(" Product update failed");
+                  return res.status(404).json(unifiedResponse(404, 'Update failed'));
+              }
+          } else {
+              console.log(" Update request not approved");
+              return res.status(400).json(unifiedResponse(400, "Product update request wasn't approved"));
+          }
       } catch (err) {
+          console.log(" Error:", err);
           handleError(res, err);
       }
   });
+  
   
     router.patch("/restore/:id", async (req, res, next) => {
         try {
