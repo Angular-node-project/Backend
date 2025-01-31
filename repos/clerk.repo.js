@@ -25,6 +25,14 @@ const restoreUser=async(userid)=>{
 const getUsersBystatus=async(status)=>{
     return clerk.find({status:status});
 }
+const isEmailExist=async(email)=>{
+    const result= await clerk.findOne({email:email});
+    return result?true:false;
+}
+const getuserbyemail=async(email)=>{
+    return clerk.findOne({email:email});
+   
+}
 module.exports=
 {
     createUser,
@@ -33,5 +41,7 @@ module.exports=
     softDeleteUser,
     getUsersBystatus,
     getUserbyid,
-    restoreUser
+    restoreUser,
+    isEmailExist,
+    getuserbyemail
 }

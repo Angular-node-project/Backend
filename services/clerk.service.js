@@ -1,5 +1,5 @@
 const clerkRepo=require("../repos/clerk.repo");
-const addUser=async(userData)=>{
+const registerUser=async(userData)=>{
     return await clerkRepo.createUser(userData);
 }
 const getUsers=async()=>{
@@ -21,5 +21,23 @@ const getUsersBystatus=async(status)=>{
 const restoreUser=async(userid)=>{
     return await clerkRepo.restoreUser(userid);
 }
+const isEmailExistService= async(email)=>{
+   const result=await clerkRepo.isEmailExist(email);
+   return result;
+}
+const getuserbyemail=async(email)=>{
+    return clerkRepo.getuserbyemail(email);
+   
+}
 
-module.exports={addUser,getUsers,updateUser,softDeleteUser,getUsersBystatus,restoreUser,getUserbyid}
+module.exports={
+    registerUser
+    ,getUsers
+    ,updateUser
+    ,softDeleteUser
+    ,getUsersBystatus
+    ,restoreUser
+    ,getUserbyid
+    ,isEmailExistService
+    ,getuserbyemail
+}

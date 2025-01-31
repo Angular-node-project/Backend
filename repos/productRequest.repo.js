@@ -1,6 +1,6 @@
 const updateRequestSchema=require("../models/sellerUpdateProductRequest.model");
 const getRequests=async()=>{
-   return updateRequestSchema.find();
+   return updateRequestSchema.find({});
 }
 const getRequestbyId=async(requestId)=>{
     return updateRequestSchema.find({request_id:requestId});
