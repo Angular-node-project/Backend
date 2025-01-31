@@ -1,4 +1,4 @@
-const seller =require("../models/seller.modal")
+const seller =require("../models/seller.model")
 const getSellers=async()=>{
     return seller.find({});
 }

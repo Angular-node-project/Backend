@@ -11,7 +11,7 @@ const app = express();
 
 
 app.use(cors({
-    origin: APP_CONFIG.CORS_ORIGIN|| 'http://localhost:3000',
+    origin: APP_CONFIG.CORS_ORIGIN|| 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true
@@ -31,11 +31,15 @@ app.use(
 
 const routes = {
     public: {
-        'clerks.controller.js': '/api/admin/clerk',
-        'SellerAdmin.controller.js': '/api/sellers',
+        'clerks.Admin.controller.js': '/api/admin/clerk',
+        'Seller.Admin.controller.js': '/api/admin/sellers',
+        'category.Admin.controller.js': '/api/admin/category',
+        'products.Admin.controller.js': '/api/admin/product',
+        'order.Admin.controller.js': '/api/admin/order',
         'carts.controller.js': '/api/customer/cart',
-        'products.controller.js': '/api/customer/product',
         'products.seller.controller.js': '/api/seller/product',
+        'products.customer.controller.js': '/api/customer/product',
+        'orders.customer.controller.js':'/api/customer/order',
     },
     protected: {
     }
