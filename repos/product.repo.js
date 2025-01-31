@@ -86,11 +86,8 @@ const getProductbyid=async(productid)=>{
 const deleteproductbysellerid=async(sellerid)=>{
     return  product.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true});
 }
-// module.exports = {
-//     getProducts,
-//     selectedProducts,
-//   
-// }
+
+
 module.exports={getProducts
     ,selectedProducts,getproductsbyStatus,
     softdeleteproduct

@@ -34,6 +34,7 @@ const getPaginatedActiveProductsService = async (page = 1, limit = 6,sort='',cat
 }
 
 
+
 const getproductsbyStatus = async (status) => {
     return await productrepo.getproductsbyStatus(status);
 }
@@ -61,5 +62,7 @@ module.exports = {
         addProduct,
        updateProduct,
        deleteProduct
+    
+    
     , getPaginatedActiveProductsService
 }
