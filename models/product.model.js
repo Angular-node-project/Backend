@@ -9,10 +9,10 @@ const productSchema = new mongoose.Schema(
             unique: true,
             required: true,
         },
-        categories:{type:[{category_id:{ type: String, required: true },name:{ type: String, required: true }}]},
+        categories: { type: [{ category_id: { type: String, required: true }, name: { type: String, required: true } }] },
         name: { type: String, required: true },
         description: { type: String, required: true },
-        details:{type:String,required:false},
+        details: { type: String, required: false },
         qty: { type: Number, required: true, min: 1 },
         price: { type: Number, required: true, min: 1 },
         seller_id: { type: String, required: true },
@@ -25,9 +25,10 @@ const productSchema = new mongoose.Schema(
         reviews: {
             type: [
                 {
-                    customer_id: { type: String, required: true },
+                    customer: { customer_id: { type: String, required: true }, name: { type: String, required: true } },
                     rate: { type: Number, required: true, min: 1, max: 5 },
                     comment: { type: String, required: false },
+                    created_at: { type: Date, default: Date.now() }
                 },
             ],
             default: [],
