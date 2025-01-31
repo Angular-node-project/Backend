@@ -4,7 +4,7 @@ const {createProductDto}=require('../validators/product.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { imageKitPayloadBuilder } = require("../utils/images");
 const { uploadService } = require("../services/image.service");
-const updateProductSchema=require("../models/sellerUpdateProductRequest.model");
+const updateRequestService=require("../services/productRequest.service");
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -144,11 +144,7 @@ module.exports = (() => {
           const requestId = req.params.id;
           const status = req.params.status;
 
-          const updatedRequest = await updateProductSchema.findOneAndUpdate(
-              { request_id: requestId },
-              { status: status },
-              { new: true }
-          );
+          const updatedRequest = await updateRequestService.updateRequest(requestId,status)
   
           if (!updatedRequest) {
               console.log(" Update request not found:", requestId);
@@ -210,7 +206,49 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
+    router.get("/getupdateRequests", async (req, res, next) => {
+      try {
+          const requests = await updateRequestService.getRequests();
+          if (requests) {
+              return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
+          }
+          else {
+              return res.status(403).json(unifiedResponse(403, 'Requests not found'));
+          }
+      } catch (err) {
+          handleError(res, err);
+      }
+  })
+  router.get("/getupdateRequests/id/:id", async (req, res, next) => {
+    try {
+      const requestid=req.params.id;
+        const requests = await updateRequestService.getRequestbyId(requestid);
+        if (requests) {
+            return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
+        }
+        else {
+            return res.status(403).json(unifiedResponse(403, 'Requests not found'));
+        }
+    } catch (err) {
+        handleError(res, err);
+    }
+})
+router.get("/getupdateRequests/status/:status", async (req, res, next) => {
+  try {
+    const status=req.params.status;
+      const requests = await updateRequestService.getRequestsbyStatus(status);
+      if (requests) {
+          return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
+      }
+      else {
+          return res.status(403).json(unifiedResponse(403, 'Requests not found'));
+      }
+  } catch (err) {
+      handleError(res, err);
+  }
+})
 
+   
     return router;
 
 })()
