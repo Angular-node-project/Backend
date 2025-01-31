@@ -1,4 +1,4 @@
-const sellerservice=require("../services/SellerAdmin.service");
+const sellerservice=require("../services/seller.service");
 const productservice=require("../services/product.service");
 const orderservice=require("../services/order.service");
 const  { unifiedResponse, handleError } = require('../utils/responseHandler');
