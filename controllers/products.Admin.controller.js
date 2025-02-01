@@ -91,23 +91,26 @@ module.exports = (() => {
         }
       });
 
-    router.get("/", async (req, res, next) => {
+      router.get("/", async (req, res, next) => {
         try {
-            if (req.query.page) {
-                var page = parseInt(req.query.page) || 1;
-                var limit = 6;
-                const result = await productService.getPaginatedActiveProductsService(page, limit);
-                return res.status(201).json(unifiedResponse(201, 'paginated products returned succesfully', result));
+            var page = parseInt(req.query.page) || 1;
+            var limit = parseInt(req.query.limit) || 6;  
+            var category = req.query.category;
+            var status = req.query.status; 
+  
+            if (page || category || status) {
+                const result = await productService.getAllProductsPaginated(page, limit, req.query.sort, category, status);
+                return res.status(201).json(unifiedResponse(201, 'Paginated products returned successfully', result));
             } else {
                 const products = await productService.getProducts();
-                return res.status(201).json(unifiedResponse(201, 'all Products returned successfully', products));
+                return res.status(201).json(unifiedResponse(201, 'All products returned successfully', products));
             }
-
+    
         } catch (err) {
             handleError(res, err);
         }
-    })
-
+    });
+    
     router.get("/status/:status", async (req, res, next) => {
         try {
             const status = req.params.status;
