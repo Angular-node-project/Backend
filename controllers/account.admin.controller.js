@@ -2,13 +2,13 @@ const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { createclerkDto, clerkLoginDto } = require("../validators/clerk.validator");
 const clerkService = require("../services/clerk.service");
 const bcrypt = require('bcrypt');
-const jsonwebtoken = require("../utils/jwtToken")
+const jsonwebtoken = require("../utils/jwtToken");
+const sendemail=require("../services/email.service")
 
 module.exports = (() => {
   const router = require("express").Router();
   router.post("/register", async (req, res, next) => {
     try {
-
       const { error, value } = createclerkDto.validate(req.body, { abortEarly: false });
       if (error) {
         const errors = error.details.map(e => e.message);
@@ -21,7 +21,24 @@ module.exports = (() => {
       var hashed_password = await bcrypt.hash(value.password, 10);
       value.password = hashed_password;
       const clerk = await clerkService.registerUser(value);
-      return res.status(201).json(unifiedResponse(201, "clerk registerd successfully", clerk))
+      if(clerk)
+      {
+        const claims = {
+          id: clerk.clerk_id,
+          email: clerk.email,
+          name: clerk.name,
+          user_type: 'admin',
+          role:'super_admin'
+        }
+         var token = await jsonwebtoken.signToken({ claims });
+                const response={
+                  clerk,
+                  token
+                }
+                sendemail.sendemail(clerk.email,"Plants",`Hello ${clerk.name},\n\nYou have registered successfully to our website.`)
+                return res.status(201).json(unifiedResponse(201, "clerk registerd successfully", response))
+      }
+      
 
     } catch (err) {
       handleError(res, err);
@@ -45,7 +62,7 @@ module.exports = (() => {
             email: user.email,
             name: user.name,
             user_type: 'admin',
-            role:'super admin'
+            role:'super_admin'
           }
 
          var token= await jsonwebtoken.signToken({claims});
