@@ -28,9 +28,7 @@ const selectedProducts=async(data)=>{
 }
 
 const getProductsBySeller = async (sellerId) => {
-    const pro= await product.find({ seller_id: sellerId },{});
-    console.log(pro);
-    return pro;
+    return await product.find({ seller_id: sellerId, status: 'active' });
 }
 
 const addProduct = async (sellerId, productData) => {
