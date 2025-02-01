@@ -4,17 +4,25 @@ const orderservice=require("../services/order.service");
 const  { unifiedResponse, handleError } = require('../utils/responseHandler');
 module.exports=(()=>{
     const router=require ("express").Router();
-    router.get("/",async(req,res,next)=>{
-        try
-        {
-            const Sellers= await sellerservice.getSellers();
-            return res.status(201).json(unifiedResponse(201, 'Sellers Retrived successfully', Sellers));
-        }
-       catch (err) {
-            handleError(res, err);
-        }
-     
-    })
+     router.get("/", async (req, res, next) => {
+            try {
+                var page = parseInt(req.query.page) || 1;
+                var limit = parseInt(req.query.limit) || 6;  
+                var status = req.query.status; 
+                var sort=req.query.sort;
+      
+                if (page  || status) {
+                    const result = await sellerservice.getAllsellersPaginated(page, limit, sort, status);
+                    return res.status(201).json(unifiedResponse(201, 'Paginated Sellers returned successfully', result));
+                } else {
+                    const sellers = await sellerservice.getSellers();
+                    return res.status(201).json(unifiedResponse(201, 'All sellers returned successfully', sellers));
+                }
+        
+            } catch (err) {
+                handleError(res, err);
+            }
+        });
     
     router.get("/:status",async(req,res,next)=>{
         try

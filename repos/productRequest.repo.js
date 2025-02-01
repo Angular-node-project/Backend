@@ -15,7 +15,45 @@ const getRequestbyId=async(requestId)=>{
       { new: true }
   );
  }
+ const getAllUpdaterequestPaginated=async(page,limit,sort,category,status)=>{
+     var skip =(page-1)*limit;
+     const query={};
+     let sortQuery={};
+     if(category){
+       
+         query.updatedProduct.categories = { $elemMatch: { category_id: category}};
+ 
+     }
+     if(status)
+     {
+         query.status=status ;
+     }
+     if(sort){
+         const sortOrder=sort==='desc'?-1:1;
+         sortQuery={"updatedProduct.price":sortOrder}
+     }
+ 
+     return await  updateRequestSchema.find(query)
+                          .sort(sortQuery)
+                          .skip(skip)
+                          .limit(limit)
+                          .exec();  
+ }
+ const countUpdaterequest=async(category,status)=>{
+     const query={};
+     if(category){
+      query.updatedProduct.categories={$elemMatch:{category_id:category}}
+     }
+     if(status)
+         {
+             query.status=status ;
+         }
+     return await updateRequestSchema.countDocuments(query);
+ }
+ 
  module.exports={
+   countUpdaterequest,
+   getAllUpdaterequestPaginated,
    getRequests,
    getRequestbyId,
    getRequestsbyStatus,

@@ -97,9 +97,9 @@ module.exports = (() => {
             var limit = parseInt(req.query.limit) || 6;  
             var category = req.query.category;
             var status = req.query.status; 
-  
+            var sort=req.query.sort;
             if (page || category || status) {
-                const result = await productService.getAllProductsPaginated(page, limit, req.query.sort, category, status);
+                const result = await productService.getAllProductsPaginated(page, limit,sort , category, status);
                 return res.status(201).json(unifiedResponse(201, 'Paginated products returned successfully', result));
             } else {
                 const products = await productService.getProducts();
@@ -209,16 +209,25 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.get("/All/updateRequests", async (req, res, next) => {
-      try {
-          const requests = await updateRequestService.getRequests();
-     
-              return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
-       
-      } catch (err) {
-          handleError(res, err);
-      }
-  })
+      router.get("/All/updateRequests", async (req, res, next) => {
+        try {
+            var page = parseInt(req.query.page) || 1;
+            var limit = parseInt(req.query.limit) || 6;  
+            var category = req.query.category;
+            var status = req.query.status; 
+            var sort=req.query.sort;
+            if (page || category || status) {
+                const result = await updateRequestService.getAllUpdaterequestPaginated(page, limit,sort , category, status);
+                return res.status(201).json(unifiedResponse(201, 'Paginated Update requests returned successfully', result));
+            } else {
+                const requests = await updateRequestService.getRequests();
+                return res.status(201).json(unifiedResponse(201, 'All Update requests returned successfully', requests));
+            }
+    
+        } catch (err) {
+            handleError(res, err);
+        }
+    });
   router.get("/getupdateRequests/id/:id", async (req, res, next) => {
     try {
       const requestid=req.params.id;

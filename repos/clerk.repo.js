@@ -33,8 +33,31 @@ const getuserbyemail=async(email)=>{
     return clerk.findOne({email:email});
    
 }
+const getAllclerksPaginated=async(page,limit,status)=>{
+    var skip =(page-1)*limit;
+    const query={};
+    if(status)
+    {
+        query.status=status ;
+    }
+    return await  clerk.find(query)
+                         .skip(skip)
+                         .limit(limit)
+                         .exec();  
+}
+const countAllclerks=async(status)=>{
+    const query={};
+
+    if(status)
+        {
+            query.status=status ;
+        }
+    return await clerk.countDocuments(query);
+}
 module.exports=
 {
+    countAllclerks,
+    getAllclerksPaginated,
     createUser,
     getUsers,
     updateUser,
