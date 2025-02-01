@@ -1,4 +1,5 @@
 const orderservice=require('../services/order.service');
+const {createOrderDto}=require('../validators/order.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 module.exports=(()=>{
 const router=require("express").Router();
@@ -53,5 +54,20 @@ router.patch("/:id",async(req,res,next)=>{
         handleError(res, err);
     }
 })
+router.post("/cashier", async (req, res, next) => {
+    try {
+        const { error, value } = createOrderDto.validate(req.body,{abortEarly:false});
+        if (error) {
+            const errors= error.details.map(e=>e.message);
+            return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
+        }
+
+        const order = await orderservice.addOrder(value)
+        return res.status(201).json(unifiedResponse(201, 'Order created successfully', order));
+    } catch (err) {
+        handleError(res, err);
+    }
+})
+
 return router;
 })()
