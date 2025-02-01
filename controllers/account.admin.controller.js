@@ -3,7 +3,7 @@ const { createclerkDto, clerkLoginDto } = require("../validators/clerk.validator
 const clerkService = require("../services/clerk.service");
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require("../utils/jwtToken");
-const sendemail=require("../services/email.service")
+const sendemail=require("../utils/email")
 
 module.exports = (() => {
   const router = require("express").Router();
@@ -35,7 +35,7 @@ module.exports = (() => {
                   clerk,
                   token
                 }
-                sendemail.sendemail(clerk.email,"Plants",`Hello ${clerk.name},\n\nYou have registered successfully to our website.`)
+                sendemail.sendEmail(clerk.email,"Plants",`Hello ${clerk.name},\n\nYou have registered successfully to our website.`)
                 return res.status(201).json(unifiedResponse(201, "clerk registerd successfully", response))
       }
       
