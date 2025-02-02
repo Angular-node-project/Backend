@@ -41,6 +41,7 @@ const routes = {
         'products.customer.controller.js': '/api/customer/product',
         'orders.customer.controller.js':'/api/customer/order',
         'account.customer.controller.js':'/api/customer/account',
+        'support.customer.controller.js':'/api/customer/support',
       },
       protected: {
     }
