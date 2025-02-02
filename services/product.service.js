@@ -6,23 +6,32 @@ const updateProduct=async(productid,productData)=>{
     return await productrepo.updateProduct(productid,productData)
 }
 const getProducts = async () => {
-    return await productRepo.getProducts();
+    return await productrepo.getProducts();
 };
 
 const getProductsBySeller = async (sellerId) => {
-    return await productRepo.getProductsBySeller(sellerId);
+    return await productrepo.getProductsBySeller(sellerId);
 };
 
 const addProduct = async (sellerId, productData) => {
-    return await productRepo.addProduct(sellerId, productData);
+    return await productrepo.addProduct(sellerId, productData);
 };
 
 
 const deleteProduct = async (sellerId, productId) => {
-    return await productRepo.deleteProduct(sellerId, productId);
+    return await productrepo.deleteProduct(sellerId, productId);
 };
 
-
+const getAllProductsPaginated = async (page = 1, limit = 6,sort='',category='',status='') => {
+    const products = await productrepo.getAllProductsPaginated(page, limit,sort,category,status);
+    const totalProductsCount = await productrepo.countAllProducts(category,status);
+    return {
+        products,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalProductsCount / limit),
+        totalProductsCount
+    }
+}
 
 const getPaginatedActiveProductsService = async (page = 1, limit = 6,sort='',category='') => {
     const products = await productrepo.getActivatedProductsPaginated(page, limit,sort,category);
@@ -55,8 +64,8 @@ const deleteproductbysellerid = async (sellerid) => {
 }
 
 module.exports = {
- 
-     getProducts
+    getAllProductsPaginated
+     ,getProducts
      ,updateProductRequest
     ,createProduct
     , getProductbyid

@@ -14,8 +14,19 @@ const restoreSeller=async(sellerid)=>{
 const getSellerbyid=async(sellerid)=>{
     return await sellersrepo.getSellerbyid(sellerid);
 }
+const getAllsellersPaginated = async (page = 1, limit = 6,sort='',status='') => {
+    const sellers = await sellersrepo.getAllSellersPaginated(page, limit,sort,status);
+    const totalSellersCount = await sellersrepo.countAllsellers(status);
+    return {
+        sellers,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalSellersCount / limit),
+        totalSellersCount
+    }
+}
 module.exports=
 {
+    getAllsellersPaginated,
     getSellers,
    getSellersByStatus,
     softDeleteSeller,

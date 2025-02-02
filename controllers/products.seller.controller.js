@@ -19,19 +19,30 @@ module.exports = (() => {
             const sellerId = req.params.sellerId;
             const productData = req.body;
             const newProduct = await productService.addProduct(sellerId, productData);
-            return res.status(201).json(unifiedResponse(201, 'Product added successfully', newProduct));
+            return res.status(201).json(unifiedResponse(201, 'Pending', newProduct));
         } catch (err) {
             handleError(res, err);
         }
     });
 
+    // router.patch("/:sellerId/:productId", async (req, res, next) => {
+    //     try {
+    //         const sellerId = req.params.sellerId;
+    //         const productId = req.params.productId;
+    //         const productData = req.body;
+    //         const updatedProduct = await productService.updateProduct( productId, productData);
+    //         return res.status(201).json(unifiedResponse(201, 'Product updated successfully', updatedProduct));
+    //     } catch (err) {
+    //         handleError(res, err);
+    //     }
+    // });
     router.patch("/:sellerId/:productId", async (req, res, next) => {
         try {
             const sellerId = req.params.sellerId;
             const productId = req.params.productId;
             const productData = req.body;
-            const updatedProduct = await productService.updateProduct( productId, productData);
-            return res.status(201).json(unifiedResponse(201, 'Product updated successfully', updatedProduct));
+            const updateRequest = await productService.createUpdateRequest(sellerId, productId, productData);
+            return res.status(201).json(unifiedResponse(201, 'Update request created successfully', updateRequest));
         } catch (err) {
             handleError(res, err);
         }
@@ -42,7 +53,7 @@ module.exports = (() => {
             const sellerId = req.params.sellerId;
             const productId = req.params.productId;
             const deletedProduct = await productService.deleteProduct(sellerId, productId);
-            return res.status(201).json(unifiedResponse(201, 'Product deleted successfully', deletedProduct));
+            return res.status(201).json(unifiedResponse(201, 'Product now inactive', deletedProduct));
         } catch (err) {
             handleError(res, err);
         }
