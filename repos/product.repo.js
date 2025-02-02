@@ -1,8 +1,5 @@
 const product = require("../models/product.model");
 
-
-
-
 const createProduct=async(productData)=>{
     return product.create(productData);
 }
@@ -92,9 +89,47 @@ const deleteproductbysellerid=async(sellerid)=>{
     return  product.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true});
 }
 
+const getAllProductsPaginated=async(page,limit,sort,category,status)=>{
+    var skip =(page-1)*limit;
+    const query={};
+    let sortQuery={};
+    if(category){
+      
+        query.categories = { $elemMatch: { category_id: category}};
+
+    }
+    if(status)
+    {
+        query.status=status ;
+    }
+    if(sort){
+        const sortOrder=sort==='desc'?-1:1;
+        sortQuery={price:sortOrder}
+    }
+
+    return await  product.find(query)
+                         .sort(sortQuery)
+                         .skip(skip)
+                         .limit(limit)
+                         .exec();  
+}
+const countAllProducts=async(category,status)=>{
+    const query={};
+    if(category){
+        query.categories={$elemMatch:{category_id:category}}
+    }
+    if(status)
+        {
+            query.status=status ;
+        }
+    return await product.countDocuments(query);
+}
+
+
 module.exports={
-    
-    createProduct
+    getAllProductsPaginated
+    ,countAllProducts
+    ,createProduct
     ,updateProductRequest
     ,getProducts
     ,selectedProducts,getproductsbyStatus,

@@ -14,9 +14,37 @@ const softDeleteSeller=async(sellerid)=>{
 const restoreSeller=async(sellerid)=>{
     return seller.findOneAndUpdate({seller_id:sellerid},{status:"active"},{new:true})
 }
+const getAllSellersPaginated=async(page,limit,sort,status)=>{
+    var skip =(page-1)*limit;
+    const query={};
+    let sortQuery={};
+    if(status)
+    {
+        query.status=status ;
+    }
+    if(sort){
+        const sortOrder=sort==='desc'?-1:1;
+        sortQuery={name:sortOrder}
+    }
+
+    return await  seller.find(query)
+                         .sort(sortQuery)
+                         .skip(skip)
+                         .limit(limit)
+                         .exec();  
+}
+const countAllsellers=async(status)=>{
+    const query={};
+    if(status)
+        {
+            query.status=status ;
+        }
+    return await seller.countDocuments(query);
+}
 module.exports=
 {
-
+    getAllSellersPaginated,
+    countAllsellers,
     getSellers,
     getSellersByStatus,
     softDeleteSeller,
