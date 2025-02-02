@@ -1,13 +1,7 @@
 const Joi = require('joi');
-
 const createclerkDto = Joi.object({
-  name: Joi.string().min(3).required(),
-  email: Joi.string()
-    .pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$/)  
-    .required()
-    .messages({
-      'string.pattern.base': 'Email must be in the format example@gmail.com'
-    }),
+  name:  Joi.string().trim().min(3).max(100).required(),
+  email:Joi.string().trim().email().required(),
   password: Joi.string()
     .pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$/)
     .required()
@@ -16,6 +10,9 @@ const createclerkDto = Joi.object({
     }),
   role_id: Joi.string().required()
 });
+const clerkLoginDto=Joi.object({
+    email: Joi.string().trim().email().required(),
+    password:Joi.string().required()
+})
 
-
-module.exports = { createclerkDto };
+module.exports = { createclerkDto,clerkLoginDto };

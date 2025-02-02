@@ -1,4 +1,6 @@
-const sellerservice=require("../services/SellerAdmin.service");
+const sellerservice=require("../services/seller.service");
+const productservice=require("../services/product.service");
+const orderservice=require("../services/order.service");
 const  { unifiedResponse, handleError } = require('../utils/responseHandler');
 module.exports=(()=>{
     const router=require ("express").Router();
@@ -30,6 +32,16 @@ module.exports=(()=>{
         try
         {
             const sellerid=req.params.id;
+             const orders=await orderservice.getorderbysellerid(sellerid);
+                      if(orders)
+                      {
+                        const undeliveredOrders = orders.filter((o) =>o.product.
+                        some((p) => p.seller_id === sellerid && o.status !== "delivered" && o.status !== "cancelled" ));
+                            if (undeliveredOrders.length > 0) {
+                            return res.status(403).json(unifiedResponse(403, "Cannot deactivate seller; undelivered orders exist.")); 
+                            }
+                      }
+                    await productservice.deleteproductbysellerid(sellerid);
             const Seller= await sellerservice.softDeleteSeller(sellerid);
             if(Seller)
             {
