@@ -25,7 +25,21 @@ const addOrder=async(orderData)=>{
 
     const test=await cartRepo.deleteCart(customerId);
 
-    console.log(test);
+    
+    const prices={}
+    // console.log(test);
+    // console.log("This is Products");
+    // console.log(orderData.product);
+
+    orderData.product.forEach(element => {
+        if(isNaN(prices[element.seller_id]))
+            prices[element.seller_id]=0;
+            prices[element.seller_id]+=(element.qty*element.price)
+    });
+
+    
+    console.log(prices)
+
 
     return await orderRepo.createOrder(orderData);
 }

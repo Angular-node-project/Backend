@@ -26,10 +26,30 @@ module.exports = (() => {
             // }
 
             // Service call
-            let CustomerId="1";
-            let ProductId="550e8400-e29b-41d4-a716-446655440003";
-            let NewQuantity=99;
+            let CustomerId=req.body.CustomerId
+            let ProductId=req.body.ProductId
+            let NewQuantity=+req.body.NewQuantity
+            // console.log("Req is ----------------------------------------------------")
+            // console.log(req.body)
             const cart = await cartService.updateProductQuantityInCart(CustomerId,ProductId,NewQuantity);
+            return res.status(201).json(unifiedResponse(201, 'cart found successfully', cart));
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
+    router.post("/AddProcuct", async (req, res, next) => {
+        try {
+            // Service call
+            let CustomerId=req.body.customer_id
+            let ProductId=req.body.productId
+            let NewQuantity=+req.body.qty
+            // let CustomerId="50";
+            // // let ProductId="abc";
+            // let ProductId="998c03a1-9261-4982-b183-74b5def348be";
+            // let NewQuantity=5;
+            // console.log("Req is ----------------------------------------------------")
+            // console.log(req.body)
+            const cart = await cartService.addCart(CustomerId,ProductId,NewQuantity);
             return res.status(201).json(unifiedResponse(201, 'cart found successfully', cart));
         } catch (err) {
             handleError(res, err);

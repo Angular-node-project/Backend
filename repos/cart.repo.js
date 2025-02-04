@@ -13,7 +13,8 @@ const getAllCart=async(id)=>{
 
 const updateCart=async(data)=>{
 
-  
+  console.log("Hola From Update ")
+  console.log(data)
       const result = await Cart.findOneAndUpdate(
         { cart_id: data.cart_id }, 
         { $set: {
@@ -21,6 +22,7 @@ const updateCart=async(data)=>{
         } },  
         { new: true }   
     );
+    console.log(result)
     return result
 }
 
@@ -54,7 +56,7 @@ const updateProductQuantityInCart = async (cart, product_id, newQuantity) => {
         return {
             success: true,
             message: "Product quantity updated successfully",
-            updatedCart: updatedCart
+            newQty: newQuantity
         };
 
     } catch (error) {
@@ -71,5 +73,12 @@ const deleteCart=async (customerId)=>{
     return Cart.deleteOne({customer_id:customerId},{})
 };
 
+//* Create Cart For Customer if No cart was Found 
+//* Note that the cart will contain at least one product (First product to be added to the Cart)
+const createCart=async(newCart)=>{
+    console.log("Hola From Create Cart ")
+    return Cart.create(newCart)
+}
 
-module.exports={getCart,updateCart,getAllCart,updateProductQuantityInCart,deleteCart}
+
+module.exports={getCart,updateCart,getAllCart,updateProductQuantityInCart,deleteCart,createCart}

@@ -1,3 +1,4 @@
+const cartModel = require("../models/cart.model");
 const cartrepo = require("../repos/cart.repo");
 const productrepo = require("../repos/product.repo");
 const getCart = async (id) => {
@@ -68,6 +69,13 @@ const updateProductQuantityInCart = async (customer_id, product_id, newQuantity)
             throw new  Error("Cart can't be Found !!!")
         }
 
+        console.log("************************************")
+        console.log("************************************")
+        console.log(cart)
+        console.log("************************************")
+        console.log("************************************")
+        console.log("************************************")
+
         //* Check that if Product Found & the stock is bigger than or equal the new Quantity Required
         //* When Using Product you must first access [0] because selectedProducts return [] of products 
         const product= await productrepo.selectedProducts(product_id)
@@ -88,12 +96,92 @@ const updateProductQuantityInCart = async (customer_id, product_id, newQuantity)
 
 
     } catch (error) {
-        return error.message
+        return {ErrorMsg:error.message,success: false}
     }
     
 
 
+};
+
+const addCart=async(customerId,product_id,qty)=>{
+    try {
+    //* First check if there is a cart
+    let cart=await cartrepo.getCart(customerId);
+   
+    if(!cart){
+        cart=new cartModel();
+        cart.customer_id="customerId";
+        console.log("Hola From Here------------------------------------")
+        console.log(cart)
+        cartrepo.createCart(cart);
+        addNewProductToCart(cart,product_id,qty,customerId)
+    }else{
+        const existProduct=cart.product.find(u=>{
+            if(u.product_id==product_id)
+                return u
+        })
+        if(existProduct){
+
+            console.log("Found")
+            console.log(existProduct)
+            const product=await productrepo.getProductbyid(product_id);
+            let newQuantity=(existProduct.qty+qty)
+            if(product.qty<newQuantity){
+                throw new  Error(`Sorry but Product ${product.name} has only ${product.qty} Available in Our Stock `)
+            }
+            const updatedCart=await cartrepo.updateProductQuantityInCart(cart,product_id,newQuantity);
+            return updatedCart;
+            //* Update Qty
+        }else{
+            console.log("Not Found")
+            addNewProductToCart(cart,product_id,qty,customerId)
+        }
+    }
+
+    } catch (error) {
+        console.log(error.message)
+    }
+ 
+};
+
+const addNewProductToCart= async(cart,product_id,qty,customer_id)=>{
+
+    try {
+        console.log("Hola From Add new Product To Cart ")
+        console.log("****************************************")
+        console.log(cart)
+        console.log("****************************************")
+    //* Check if product Exist
+    const product =await productrepo.getProductbyid(product_id);
+    if(!product){
+        throw new Error("Product Wasn't Found!!!")
+    }
+    if(qty>product.qty){
+        throw new  Error(`Sorry but Product ${product.name} has only ${product.qty} Available in Our Stock `)
+    }
+    cart.customer_id=customer_id;
+    console.log("****************************************")
+    console.log(cart)
+    console.log("****************************************")
+    cart.product.push({
+        product_id: product.product_id,     
+        seller_id: product.seller_id, 
+        name: product.name,          
+        qty:qty,
+        price:product.price,
+        pic_path:product.pics
+    });
+    console.log(product)
+    console.log(cart)
+
+
+    return await cartrepo.updateCart(cart);
+
+    } catch (error) {
+        console.log(error.message);
+    }
+
 }
 
 
-module.exports = { getCart, updateProductQuantityInCart };
+module.exports = { getCart, updateProductQuantityInCart,addCart };

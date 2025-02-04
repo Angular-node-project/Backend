@@ -9,7 +9,7 @@ const cartSchema = new mongoose.Schema({
         name: { type: String, required: true },          
         qty:{ type: Number, required: true ,min:1},
         price:{type: Number, required: true ,min:1},
-        pic_path:{type:String,required:false}
+        pic_path:[{type:String,required:false}]
     }]
 }, { timestamps: true });
 
