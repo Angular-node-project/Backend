@@ -20,7 +20,7 @@ const createOrderDto = Joi.object({
         "string.base": "Status must be a string"
     }),
     customer_id:Joi.string().required(),
-   cashier_id:Joi.string().required()
+   cashier_id:Joi.string().default(null)
 });
 
 
