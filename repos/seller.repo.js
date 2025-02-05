@@ -41,6 +41,20 @@ const countAllsellers=async(status)=>{
         }
     return await seller.countDocuments(query);
 }
+
+//* Increase Wallet of Seller Used When Order Get created
+const increaseSellerWallet=async(sellers)=>{
+
+    for (const key in sellers) {
+        res=await seller.findOneAndUpdate(
+            { seller_id: key }, 
+            { $inc: { wallet: +sellers[key] } }, 
+            { new: true } 
+        );
+    }
+
+};
+
 module.exports=
 {
     getAllSellersPaginated,
@@ -49,5 +63,6 @@ module.exports=
     getSellersByStatus,
     softDeleteSeller,
     restoreSeller,
-    getSellerbyid
+    getSellerbyid,
+    increaseSellerWallet
 }

@@ -21,7 +21,7 @@ const getProducts=async()=>{
 //* Return a product or list of products 
 const selectedProducts=async(data)=>{
 
-    return await product.find({ product_id: { $in: data } });
+    return await product.find({ product_id: { $in: data } , status: 'active' });
 }
 
 const getProductsBySeller = async (sellerId) => {
@@ -32,6 +32,7 @@ const addProduct = async (sellerId, productData) => {
     const newProduct = new product({ ...productData, seller_id: sellerId, status: 'pending' });
     return await newProduct.save();
 }
+
 
 
 
@@ -125,6 +126,19 @@ const countAllProducts=async(category,status)=>{
     return await product.countDocuments(query);
 }
 
+//* Decrease Stock of products when order is created
+const decreaseStock=async (products)=>{
+
+
+    for (const key in products) {
+        await product.findOneAndUpdate(
+            { product_id: key }, 
+            { $inc: { qty: -products[key] } }, 
+            { new: true } 
+        );
+    }
+};
+
 
 module.exports={
     getAllProductsPaginated
@@ -142,5 +156,6 @@ module.exports={
     getProductsBySeller,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    decreaseStock
 }
