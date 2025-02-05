@@ -50,6 +50,8 @@ module.exports = (() => {
             // console.log("Req is ----------------------------------------------------")
             // console.log(req.body)
             const cart = await cartService.addCart(CustomerId,ProductId,NewQuantity);
+            console.log("Controller--------------------")
+            console.log(cart)
             return res.status(201).json(unifiedResponse(201, 'cart found successfully', cart));
         } catch (err) {
             handleError(res, err);
