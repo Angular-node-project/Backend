@@ -108,5 +108,39 @@ const createCart=async(newCart)=>{
     return Cart.create(newCart)
 }
 
+const addProductsList=async(newProducts,customer_id)=>{
+    var cart= await Cart.findOne({customer_id:customer_id});
+    if(cart){
+        var cartProducts=cart.product;
+        console.log(cartProducts);
+        var cartProductsIds=cartProducts.map(item=>item.product_id);
+        newProducts.forEach(item => {
+            if(cartProductsIds.includes(item.product_id)){
+                cartProducts=cartProducts.filter(cart=>cart.product_id!=item.product_id);
+            }
+            cartProducts.push(item);
+        });
+        cart.product=cartProducts;
+        await cart.save();
+        return cart;
+    }else{
+        var newCart={
+            customer_id:customer_id,
+            product:newProducts
+        }
+      cart =Cart.create(newCart);
+      return cart;
+    }
+}
 
-module.exports={getCart,updateCart,getAllCart,updateProductQuantityInCart,deleteCart,createCart,deleteProductFromCart}
+
+
+module.exports={getCart
+    ,updateCart
+    ,getAllCart
+    ,updateProductQuantityInCart
+    ,deleteCart
+    ,createCart
+   ,addProductsList
+   ,deleteProductFromCart
+}

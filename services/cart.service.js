@@ -8,6 +8,7 @@ const getCart = async (id) => {
     if(!cart){
         return  { cart: null, ErrorMsg: "Cart Wasn't Found" }
     }
+    console.log(cart);
 
     const produtsIds = [];
     const ErrorMsg = [];
@@ -203,4 +204,16 @@ const deleteProductFromCart=async(productId,customerId)=>{
     }
 }
 
-module.exports = { getCart, updateProductQuantityInCart,addCart,deleteProductFromCart };
+
+const addFirstListProducts=async(customer_id,newProducts)=>{
+   var res= await cartrepo.addProductsList(newProducts,customer_id);
+   return res;
+}
+
+
+module.exports = { getCart
+    , updateProductQuantityInCart
+    ,addCart 
+    ,addFirstListProducts
+    ,deleteProductFromCart
+};
