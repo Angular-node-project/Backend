@@ -74,6 +74,18 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
+    router.post("/Del", async (req, res, next) => {
+        try {
+
+            // Service call
+            let customer_id=req.body.CustomerId;
+            let product_id=req.body.productID;
+            const cart = await cartService.deleteProductFromCart(product_id,customer_id);
+            return res.status(201).json(unifiedResponse(201, 'Product Removed  successfully', cart));
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
     
     return router;
 

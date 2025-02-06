@@ -194,5 +194,13 @@ const addNewProductToCart= async(cart,product_id,qty,customer_id)=>{
 
 }
 
+const deleteProductFromCart=async(productId,customerId)=>{
+    try {
+        let cart= await cartrepo.deleteProductFromCart(productId,customerId)
+        return { success: true, cart}
+    } catch (error) {
+      return {ErrorMsg:error.message,success: false}
+    }
+}
 
-module.exports = { getCart, updateProductQuantityInCart,addCart };
+module.exports = { getCart, updateProductQuantityInCart,addCart,deleteProductFromCart };

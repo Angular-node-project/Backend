@@ -77,6 +77,30 @@ const deleteCart=async (customerId)=>{
     return Cart.deleteOne({customer_id:customerId},{})
 };
 
+const deleteProductFromCart=async (productId,CustomerId)=>{
+
+    // const result=await Cart.findOneAndUpdate({customer_id:CustomerId},
+    //     {$pull:
+    //         {product:
+    //             {product_id:productId}
+    //         }
+    //     },{ new: true }
+    // );
+
+    const result = await Cart.findOneAndUpdate(
+        { customer_id: CustomerId }, // Query to find the cart by customer_id
+        { $pull: { product: { product_id: productId } } }, // Remove the product with the specified product_id
+        { new: true } // Return the updated document
+    );
+    result.save();
+
+    if (result.modifiedCount === 0) {
+        throw new Error("No product was removed. Either the cart or product does not exist.")
+    }
+    return result;
+
+};
+
 //* Create Cart For Customer if No cart was Found 
 //* Note that the cart will contain at least one product (First product to be added to the Cart)
 const createCart=async(newCart)=>{
@@ -85,4 +109,4 @@ const createCart=async(newCart)=>{
 }
 
 
-module.exports={getCart,updateCart,getAllCart,updateProductQuantityInCart,deleteCart,createCart}
+module.exports={getCart,updateCart,getAllCart,updateProductQuantityInCart,deleteCart,createCart,deleteProductFromCart}

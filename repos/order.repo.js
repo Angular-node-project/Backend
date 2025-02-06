@@ -37,6 +37,8 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
                          .limit(limit)
                          .exec();  
 }
+
+
 const countAllOrders=async(status,governorate)=>{
     const query={};
     if(governorate){
@@ -49,6 +51,10 @@ const countAllOrders=async(status,governorate)=>{
     return await order.countDocuments(query);
 }
 
+const getCustomerOrders=async (customerId)=>{
+    return order.find({customer_id:customerId},{})
+}
+
 module.exports={
     getAllOrdersPaginated,
     countAllOrders,
@@ -58,6 +64,7 @@ module.exports={
     acceptorder,
     getorderbysellerid,
     getorderbyproductid,
-    createOrder
+    createOrder,
+    getCustomerOrders
 }
 

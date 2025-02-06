@@ -57,6 +57,11 @@ const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='
         totalOrderssCount
     }
 }
+
+const getCustomerOrders=async(customerId)=>{
+    return await orderRepo.getCustomerOrders(customerId);
+}
+
 module.exports={
     getAllordersPaginated,
     getorders,
@@ -65,7 +70,8 @@ module.exports={
     acceptorder,
     getorderbysellerid,
     getorderbyproductid,
-    addOrder
+    addOrder,
+    getCustomerOrders
 }
 
 
