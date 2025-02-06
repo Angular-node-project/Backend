@@ -77,20 +77,32 @@ module.exports = (() => {
         }
     })
 
+    router.post("/delete", async (req, res, next) => {
+        try {
+            let customer_id = req.body.CustomerId;
+            let product_id = req.body.productID;
+            const cart = await cartService.deleteProductFromCart(product_id, customer_id);
+            return res.status(201).json(unifiedResponse(201, 'Product Removed  successfully', cart));
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
+
+
     router.post("/", async (req, res, next) => {
         try {
             let customer_id = req.data.id;
             let cart_products = req.body;
-            if(cart_products.length>0){
-                var result = cartService.addFirstListProducts(customer_id,cart_products);
+            if (cart_products.length > 0) {
+                var result = cartService.addFirstListProducts(customer_id, cart_products);
                 return res.status(201).json(unifiedResponse(201, 'cart added successfully', result));
             }
             return res.status(500).json(unifiedResponse(201, 'no product to add', null));
-    }catch (err) {
-        handleError(res, err);
-    }
-})
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
 
-return router;
+    return router;
 
-}) ()
+})()

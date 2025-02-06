@@ -195,16 +195,25 @@ const addNewProductToCart= async(cart,product_id,qty,customer_id)=>{
 
 }
 
+const deleteProductFromCart=async(productId,customerId)=>{
+    try {
+        let cart= await cartrepo.deleteProductFromCart(productId,customerId)
+        return { success: true, cart}
+    } catch (error) {
+      return {ErrorMsg:error.message,success: false}
+    }
+}
+
+
 const addFirstListProducts=async(customer_id,newProducts)=>{
    var res= await cartrepo.addProductsList(newProducts,customer_id);
    return res;
 }
 
 
-
-
 module.exports = { getCart
     , updateProductQuantityInCart
     ,addCart 
     ,addFirstListProducts
+    ,deleteProductFromCart
 };
