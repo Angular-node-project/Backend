@@ -74,7 +74,7 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.post("/Del", async (req, res, next) => {
+    router.post("/delete", async (req, res, next) => {
         try {
 
             // Service call
