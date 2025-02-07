@@ -2,7 +2,6 @@ const sellerservice = require("../services/seller.service");
 const productservice = require("../services/product.service");
 const orderservice = require("../services/order.service");
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-
 module.exports = (() => {
     const router = require("express").Router();
     router.get("/", async (req, res, next) => {
@@ -11,9 +10,9 @@ module.exports = (() => {
             var limit = parseInt(req.query.limit) || 6;
             var status = req.query.status;
             var sort = req.query.sort;
-
-            if (page || status) {
-                const result = await sellerservice.getAllsellersPaginated(page, limit, sort, status);
+            var search = req.query.search;
+            if (page || status || search) {
+                const result = await sellerservice.getAllsellersPaginated(page, limit, sort, status, search);
                 return res.status(201).json(unifiedResponse(201, 'Paginated Sellers returned successfully', result));
             } else {
                 const sellers = await sellerservice.getSellers();
@@ -23,6 +22,8 @@ module.exports = (() => {
         } catch (err) {
             handleError(res, err);
         }
+
+
     });
 
     router.get("/:status", async (req, res, next) => {
@@ -61,10 +62,11 @@ module.exports = (() => {
         }
 
     })
-    router.patch("/restore/:id", async (req, res, next) => {
+    router.patch("/changeStatus/:id/:status", async (req, res, next) => {
         try {
             const sellerid = req.params.id;
-            const Seller = await sellerservice.restoreSeller(sellerid);
+            const status = req.params.status;
+            const Seller = await sellerservice.changeStatus(sellerid, status);
             if (Seller) {
                 return res.status(201).json(unifiedResponse(201, 'Seller Restored successfully', Seller));
             }
