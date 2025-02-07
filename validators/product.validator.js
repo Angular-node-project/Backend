@@ -18,19 +18,10 @@ const createProductDto = Joi.object({
 
  
   status: Joi.string().valid("active", "inactive", "pending", "outStock").required(),
-
-
   pics: Joi.array().items(
-    Joi.string().pattern(/\.(jpg|png)$/i).required()
+    Joi.string().required()
   ).optional(),
 
-  reviews: Joi.array().items(
-    Joi.object({
-      customer_id: Joi.string().required(),
-      rate: Joi.number().min(1).max(5).required(),
-      comment: Joi.string().optional()
-    })
-  ).optional()
 });
 
 const createReviewDto=Joi.object({
