@@ -33,4 +33,10 @@ const createProductDto = Joi.object({
   ).optional()
 });
 
-module.exports = { createProductDto };
+const createReviewDto=Joi.object({
+    rate: Joi.number().min(1).max(5).required(),
+    comment: Joi.string().optional()
+  })
+
+
+module.exports = { createProductDto ,createReviewDto};
