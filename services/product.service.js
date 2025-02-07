@@ -25,8 +25,8 @@ const deleteProduct = async (sellerId, productId) => {
     return await productrepo.deleteProduct(sellerId, productId);
 }
 
-const getAllProductsPaginated = async (page = 1, limit = 6, sort = '', category = '', status = '') => {
-    const products = await productrepo.getAllProductsPaginated(page, limit, sort, category, status);
+const getAllProductsPaginated = async (page = 1, limit = 6, sort = '', category = '', status = '',search='') => {
+    const products = await productrepo.getAllProductsPaginated(page, limit, sort, category, status,search);
     const totalProductsCount = await productrepo.countAllProducts(category, status);
     return {
         products,
@@ -59,8 +59,8 @@ const softdeleteproduct = async (productId) => {
     return await productrepo.softdeleteproduct(productId);
 }
 
-const restoreproduct = async (productId) => {
-    return await productrepo.restoreproduct(productId);
+const ChangeStatusproduct = async (productId,status) => {
+    return await productrepo.ChangeStatusproduct(productId,status);
 }
 
 const getProductbyid = async (productId) => {
@@ -84,7 +84,7 @@ module.exports = {
     getProductbyid,
     getproductsbyStatus,
     softdeleteproduct,
-    restoreproduct,
+    ChangeStatusproduct,
     deleteproductbysellerid,
     getProductsBySeller,
     addProduct,

@@ -9,117 +9,121 @@ const updateRequestService=require("../services/productRequest.service");
 module.exports = (() => {
     const router = require("express").Router();
     router.post("/", async (req, res, next) => {
-        try {
+      try {
 
-           const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
-            if (error) {
-                const errors = error.details.map(e => e.message);
-                return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
-            }
-          if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).json(unifiedResponse(400, 'Select image for the product'));
+         const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
+          if (error) {
+              const errors = error.details.map(e => e.message);
+              return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
           }
-          const uploadedFile = req.files?.pics;
-          const uploadPayload = [];
-          if (Array.isArray(uploadedFile)) {
-            for (const expressUploadedFile of uploadedFile) {
-              const { fileName, src } = imageKitPayloadBuilder(expressUploadedFile);
-              uploadPayload.push({
-                src,
-                fileName,
-              });
-            }
-            const response = await uploadService.upload({ files: uploadPayload });
-            const product =await productService.createProduct({...value,pics:response.imageurls});
-        
-           
-              return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
-            ;
-          } else {
-            
-            const { fileName, src } = imageKitPayloadBuilder(uploadedFile);
-            uploadPayload.push({ src, fileName });
-            const response = await uploadService.upload({ files: uploadPayload });
-            const product =await productService.createProduct({...value,pics:response.imageurls});
-              return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
-            ;
-          }
-        } catch (exception) {
-          console.log(exception);
-          return res.status(400).json(unifiedResponse(400, 'there is problem'));
+          const product =await productService.createProduct(value);
+      
+         
+          return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
+       /* if (!req.files || Object.keys(req.files).length === 0) {
+          return res.status(400).json(unifiedResponse(400, 'Select image for the product'));
         }
-      });
-      router.patch("/:id", async (req, res, next) => {
-        try {
-           const productid=req.params.id;
-           const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
-            if (error) {
-                const errors = error.details.map(e => e.message);
-                return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
-            }
-          if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).json(unifiedResponse(400, 'Select image for the product'));
+        const uploadedFile = req.files?.pics;
+        const uploadPayload = [];
+        if (Array.isArray(uploadedFile)) {
+          for (const expressUploadedFile of uploadedFile) {
+            const { fileName, src } = imageKitPayloadBuilder(expressUploadedFile);
+            uploadPayload.push({
+              src,
+              fileName,
+            });
           }
-          const uploadedFile = req.files?.pics;
-          const uploadPayload = [];
-          if (Array.isArray(uploadedFile)) {
-            for (const expressUploadedFile of uploadedFile) {
-              const { fileName, src } = imageKitPayloadBuilder(expressUploadedFile);
-              uploadPayload.push({
-                src,
-                fileName,
-              });
-            }
-            const response = await uploadService.upload({ files: uploadPayload });
-            const product =await productService.updateProduct(productid,{...value,pics:response.imageurls});
-        
-           
-              return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
-            ;
-          } else {
-            
-            const { fileName, src } = imageKitPayloadBuilder(uploadedFile);
-            uploadPayload.push({ src, fileName });
-            const response = await uploadService.upload({ files: uploadPayload });
-            const product =await productService.updateProduct(productid,{...value,pics:response.imageurls});
-              return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
-            ;
-          }
-        } catch (exception) {
-          console.log(exception);
-          return res.status(400).json(unifiedResponse(400, 'there is problem'));
+          const response = await uploadService.upload({ files: uploadPayload });
+          */
+         
+          ;
+        } /*else {
+          
+          const { fileName, src } = imageKitPayloadBuilder(uploadedFile);
+          uploadPayload.push({ src, fileName });
+          const response = await uploadService.upload({ files: uploadPayload });
+          const product =await productService.createProduct({...value,pics:response.imageurls});
+            return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
+          ;
         }
-      });
-
-      router.get("/", async (req, res, next) => {
-        try {
-            var page = parseInt(req.query.page) || 1;
-            var limit = parseInt(req.query.limit) || 6;  
-            var category = req.query.category;
-            var status = req.query.status; 
-            var sort=req.query.sort;
-            if (page || category || status) {
-                const result = await productService.getAllProductsPaginated(page, limit,sort , category, status);
-                return res.status(201).json(unifiedResponse(201, 'Paginated products returned successfully', result));
-            } else {
-                const products = await productService.getProducts();
-                return res.status(201).json(unifiedResponse(201, 'All products returned successfully', products));
-            }
-    
-        } catch (err) {
-            handleError(res, err);
-        }
+      }*/ catch (exception) {
+        console.log(exception);
+        return res.status(400).json(unifiedResponse(400, 'there is problem'));
+      }
     });
-    
-    router.get("/status/:status", async (req, res, next) => {
-        try {
-            const status = req.params.status;
-            const products = await productService.getproductsbyStatus(status)
-            return res.status(201).json(unifiedResponse(201, 'Products retrived successfully', products));
-        } catch (err) {
-            handleError(res, err);
+    router.patch("/:id", async (req, res, next) => {
+      try {
+         const productid=req.params.id;
+         const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
+          if (error) {
+              const errors = error.details.map(e => e.message);
+              return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
+          }
+       /* if (!req.files || Object.keys(req.files).length === 0) {
+          return res.status(400).json(unifiedResponse(400, 'Select image for the product'));
         }
-    })
+        const uploadedFile = req.files?.pics;
+        const uploadPayload = [];
+        if (Array.isArray(uploadedFile)) {
+          for (const expressUploadedFile of uploadedFile) {
+            const { fileName, src } = imageKitPayloadBuilder(expressUploadedFile);
+            uploadPayload.push({
+              src,
+              fileName,
+            });
+          }
+          const response = await uploadService.upload({ files: uploadPayload });
+          */
+          const product =await productService.updateProduct(productid,value);
+      
+         
+            return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
+          ;
+       /* } else {
+          
+          const { fileName, src } = imageKitPayloadBuilder(uploadedFile);
+          uploadPayload.push({ src, fileName });
+          const response = await uploadService.upload({ files: uploadPayload });
+          const product =await productService.updateProduct(productid,{...value,pics:response.imageurls});
+            return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
+          ;
+        }*/
+      }catch (exception) {
+        console.log(exception);
+        return res.status(400).json(unifiedResponse(400, 'there is problem'));
+      }
+    });
+
+    router.get("/", async (req, res, next) => {
+      try {
+          var page = parseInt(req.query.page) || 1;
+          var limit = parseInt(req.query.limit) || 6;  
+          var category = req.query.category;
+          var status = req.query.status; 
+          var sort=req.query.sort;
+          var search=req.query.search;
+          if (page || category || status||search) {
+              const result = await productService.getAllProductsPaginated(page, limit,sort , category, status,search);
+              return res.status(201).json(unifiedResponse(201, 'Paginated products returned successfully', result));
+          } else {
+              const products = await productService.getProducts();
+              return res.status(201).json(unifiedResponse(201, 'All products returned successfully', products));
+          }
+  
+      } catch (err) {
+          handleError(res, err);
+      }
+  });
+  
+  router.get("/status/:status", async (req, res, next) => {
+      try {
+          const status = req.params.status;
+          const products = await productService.getproductsbyStatus(status)
+          return res.status(201).json(unifiedResponse(201, 'Products retrived successfully', products));
+      } catch (err) {
+          handleError(res, err);
+      }
+  })
     router.patch("/delete/:id", async (req, res, next) => {
         try {
             const productid = req.params.id;
@@ -181,12 +185,13 @@ module.exports = (() => {
   });
   
   
-    router.patch("/restore/:id", async (req, res, next) => {
+    router.patch("/changeStatus/:id/:status", async (req, res, next) => {
         try {
             const id = req.params.id;
-            const products = await productService.restoreproduct(id);
+            const status = req.params.status;
+            const products = await productService.ChangeStatusproduct(id,status);
             if (products) {
-                return res.status(201).json(unifiedResponse(201, 'Products active successfully', products));
+                return res.status(201).json(unifiedResponse(201, `Products ${status} successfully`, products));
             }
             else {
                 return res.status(403).json(unifiedResponse(403, 'Product not found '));

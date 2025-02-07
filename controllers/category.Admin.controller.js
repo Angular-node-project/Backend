@@ -19,7 +19,7 @@ router.post("/",async(req,res,next)=>{
 router.get("/",async(req,res,next)=>{
     try{
        
-            const categories= await categoryservice.getCategories();
+            const categories= await categoryservice.getActiveCategoriesService();
            return res.status(201).json(unifiedResponse(201, 'categpries retrived successfully', categories));
     }catch (err) {
         handleError(res, err);

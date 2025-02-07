@@ -79,8 +79,8 @@ const getproductsbyStatus=async(status)=>{
 const softdeleteproduct=async(productid)=>{
     return  product.findOneAndUpdate({product_id:productid},{status:"inactive"},{new:true});
 }
-const restoreproduct=async(productid)=>{
-    return  product.findOneAndUpdate({product_id:productid},{status:"active"},{new:true});
+const ChangeStatusproduct=async(productid,status)=>{
+    return  product.findOneAndUpdate({product_id:productid},{status:status},{new:true});
 }
 const getProductbyid=async(productid)=>{
     return  product.findOne({product_id:productid});
@@ -89,30 +89,67 @@ const deleteproductbysellerid=async(sellerid)=>{
     return  product.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true});
 }
 
-const getAllProductsPaginated=async(page,limit,sort,category,status)=>{
-    var skip =(page-1)*limit;
-    const query={};
-    let sortQuery={};
-    if(category){
-      
-        query.categories = { $elemMatch: { category_id: category}};
+const getAllProductsPaginated = async (page = 1, limit = 6, sort, category, status,search) => {
+    var skip = (page - 1) * limit;
+    const query = {};
+    let sortQuery = {};
 
-    }
-    if(status)
+    if(search)
     {
-        query.status=status ;
+        query.name = { $regex: search, $options: 'i' };  
+
     }
-    if(sort){
-        const sortOrder=sort==='desc'?-1:1;
-        sortQuery={price:sortOrder}
+    if (category) {
+        query.categories = { $elemMatch: { category_id: category } };
+    }
+    if (status) {
+        query.status = status;
+    }
+    if (sort) {
+        const sortOrder = sort === "desc" ? -1 : 1;
+        sortQuery = { price: sortOrder };
     }
 
-    return await  product.find(query)
-                         .sort(sortQuery)
-                         .skip(skip)
-                         .limit(limit)
-                         .exec();  
-}
+    const pipeline = [
+        { $match: query },  
+        {
+            $lookup: {
+                from: "sellers",   
+                localField: "seller_id",
+                foreignField: "seller_id",
+                as: "seller"
+            }
+        },
+        { $unwind: "$seller" }, 
+        { $skip: skip },       
+        { $limit: limit },     
+        {
+            $project: {
+                product_id: 1,
+                name: 1,
+                description: 1,
+                price: 1,
+                status: 1,
+                categories: 1,
+                qty: 1,  
+                pics: 1,
+                reviews: 1,
+                seller: {
+                    seller_id: 1,
+                    name: 1,
+                } 
+            }
+        }
+    ];
+
+    if (Object.keys(sortQuery).length > 0) {
+        pipeline.splice(3, 0, { $sort: sortQuery });  
+    }
+
+    return await product.aggregate(pipeline);
+};
+
+
 const countAllProducts=async(category,status)=>{
     const query={};
     if(category){
@@ -134,7 +171,7 @@ module.exports={
     ,getProducts
     ,selectedProducts,getproductsbyStatus,
     softdeleteproduct
-    ,restoreproduct
+    ,ChangeStatusproduct
     ,getProductbyid
     ,deleteproductbysellerid
     ,getActivatedProductsPaginated
