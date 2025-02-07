@@ -9,6 +9,7 @@ const sellerSchema = new mongoose.Schema({
     registeration_number: { type: String, unique: true, required: false },
     national_id: { type: String, unique: true, required: true },   
     phone_number: { type: String, required: false },                 
+    wallet: { type: Number, required: false,default:0 },                 
     status: { type: String, enum: ['active','pending', 'inactive'], required: true ,default:'pending'},
 }, { timestamps: true });                                          
 

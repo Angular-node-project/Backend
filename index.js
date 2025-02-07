@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const { APP_CONFIG } = require("./config/app.config");
 const cors=require('cors');
-const authenticationMiddleware = require("./middlewares/authentication.middleware");
+const {authenticationMiddleware} = require("./middlewares/authentication.middleware");
 
 //server
 const app = express();
@@ -36,13 +36,16 @@ const routes = {
         'category.Admin.controller.js': '/api/admin/category',
         'products.Admin.controller.js': '/api/admin/product',
         'order.Admin.controller.js': '/api/admin/order',
-        'carts.controller.js': '/api/customer/cart',
         'products.seller.controller.js': '/api/seller/product',
         'products.customer.controller.js': '/api/customer/product',
-        'orders.customer.controller.js':'/api/customer/order',
         'account.customer.controller.js':'/api/customer/account',
+        'account.admin.controller.js':'/api/admin/account',
+        'customerservice.admin.controller.js':'/api/admin/customerservice',
+        'orders.seller.controller.js':'/api/seller/order',
       },
       protected: {
+        'carts.controller.js': '/api/customer/cart',
+        'orders.customer.controller.js':'/api/customer/order'
     }
 };
 

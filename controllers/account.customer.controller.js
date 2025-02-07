@@ -1,5 +1,5 @@
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-const { customerCreateDto, customerLoginDto } = require("../validators/customer.validator");
+const { customerCreateDto, customerLoginDto, customerUpdateDto } = require("../validators/customer.validator");
 const customerService = require("../services/customer.service");
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require("../utils/jwtToken")
@@ -29,7 +29,7 @@ module.exports = (() => {
           user_type: 'customer'
         }
         var token = await jsonwebtoken.signToken({ claims });
-        const respons={
+        const respons = {
           customer,
           token
         }
@@ -71,5 +71,38 @@ module.exports = (() => {
       handleError(res, err);
     }
   })
+
+  router.put("/profile", async (req, res, next) => {
+
+    try {
+      const { error, value } = customerUpdateDto.validate(req.body, { abortEarly: false });
+      if (error) {
+        const errors = error.details.map(e => e.message);
+        return res.status(400).json(unifiedResponse(400, "validation error", errors));
+      }
+      let customer = await customerService.getUserByCustomerIdService(value.customer_id);
+
+      if (!customer)
+        return res.status(400).json(unifiedResponse(400, "validation error", errors));
+
+
+      var hashed_password = await bcrypt.compare(value.currentPassword, customer.password);
+      if (!hashed_password)
+        return res.status(400).json(unifiedResponse(400, "Password didn't match", value));
+
+      var hashed_password = await bcrypt.hash(value.newPassword, 10);
+      value.newPaswword = hashed_password;
+
+
+      let updatedCustomer = await customerService.updateProfile(value)
+
+      return res.status(201).json(unifiedResponse(201, "customer Info Updated successfully", updatedCustomer))
+
+    } catch (error) {
+      handleError(res, error);
+    }
+
+  });
+
   return router;
 })();

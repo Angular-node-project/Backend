@@ -21,13 +21,51 @@ const createOrder=async(data)=>{
 
     return order.create(data);
 }
+const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
+    var skip =(page-1)*limit;
+    const query={};
+
+    if(governorate){
+        query.governorate=governorate ;
+    }
+    if(status)
+    {
+        query.status=status ;
+    }
+    return await  order.find(query)
+                         .skip(skip)
+                         .limit(limit)
+                         .exec();  
+}
+
+
+const countAllOrders=async(status,governorate)=>{
+    const query={};
+    if(governorate){
+        query.governorate=governorate ;
+    }
+    if(status)
+        {
+            query.status=status ;
+        }
+    return await order.countDocuments(query);
+}
+
+const getCustomerOrders=async (customerId)=>{
+    return order.find({customer_id:customerId},{})
+}
+
+
 module.exports={
+    getAllOrdersPaginated,
+    countAllOrders,
     getorders,
     getorderbystatus,
     getorderbydid,
     acceptorder,
     getorderbysellerid,
     getorderbyproductid,
-    createOrder
+    createOrder,
+    getCustomerOrders
 }
 

@@ -1,5 +1,7 @@
 const orderRepo=require("../repos/order.repo");
 const cartRepo=require("../repos/cart.repo");
+const sellerRepo=require("../repos/seller.repo");
+const productRepo=require("../repos/product.repo");
 const getorders=async()=>{
     return await orderRepo.getorders();
 }
@@ -23,20 +25,54 @@ const addOrder=async(orderData)=>{
 
     const customerId=orderData.customer_id
 
-    const test=await cartRepo.deleteCart(customerId);
+    await cartRepo.deleteCart(customerId);
 
-    console.log(test);
+    
+    const prices={}
+    const products={}
 
-    return await orderRepo.createOrder(orderData);
+    orderData.product.forEach(element => {
+        if(isNaN(prices[element.seller_id]))
+            prices[element.seller_id]=0;
+            prices[element.seller_id]+=(element.qty*element.price)
+        products[element.product_id]=element.qty
+    });
+
+        await sellerRepo.increaseSellerWallet(prices);
+        await productRepo.decreaseStock(products);
+
+    let order= await orderRepo.createOrder(orderData);
+    return {
+        success: true,
+        data: order
+    }; 
 }
+const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='') => {
+    const orders = await orderRepo.getAllOrdersPaginated(page, limit,status,governorate);
+    const totalOrderssCount = await orderRepo.countAllOrders(status,governorate);
+    return {
+        orders,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalOrderssCount / limit),
+        totalOrderssCount
+    }
+}
+
+const getCustomerOrders=async(customerId)=>{
+    return await orderRepo.getCustomerOrders(customerId);
+}
+
+
 module.exports={
+    getAllordersPaginated,
     getorders,
     getorderbystatus,
     getorderbydid,
     acceptorder,
     getorderbysellerid,
     getorderbyproductid,
-    addOrder
+    addOrder,
+    getCustomerOrders
 }
 
 

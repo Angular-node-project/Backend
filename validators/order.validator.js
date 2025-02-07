@@ -19,7 +19,8 @@ const createOrderDto = Joi.object({
         "any.only": "Status must be one of: pending, processing, shipped, cancelled, delivered",
         "string.base": "Status must be a string"
     }),
-    customer_id:Joi.string().required()
+    customer_id:Joi.string().required(),
+   cashier_id:Joi.string().default(null)
 });
 
 
