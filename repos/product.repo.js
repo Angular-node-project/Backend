@@ -2,7 +2,8 @@ const productModel = require("../models/product.model");
 const product = require("../models/product.model");
 
 const createProduct = async (productData) => {
-    return product.create(productData);
+    var result= await product.create(productData);
+    return result;
 }
 const updateProduct = async (productid, productData) => {
     return product.findOneAndUpdate({ product_id: productid }, productData, { new: true })
@@ -91,10 +92,10 @@ const deleteproductbysellerid = async (sellerid) => {
     return product.findOneAndUpdate({ seller_id: sellerid }, { status: "inactive" }, { new: true });
 }
 
-const getAllProductsPaginated = async (page = 1, limit = 6, sort, category, status,search) => {
+const getAllProductsPaginated = async (page = 1, limit = 8, sort, category, status,search) => {
     var skip = (page - 1) * limit;
     const query = {};
-    let sortQuery = {};
+    let sortQuery = { createdAt: -1 }; 
 
     if(search)
     {

@@ -19,6 +19,17 @@ module.exports = (() => {
             handleError(res, err);
         }
     });
+    router.get("/status/:status", async (req, res, next) => {
+        try {
+            const status = req.params.status;
+            const Sellers = await sellerservice.getSellersByStatus(status);
+            return res.status(201).json(unifiedResponse(201, ' Sellers Retrived successfully', Sellers));
+        }
+        catch (err) {
+            handleError(res, err);
+        }
+
+    })
 
     router.post("/:sellerId", async (req, res, next) => {
         try {

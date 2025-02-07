@@ -6,7 +6,7 @@ const getCategories=async()=>{
     return category.find({});
 }
 const getActiveCategories=async()=>{
-    return category.find({status:'active'});
+    return category.find({status:'active'},{name:1,category_id:1,_id:0});
 }
 const getCategorybyid=async(categoryid)=>{
     return category.find({category_id:categoryid});

@@ -16,37 +16,19 @@ module.exports = (() => {
               const errors = error.details.map(e => e.message);
               return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
           }
-          const product =await productService.createProduct(value);
-      
-         
-          return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
-       /* if (!req.files || Object.keys(req.files).length === 0) {
-          return res.status(400).json(unifiedResponse(400, 'Select image for the product'));
-        }
-        const uploadedFile = req.files?.pics;
-        const uploadPayload = [];
-        if (Array.isArray(uploadedFile)) {
-          for (const expressUploadedFile of uploadedFile) {
-            const { fileName, src } = imageKitPayloadBuilder(expressUploadedFile);
-            uploadPayload.push({
-              src,
-              fileName,
-            });
+
+          var uploadedImgsUrl=[]; 
+          if(value.pics&& value.pics.length>0){
+            var files= value.pics.map(item=>{return {base64:item, fileName:"product"}});
+            const uploadFiles=await uploadService.upload({files:files}); 
+            uploadedImgsUrl=uploadFiles.imageurls;
           }
-          const response = await uploadService.upload({ files: uploadPayload });
-          */
-         
-          ;
-        } /*else {
-          
-          const { fileName, src } = imageKitPayloadBuilder(uploadedFile);
-          uploadPayload.push({ src, fileName });
-          const response = await uploadService.upload({ files: uploadPayload });
-          const product =await productService.createProduct({...value,pics:response.imageurls});
-            return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
-          ;
-        }
-      }*/ catch (exception) {
+          value.pics=uploadedImgsUrl;
+          const product =await productService.createProduct(value);
+
+          return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
+     
+        }  catch (exception) {
         console.log(exception);
         return res.status(400).json(unifiedResponse(400, 'there is problem'));
       }
@@ -97,7 +79,7 @@ module.exports = (() => {
     router.get("/", async (req, res, next) => {
       try {
           var page = parseInt(req.query.page) || 1;
-          var limit = parseInt(req.query.limit) || 6;  
+          var limit = parseInt(req.query.limit) || 8;  
           var category = req.query.category;
           var status = req.query.status; 
           var sort=req.query.sort;
