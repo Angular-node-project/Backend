@@ -76,6 +76,11 @@ const createUpdateRequest = async (sellerId, productId, updateData) => {
     return await productRequestRepo.createUpdateRequest(sellerId, productId, updateData);
 }
 
+const addReviewService=async(productId,customer,review)=>{
+    return await productrepo.addReview(productId,customer,review);
+}
+
+
 module.exports = {
     getAllProductsPaginated,
     getProducts,
@@ -91,5 +96,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getPaginatedActiveProductsService,
+    addReviewService,
     createUpdateRequest // Export the new function
 }
