@@ -71,6 +71,10 @@ module.exports = (() => {
             let id = req.data.id;
             console.log(id);
             const cart = await cartService.getCart(id)
+            console.log("*---------------------------------------------*")
+            console.log(cart)
+            console.log("*---------------------------------------------*")
+       
             return res.status(201).json(unifiedResponse(201, 'cart found successfully', cart));
         } catch (err) {
             handleError(res, err);

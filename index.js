@@ -45,7 +45,8 @@ const routes = {
       },
       protected: {
          'carts.controller.js': '/api/customer/cart',
-        'orders.customer.controller.js':'/api/customer/order'
+        'orders.customer.controller.js':'/api/customer/order',
+        'role.admin.controller.js':'/api/admin/role'
     }
 };
 

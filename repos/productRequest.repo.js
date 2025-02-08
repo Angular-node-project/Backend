@@ -20,18 +20,30 @@ const updateRequest = async (requestId, status) => {
     );
 }
 
-const getAllUpdaterequestPaginated = async (page, limit, sort, category, status) => {
+const getAllUpdaterequestPaginated = async (page, limit, sort, category, status,seller,search) => {
     var skip = (page - 1) * limit;
     const query = {};
     let sortQuery = {};
+    if(seller)
+    {
+       query.seller_id=seller
+    }
     if (category) {
-        // Add category filter to query
+        query.categories = { $elemMatch: { category_id: category } };
     }
     if (status) {
-        // Add status filter to query
+        query.status = status;
+    }
+    if(search)
+    {
+        query.$or = [
+            { 'updatedProduct.name': { $regex: search, $options: 'i' }  },
+            { 'seller.name':{ $regex: search, $options: 'i' }  }
+        ];
     }
     if (sort) {
-        // Add sorting to sortQuery
+        const sortOrder = sort === 'desc' ? -1 : 1;
+        sortQuery = { price: sortOrder }
     }
     return await updateRequestSchema.find(query)
         .sort(sortQuery)

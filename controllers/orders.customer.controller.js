@@ -27,8 +27,7 @@ module.exports = (() => {
         try {
         
             // Service call
-            let customerId="1"
-            // console.log(req.body)
+            let customerId=req.data.id
             const orders = await orderService.getCustomerOrders(customerId)
             return res.status(201).json(unifiedResponse(201, 'Orders found successfully', orders));
         } catch (err) {
