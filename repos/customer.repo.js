@@ -15,6 +15,15 @@ const updateProfile=async (updatedCustomer)=>{
     },{new:true})
     return res;
 };
+const updateProfileWithoutPassword=async (updatedCustomer)=>{
+    let res = customer.findOneAndUpdate({customer_id:updatedCustomer.customer_id},{
+        name:updatedCustomer.name,
+        address:updatedCustomer.address,
+        phone_number:updatedCustomer.phone_number,
+        gender:updatedCustomer.gender
+    },{new:true})
+    return res;
+};
 
 const isEmailExist=async(email)=>{
     var result= await customer.findOne({email:email});
@@ -29,4 +38,4 @@ const getUserByCustomerId=async(customerId)=>{
     return result;
 }
 
-module.exports={create,isEmailExist,getUserByEmail,updateProfile,getUserByCustomerId}
+module.exports={create,isEmailExist,getUserByEmail,updateProfile,getUserByCustomerId,updateProfileWithoutPassword}

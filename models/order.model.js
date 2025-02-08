@@ -1,3 +1,4 @@
+const { number } = require("joi");
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require('uuid');
 
@@ -10,6 +11,7 @@ const orderSchema = new mongoose.Schema({
     zipcode: { type: Number, required: false },
     phone_number: { type: String, required: true },
     additional_data: { type: String, default: null },
+    totalPrice: { type: Number, default: 0 },
     product: [{
         product_id: { type: String, required: true },
         seller_id: { type: String, required: true },
