@@ -79,7 +79,7 @@ module.exports = (() => {
 
     router.post("/delete", async (req, res, next) => {
         try {
-            let customer_id = req.body.CustomerId;
+            let customer_id = req.data.id;
             let product_id = req.body.productID;
             const cart = await cartService.deleteProductFromCart(product_id, customer_id);
             return res.status(201).json(unifiedResponse(201, 'Product Removed  successfully', cart));
