@@ -1,5 +1,5 @@
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-const { customerCreateDto, customerLoginDto, customerUpdateDto } = require("../validators/customer.validator");
+const { customerCreateDto, customerLoginDto, customerUpdateDto ,customerUpdateWithoutPasswordDto} = require("../validators/customer.validator");
 const customerService = require("../services/customer.service");
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require("../utils/jwtToken")
@@ -81,10 +81,11 @@ module.exports = (() => {
         return res.status(400).json(unifiedResponse(400, "validation error", errors));
       }
       let customer = await customerService.getUserByCustomerIdService(value.customer_id);
+      console.log("***************")
+      console.log(customer)
 
       if (!customer)
-        return res.status(400).json(unifiedResponse(400, "validation error", errors));
-
+        return res.status(400).json(unifiedResponse(400, "Customer Not Found"));
 
       var hashed_password = await bcrypt.compare(value.currentPassword, customer.password);
       if (!hashed_password)
@@ -103,6 +104,45 @@ module.exports = (() => {
     }
 
   });
+  router.put("/profile2", async (req, res, next) => {
+
+    try {
+      const { error, value } = customerUpdateWithoutPasswordDto.validate(req.body, { abortEarly: false });
+      if (error) {
+        const errors = error.details.map(e => e.message);
+        return res.status(400).json(unifiedResponse(400, "validation error", errors));
+      }
+      let customer = await customerService.getUserByCustomerIdService(value.customer_id);
+      console.log("***************")
+      console.log(customer)
+
+      if (!customer)
+        return res.status(400).json(unifiedResponse(400, "Customer Not Found"));
+
+
+      let updatedCustomer = await customerService.updateProfileWithoutPassword(value)
+
+      return res.status(201).json(unifiedResponse(201, "customer Info Updated successfully", updatedCustomer))
+
+    } catch (error) {
+      handleError(res, error);
+    }
+
+  });
+
+  router.get("/", async (req, res, next) => {
+    try {
+
+        // let customer_id=req.body.customer_id
+        let customer_id="7a3f6369-37c9-4b00-b9a3-b6181a54eb0e"
+        const customer = await customerService.getUserByCustomerIdService(customer_id)
+        console.log("Here is Customer Profile Info")
+        console.log(customer)
+        return res.status(201).json(unifiedResponse(201, 'Customer found successfully', customer));
+    } catch (err) {
+        handleError(res, err);
+    }
+})
 
   return router;
 })();

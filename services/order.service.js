@@ -59,8 +59,17 @@ const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='
 }
 
 const getCustomerOrders=async(customerId)=>{
-    return await orderRepo.getCustomerOrders(customerId);
+    let orders= await orderRepo.getCustomerOrders(customerId);
+    // // products =orders.product.map(o=>{ })
+    //     console.log(orders)
+    //     return {
+    //         order_id:orders.order_id,
+    //         product:orders.product,
+    //         total
+    //     }
+    return orders
 }
+
 
 
 module.exports={
