@@ -1,4 +1,6 @@
 const clerkRepo=require("../repos/clerk.repo");
+const roleRepo=require("../repos/role.repo");
+
 const registerUser=async(userData)=>{
     return await clerkRepo.createUser(userData);
 }
@@ -31,9 +33,18 @@ const getuserbyemail=async(email)=>{
 }
 const getAllclerksPaginated = async (page = 1, limit = 6,status='') => {
     const clerks = await clerkRepo.getAllclerksPaginated(page, limit,status);
+    const updatedClerks = await Promise.all(
+        clerks.map(async (item) => {
+            const role = await roleRepo.getPermissions(item.role_id);
+            return { 
+                ...item.toObject(), // Convert model to plain object
+                role_name: role ? role.name : "Unknown" 
+            };
+        })
+    );
     const totalClerksCount = await clerkRepo.countAllclerks(status);
     return {
-        clerks,
+        updatedClerks,
         currentPage: parseInt(page),
         totalPages: Math.ceil(totalClerksCount / limit),
         totalClerksCount
