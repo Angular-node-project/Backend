@@ -11,13 +11,17 @@ const getSellersByStatus=async(status)=>{
 const softDeleteSeller=async(sellerid)=>{
     return seller.findOneAndUpdate({seller_id:sellerid},{status:"inactive"},{new:true})
 }
-const restoreSeller=async(sellerid)=>{
-    return seller.findOneAndUpdate({seller_id:sellerid},{status:"active"},{new:true})
+const changeStatus=async(sellerid,status)=>{
+    return seller.findOneAndUpdate({seller_id:sellerid},{status:status},{new:true})
 }
-const getAllSellersPaginated=async(page,limit,sort,status)=>{
+const getAllSellersPaginated=async(page,limit,sort,status,search)=>{
     var skip =(page-1)*limit;
     const query={};
     let sortQuery={};
+    if(search)
+    {
+        query.name = { $regex: search, $options: 'i' };  
+    }
     if(status)
     {
         query.status=status ;
@@ -62,7 +66,7 @@ module.exports=
     getSellers,
     getSellersByStatus,
     softDeleteSeller,
-    restoreSeller,
+    changeStatus,
     getSellerbyid,
     increaseSellerWallet
 }

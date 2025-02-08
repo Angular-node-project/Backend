@@ -8,14 +8,14 @@ const getSellersByStatus=async(status)=>{
 const softDeleteSeller=async(sellerid)=>{
     return await sellersrepo.softDeleteSeller(sellerid);
 }
-const restoreSeller=async(sellerid)=>{
-    return await sellersrepo.restoreSeller(sellerid);
+const changeStatus=async(sellerid,status)=>{
+    return await sellersrepo.changeStatus(sellerid,status);
 }
 const getSellerbyid=async(sellerid)=>{
     return await sellersrepo.getSellerbyid(sellerid);
 }
-const getAllsellersPaginated = async (page = 1, limit = 6,sort='',status='') => {
-    const sellers = await sellersrepo.getAllSellersPaginated(page, limit,sort,status);
+const getAllsellersPaginated = async (page = 1, limit = 6,sort='',status='',search='') => {
+    const sellers = await sellersrepo.getAllSellersPaginated(page, limit,sort,status,search);
     const totalSellersCount = await sellersrepo.countAllsellers(status);
     return {
         sellers,
@@ -30,6 +30,6 @@ module.exports=
     getSellers,
    getSellersByStatus,
     softDeleteSeller,
-    restoreSeller,
+    changeStatus,
     getSellerbyid
 }

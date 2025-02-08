@@ -12,14 +12,14 @@ const app = express();
 
 app.use(cors({
     origin: APP_CONFIG.CORS_ORIGIN|| 'http://localhost:4200',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     credentials: true
 }));
 
 // middlewares
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit:"50mb"}))
+app.use(express.urlencoded({ extended: true ,limit:"50mb"}));
 app.use(
   fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 },
@@ -32,7 +32,7 @@ app.use(
 const routes = {
     public: {
         'clerks.Admin.controller.js': '/api/admin/clerk',
-        'seller.Admin.controller.js': '/api/admin/sellers',
+        'Seller.Admin.controller.js': '/api/admin/sellers',
         'category.Admin.controller.js': '/api/admin/category',
         'products.Admin.controller.js': '/api/admin/product',
         'order.Admin.controller.js': '/api/admin/order',
@@ -44,7 +44,7 @@ const routes = {
         'orders.seller.controller.js':'/api/seller/order',
       },
       protected: {
-        'carts.controller.js': '/api/customer/cart',
+         'carts.controller.js': '/api/customer/cart',
         'orders.customer.controller.js':'/api/customer/order'
     }
 };
