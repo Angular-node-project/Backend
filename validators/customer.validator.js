@@ -19,15 +19,14 @@ const customerLoginDto=Joi.object({
 })
 
 const customerUpdateDto = Joi.object({
-    customer_id:Joi.string().trim().required(),
     name: Joi.string().trim().min(3).max(100).required(),
     email: Joi.string().trim().email().required(),
     address: Joi.string().trim().optional(),
     phone_number: Joi.string().pattern(/^[0-9]{10,15}$/).optional().messages({
         'string.pattern.base': 'Phone number must be 10 to 15 digits long'
     }),
-    currentPassword:Joi.string().min(6).required(),
-    newPassword:Joi.string().min(6).required(),
+    currentPassword:Joi.string().empty(""),
+    newPassword:Joi.string().empty(""),
     gender: Joi.string().valid('male', 'female').optional(),
     status: Joi.string().valid('active', 'inactive').default('active')
 });
