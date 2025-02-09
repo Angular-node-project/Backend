@@ -1,3 +1,4 @@
+const { dropSearchIndex } = require("../models/product.model");
 const productrepo = require("../repos/product.repo");
 const productRequestRepo = require("../repos/productRequest.repo");
 
@@ -36,8 +37,8 @@ const getAllProductsPaginated = async (page = 1, limit = 8, sort = '', category 
     }
 }
 
-const getPaginatedActiveProductsService = async (page = 1, limit = 6, sort = '', category = '') => {
-    const products = await productrepo.getActivatedProductsPaginated(page, limit, sort, category);
+const getPaginatedActiveProductsService = async (page = 1, limit = 6, sort = '', category = '',seller='',search='') => {
+    const products = await productrepo.getActivatedProductsPaginated(page, limit, sort, category,seller,search);
     const totalProductsCount = await productrepo.countActivatedProducts(category);
     return {
         products,

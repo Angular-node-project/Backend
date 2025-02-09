@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema(
         seller_id: { type: String, required: true },
         status: {
             type: String,
-            enum: ["active", "inactive", "pending", "outStock"],
+            enum: ["active", "inactive", "pending", "outStock","deleted"],
             required: true,
         },
         pics: { type: [String], default: [] },

@@ -9,7 +9,8 @@ const roleSchema = new mongoose.Schema({
       controller: { type: String, required: true },       
       action: { type: String, required: true }           
     }
-  ]
+  ],
+  status: { type: String, enum: ['active', 'inactive'], required: true, default: 'active' },
 }, { timestamps: true }); 
 
 module.exports = mongoose.model("Role", roleSchema);
