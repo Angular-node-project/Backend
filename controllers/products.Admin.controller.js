@@ -128,7 +128,7 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.patch("/acceptUpdateRequest/:id/:status", async (req, res, next) => {
+    router.patch("/ChangeUpdateRequest/:id/:status", async (req, res, next) => {
       try {
           const requestId = req.params.id;
           const status = req.params.status;
@@ -142,7 +142,7 @@ module.exports = (() => {
   
           console.log("Found Update Request:", updatedRequest);
   
-          if (status === "approve") {
+          if (status === "approved") {
               const productId = updatedRequest.updatedProduct.product_id;
               console.log(" Checking Product ID:", `"${productId}"`);
   
@@ -158,7 +158,7 @@ module.exports = (() => {
               }
           } else {
               console.log(" Update request not approved");
-              return res.status(400).json(unifiedResponse(400, "Product update request wasn't approved"));
+              return res.status(200).json(unifiedResponse(200, "Product update request wasn't approved"));
           }
       } catch (err) {
           console.log(" Error:", err);
@@ -203,8 +203,10 @@ module.exports = (() => {
             var category = req.query.category;
             var status = req.query.status; 
             var sort=req.query.sort;
-            if (page || category || status) {
-                const result = await updateRequestService.getAllUpdaterequestPaginated(page, limit,sort , category, status);
+            var search = req.query.search; 
+            var seller=req.query.seller;
+            if (page || category || status||seller||search) {
+                const result = await updateRequestService.getAllUpdaterequestPaginated(page, limit,sort , category, status,seller,search);
                 return res.status(201).json(unifiedResponse(201, 'Paginated Update requests returned successfully', result));
             } else {
                 const requests = await updateRequestService.getRequests();
