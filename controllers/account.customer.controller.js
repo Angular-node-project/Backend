@@ -3,6 +3,7 @@ const { customerCreateDto, customerLoginDto, customerUpdateDto ,customerUpdateWi
 const customerService = require("../services/customer.service");
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require("../utils/jwtToken")
+const {authenticationMiddleware} = require("../middlewares/authentication.middleware");
 
 module.exports = (() => {
   const router = require("express").Router();
@@ -72,55 +73,35 @@ module.exports = (() => {
     }
   })
 
-  router.put("/profile", async (req, res, next) => {
+  router.put("/profile",authenticationMiddleware, async (req, res, next) => {
 
     try {
       const { error, value } = customerUpdateDto.validate(req.body, { abortEarly: false });
+      let Ispass=false
       if (error) {
         const errors = error.details.map(e => e.message);
         return res.status(400).json(unifiedResponse(400, "validation error", errors));
       }
-      let customer = await customerService.getUserByCustomerIdService(value.customer_id);
+      let customer_id = req.data.id;
+      let customer = await customerService.getUserByCustomerIdService(customer_id);
       console.log("***************")
       console.log(customer)
 
       if (!customer)
         return res.status(400).json(unifiedResponse(400, "Customer Not Found"));
 
-      var hashed_password = await bcrypt.compare(value.currentPassword, customer.password);
-      if (!hashed_password)
-        return res.status(400).json(unifiedResponse(400, "Password didn't match", value));
-
-      var hashed_password = await bcrypt.hash(value.newPassword, 10);
-      value.newPaswword = hashed_password;
-
-
-      let updatedCustomer = await customerService.updateProfile(value)
-
-      return res.status(201).json(unifiedResponse(201, "customer Info Updated successfully", updatedCustomer))
-
-    } catch (error) {
-      handleError(res, error);
-    }
-
-  });
-  router.put("/profile2", async (req, res, next) => {
-
-    try {
-      const { error, value } = customerUpdateWithoutPasswordDto.validate(req.body, { abortEarly: false });
-      if (error) {
-        const errors = error.details.map(e => e.message);
-        return res.status(400).json(unifiedResponse(400, "validation error", errors));
+      if(value.currentPassword){
+        var hashed_password = await bcrypt.compare(value.currentPassword, customer.password);
+        if (!hashed_password)
+          return res.status(201).json(unifiedResponse(400, "Password didn't match", value))
+  
+        var hashed_password = await bcrypt.hash(value.newPassword, 10);
+        value.newPaswword = hashed_password;
+        Ispass=true
       }
-      let customer = await customerService.getUserByCustomerIdService(value.customer_id);
-      console.log("***************")
-      console.log(customer)
 
-      if (!customer)
-        return res.status(400).json(unifiedResponse(400, "Customer Not Found"));
-
-
-      let updatedCustomer = await customerService.updateProfileWithoutPassword(value)
+      
+      let updatedCustomer = await customerService.updateProfile(value,Ispass,customer_id)
 
       return res.status(201).json(unifiedResponse(201, "customer Info Updated successfully", updatedCustomer))
 
@@ -130,11 +111,10 @@ module.exports = (() => {
 
   });
 
-  router.get("/", async (req, res, next) => {
+  router.get("/", authenticationMiddleware,async (req, res, next) => {
     try {
 
-        // let customer_id=req.body.customer_id
-        let customer_id="7a3f6369-37c9-4b00-b9a3-b6181a54eb0e"
+         let customer_id=req.data.id
         const customer = await customerService.getUserByCustomerIdService(customer_id)
         console.log("Here is Customer Profile Info")
         console.log(customer)
