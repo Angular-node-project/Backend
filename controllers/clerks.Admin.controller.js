@@ -1,28 +1,27 @@
-const clerkService=require('../services/clerk.service.js');
-const {createclerkDto}=require('../validators/clerk.validator.js');
+const clerkService = require('../services/clerk.service.js');
+const { createclerkDto } = require('../validators/clerk.validator.js');
 const { unifiedResponse, handleError } = require('../utils/responseHandler.js');
 
 module.exports = (() => {
     const router = require("express").Router();
-   router.get("/", async (req, res, next) => {
-               try {
-                   var page = parseInt(req.query.page) || 1;
-                   var limit = parseInt(req.query.limit) || 6;  
-                   var status = req.query.status; 
-            
-         
-                   if (page  || status ) {
-                       const result = await clerkService.getAllclerksPaginated(page, limit,status);
-                       return res.status(201).json(unifiedResponse(201, 'Paginated Clerks returned successfully', result));
-                   } else {
-                       const clerks = await clerkService.getUsers();
-                       return res.status(201).json(unifiedResponse(201, 'All clerks returned successfully', clerks));
-                   }
-           
-               } catch (err) {
-                   handleError(res, err);
-               }
-           });
+
+    router.get("/", async (req, res, next) => {
+        try {
+            var page = parseInt(req.query.page) || 1;
+            var limit = parseInt(req.query.limit) || 8;
+            var status = req.query.status;
+            if (page || status) {
+                const result = await clerkService.getAllclerksPaginated(page, limit, status);
+                return res.status(201).json(unifiedResponse(201, 'Paginated Clerks returned successfully', result));
+            } else {
+                const clerks = await clerkService.getUsers();
+                return res.status(201).json(unifiedResponse(201, 'All clerks returned successfully', clerks));
+            }
+
+        } catch (err) {
+            handleError(res, err);
+        }
+    });
     router.get("/byid/:id", async (req, res, next) => {
         try {
             const userid = req.params.id;

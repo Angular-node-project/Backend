@@ -22,11 +22,17 @@ const updateProfile = async (updatedCustomer) => {
    let res=await customerRepo.updateProfile(updatedCustomer);
    return res;
  };
+const updateProfileWithoutPassword = async (updatedCustomer) => {
+
+   let res=await customerRepo.updateProfile(updatedCustomer);
+   return res;
+ };
 
 module.exports = {
    registerService,
    isEmailExistService,
    getUserByEmailService,
    updateProfile,
-   getUserByCustomerIdService
+   getUserByCustomerIdService,
+   updateProfileWithoutPassword
 };
