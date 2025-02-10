@@ -1,17 +1,19 @@
 const clerkService = require('../services/clerk.service.js');
 const { createclerkDto } = require('../validators/clerk.validator.js');
 const { unifiedResponse, handleError } = require('../utils/responseHandler.js');
+const bcrypt=require('bcrypt');
+const { authorizationMiddleware } = require("../middlewares/authorization.middleware.js");
 
 module.exports = (() => {
     const router = require("express").Router();
 
-    router.get("/", async (req, res, next) => {
+    router.get("/",authorizationMiddleware('clerks','show'), async (req, res, next) => {
         try {
             var page = parseInt(req.query.page) || 1;
             var limit = parseInt(req.query.limit) || 8;
-            var status = req.query.status;
-            if (page || status) {
-                const result = await clerkService.getAllclerksPaginated(page, limit, status);
+            var searchWord = req.query.searchWord;
+            if (page) {
+                const result = await clerkService.getAllclerksPaginated(page, limit, searchWord);
                 return res.status(201).json(unifiedResponse(201, 'Paginated Clerks returned successfully', result));
             } else {
                 const clerks = await clerkService.getUsers();
@@ -22,79 +24,44 @@ module.exports = (() => {
             handleError(res, err);
         }
     });
-    router.get("/byid/:id", async (req, res, next) => {
-        try {
-            const userid = req.params.id;
-            const user = await clerkService.getUserbyid(userid);
-            if (user) {
-                return res.status(201).json(unifiedResponse(201, 'Clerk Retrived successfully', user));
-            } else {
-                return res.status(403).json(unifiedResponse(403, 'User not found'));
+   
+
+      router.post('/', async (req, res, next) => {
+            try {
+                let { clerk_id, ...data } = req.body;
+                data.password=await bcrypt.hash("123456",10);
+                var result = await clerkService.CreateUser(data);
+                return res.status(201).json(unifiedResponse(201, "clerk added successfully", result))
+            } catch (error) {
+                handleError(error);
             }
-
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
-
-    router.get("/:status", async (req, res, next) => {
-        try {
-            const status = req.params.status;
-            const user = await clerkService.getUsersBystatus(status);
-            return res.status(201).json(unifiedResponse(201, 'Clerks Retrived successfully', user));
-
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
-    router.patch("/:id", async (req, res, next) => {
-        try {
-            const { error, value } = createclerkDto.validate(req.body, { abortEarly: false });
-            if (error) {
-                const errors = error.details.map(e => e.message);
-                return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
+        })
+    
+        router.put('/', async (req, res, next) => {
+            try {
+               // var {status,...data}=req.body;
+                var result = await clerkService.updateUser(req.body.clerk_id,req.body);
+                if(result!=0){
+                    return res.status(201).json(unifiedResponse(201, "clerk updated successfully", result))
+                }
+                return res.status(201).json(unifiedResponse(201, "clerk is not found", result))
+            } catch (error) {
+                handleError(error);
             }
-
-            const userid = req.params.id;
-            const user = await clerkService.updateUser(userid, value);
-            if (user) {
-                return res.status(201).json(unifiedResponse(201, 'Clerks Updates successfully', user));
-            } else {
-                return res.status(403).json(unifiedResponse(403, 'User not found'));
+        })
+    
+        router.put('/:clerk_id/:status', async (req, res, next) => {
+            try {
+                const { clerk_id, status } = req.params;
+                var result = await clerkService.changeStatusClerkService(clerk_id,status);
+                if(result!=0){
+                    return res.status(201).json(unifiedResponse(201, "clerk status updated successfully", result))
+                }
+                return res.status(201).json(unifiedResponse(201, "clerk is not found", result))
+            } catch (error) {
+                handleError(error);
             }
-
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
-    router.patch("/delete/:id", async (req, res, next) => {
-        try {
-            const userid = req.params.id;
-            const user = await clerkService.softDeleteUser(userid);
-            if (user) {
-                return res.status(201).json(unifiedResponse(201, 'Clerks Updated to inactive successfully', user));
-            } else {
-                return res.status(403).json(unifiedResponse(403, 'User not found'));
-            }
-
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
-    router.patch("/restore/:id", async (req, res, next) => {
-        try {
-            const userid = req.params.id;
-            const user = await clerkService.restoreUser(userid);
-            if (user) {
-                return res.status(201).json(unifiedResponse(201, 'Clerks Updated to active successfully', user));
-            } else {
-                return res.status(403).json(unifiedResponse(403, 'User not found'));
-            }
-
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
+        })
     return router;
 
 })()

@@ -83,7 +83,7 @@ module.exports = (() => {
         }
     })
 
-    router.get("/:id",optionalAuthMiddleWare, async (req, res, next) => {
+    router.get("/:id",optionalAuthMiddleWare('customer'), async (req, res, next) => {
         try {
             const id = req.params.id;
             const product = await productService.getProductbyid(id);

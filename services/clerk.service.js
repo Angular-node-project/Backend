@@ -4,6 +4,11 @@ const roleRepo=require("../repos/role.repo");
 const registerUser=async(userData)=>{
     return await clerkRepo.createUser(userData);
 }
+const CreateUser=async(userData)=>{
+    
+    return await clerkRepo.createUser(userData);
+
+}
 const getUsers=async()=>{
     return await clerkRepo.getUsers();
 }
@@ -31,18 +36,18 @@ const getuserbyemail=async(email)=>{
     return clerkRepo.getuserbyemail(email);
    
 }
-const getAllclerksPaginated = async (page = 1, limit = 6,status='') => {
-    const clerks = await clerkRepo.getAllclerksPaginated(page, limit,status);
+const getAllclerksPaginated = async (page = 1, limit = 6,searchWord='') => {
+    const clerks = await clerkRepo.getAllclerksPaginated(page, limit,searchWord);
     const updatedClerks = await Promise.all(
         clerks.map(async (item) => {
             const role = await roleRepo.getPermissions(item.role_id);
             return { 
-                ...item.toObject(), // Convert model to plain object
+                ...item.toObject(), 
                 role_name: role ? role.name : "Unknown" 
             };
         })
     );
-    const totalClerksCount = await clerkRepo.countAllclerks(status);
+    const totalClerksCount = await clerkRepo.countAllclerks(searchWord);
     return {
         updatedClerks,
         currentPage: parseInt(page),
@@ -51,6 +56,9 @@ const getAllclerksPaginated = async (page = 1, limit = 6,status='') => {
     }
 }
 
+const changeStatusClerkService=async(clerk_id,status)=>{
+    return await clerkRepo.changeStatusClerk(clerk_id,status);
+}
 module.exports={
     getAllclerksPaginated,
     registerUser
@@ -62,4 +70,6 @@ module.exports={
     ,getUserbyid
     ,isEmailExistService
     ,getuserbyemail
+    ,CreateUser
+    ,changeStatusClerkService
 }
