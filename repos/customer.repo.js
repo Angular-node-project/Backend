@@ -7,7 +7,8 @@ const create=async(newCustomer)=>{
 
 const updateProfile=async (updatedCustomer,Ispass,customer_id)=>{
  
-    if(Ispass){//* if ispass=False then no password Passed
+    if(Ispass){
+        //* if ispass=False then no password Passed
         res = await customer.findOneAndUpdate({customer_id:customer_id},{
             name:updatedCustomer.name,
             address:updatedCustomer.address,
