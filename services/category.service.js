@@ -5,6 +5,19 @@ const createCategory=async(categorydata)=>{
 const getCategories=async()=>{
     return await categoryrepo.getCategories();
 }
+
+const getAllCategoriesPaginated=async(page=1,limit=6,status='',name='')=>{
+   
+   const categories= await categoryrepo.getAllCategoriesPaginated(page,limit,status,name);
+   const totalCategoriesCount = await categoryrepo.countAllCategories(status);
+       return {
+           categories,
+           currentPage: parseInt(page),
+           totalPages: Math.ceil(totalCategoriesCount / limit),
+           totalCategoriesCount
+       }
+}
+
 const getActiveCategoriesService=async()=>{
     return await categoryrepo.getActiveCategories();
 }
@@ -14,14 +27,15 @@ const getCategorybyid=async(categoryid)=>{
 const softDeletecategory=async(categoryid)=>{
     return  await categoryrepo.softDeletecategory(categoryid);
 }
-const restorecategory=async(categoryid)=>{
-    return await categoryrepo.restorecategory(categoryid);
+const changestatus=async(categoryid,status)=>{
+    return await categoryrepo.changestatus(categoryid,status);
 }
 module.exports={
     createCategory,
     getCategories,
     getCategorybyid,
     softDeletecategory,
-    restorecategory,
-    getActiveCategoriesService
+    changestatus,
+    getActiveCategoriesService,
+    getAllCategoriesPaginated
 }

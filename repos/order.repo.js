@@ -8,8 +8,8 @@ const getorderbystatus=async(status)=>{
 const getorderbydid=async(orderid)=>{
     return order.find({order_id:orderid});
 }
-const acceptorder=async(orderid)=>{
-    return order.findOneAndUpdate({order_id:orderid},{status: "processing"},{new:true});
+const ChangeOrderStatus=async(orderid,status)=>{
+    return order.findOneAndUpdate({order_id:orderid},{status: status},{new:true});
 }
 const getorderbysellerid=async(sellerid)=>{
     return order.find({ "product.seller_id":sellerid});
@@ -26,24 +26,60 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
     const query={};
 
     if(governorate){
-        query.governorate=governorate ;
+        query.governorate= {$regex: governorate, $options: 'i'}  ;
     }
     if(status)
     {
         query.status=status ;
     }
-    return await  order.find(query)
-                         .skip(skip)
-                         .limit(limit)
-                         .exec();  
+    
+    const pipeline = [
+        { $match: query },  
+        {
+            $lookup: {
+                from: "customers",   
+                localField: "customer_id",
+                foreignField: "customer_id",
+                as: "customer"
+            }
+        },
+        { $unwind:{ path: "$customer", preserveNullAndEmptyArrays: true }}, 
+        {
+            $lookup:{
+                from: "clerks",   
+                localField: "cashier_id",
+                foreignField: "clerk_id",
+                as: "cashier"
+            }
+        },
+        { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } }, 
+        { $skip: skip },       
+        { $limit: limit },     
+        {
+            $project: {
+                order_id:1,
+                customer_id: 1,
+                "customer.name": 1,
+                 "customer.email": 1,
+                cashier_id: 1,
+                 "cashier.name": 1,
+                  "cashier.email": 1,
+                  address: 1,
+                  governorate:1,
+                  phone_number:1,
+                  product:1,
+                  status:1,
+            }
+        }
+    ];
+
+    return await  order.aggregate(pipeline);
 }
 
 
-const countAllOrders=async(status,governorate)=>{
+const countAllOrders=async(status)=>{
     const query={};
-    if(governorate){
-        query.governorate=governorate ;
-    }
+
     if(status)
         {
             query.status=status ;
@@ -62,7 +98,7 @@ module.exports={
     getorders,
     getorderbystatus,
     getorderbydid,
-    acceptorder,
+    ChangeOrderStatus,
     getorderbysellerid,
     getorderbyproductid,
     createOrder,

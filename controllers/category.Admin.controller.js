@@ -19,8 +19,17 @@ router.post("/",async(req,res,next)=>{
 router.get("/",async(req,res,next)=>{
     try{
        
-            const categories= await categoryservice.getActiveCategoriesService();
-           return res.status(201).json(unifiedResponse(201, 'categpries retrived successfully', categories));
+                   var page = parseInt(req.query.page) || 1;
+                    var limit = parseInt(req.query.limit) || 6;
+                    var status = req.query.status;
+                    var name = req.query.name;
+                    if (page || status || name) {
+                        const result = await categoryservice.getAllCategoriesPaginated(page, limit, status, name);
+                        return res.status(201).json(unifiedResponse(201, 'Paginated Categories returned successfully', result));
+                    } else {
+                        const categories = await categoryservice.getCategories();
+                        return res.status(201).json(unifiedResponse(201, 'All Categories returned successfully', categories));
+                    }
     }catch (err) {
         handleError(res, err);
     }
@@ -53,12 +62,13 @@ router.patch("/delete/:id",async(req,res,next)=>{
         handleError(res, err);
     }
 })
-router.patch("/restore/:id",async(req,res,next)=>{
+router.patch("/changestatus/:id/:status",async(req,res,next)=>{
     try{
             const categoryid=req.params.id;
-            const category=await categoryservice.restorecategory(categoryid);
+            const status=req.params.status;
+            const category=await categoryservice.changestatus(categoryid,status);
             if(category){
-               return res.status(201).json(unifiedResponse(201, 'Category restored successfully', category));
+               return res.status(201).json(unifiedResponse(201, 'Category status changed successfully', category));
             }else
             {
                 return res.status(403).json(unifiedResponse(403, 'Category not found ', category));
