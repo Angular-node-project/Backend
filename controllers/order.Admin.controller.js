@@ -52,7 +52,7 @@ router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
         const orders=await orderservice.ChangeOrderStatus(id,status);
         const products=orders.product.map(p=>({
             product_id:p.product_id,
-            quantity:p.quantity
+            quantity:p.qty
         }));
       
         if (status === "cancelled") {
@@ -65,6 +65,10 @@ router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
                     const returnQty = Number(p.quantity) ;           
         
                     const updatedQty = currentQty + returnQty; 
+                    console.log("current"+ currentQty);
+                    console.log("return"+ returnQty);
+                    console.log("updated"+updatedQty)
+
         
                     if (!isNaN(updatedQty)) {
                         await productservice.updateReturnedProduct(p.product_id,updatedQty );
