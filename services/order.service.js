@@ -49,7 +49,7 @@ const addOrder=async(orderData)=>{
 }
 const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='') => {
     const orders = await orderRepo.getAllOrdersPaginated(page, limit,status,governorate);
-    const totalOrderssCount = await orderRepo.countAllOrders(status,governorate);
+    const totalOrderssCount = await orderRepo.countAllOrders(status);
     return {
         orders,
         currentPage: parseInt(page),

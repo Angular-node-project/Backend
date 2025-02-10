@@ -77,11 +77,9 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
 }
 
 
-const countAllOrders=async(status,governorate)=>{
+const countAllOrders=async(status)=>{
     const query={};
-    if(governorate){
-        query.governorate=governorate ;
-    }
+
     if(status)
         {
             query.status=status ;
