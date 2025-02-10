@@ -1,3 +1,4 @@
+const clerkModel = require("../models/clerk.model");
 const clerk = require("../models/clerk.model");
 
 const createUser = async (userData) => {
@@ -9,8 +10,15 @@ const getUsers = async () => {
 const getUserbyid = async (userid) => {
     return clerk.findOne({ clerk_id: userid });
 };
-const updateUser = async (userid, userData) => {
-    return clerk.findOneAndUpdate({ clerk_id: userid }, userData, { new: true });
+const updateUser = async (user_id,userData) => {
+    var existedClerk = await clerkModel.findOne({ clerk_id: user_id });
+    var result = 0;
+    if (existedClerk) {
+        var updateData = { ...userData };
+        delete updateData.clerk_id;
+        result = await clerkModel.updateOne({ clerk_id: user_id }, { $set: updateData });
+    }
+    return result;
 };
 const softDeleteUser = async (userid) => {
     return clerk.findOneAndUpdate(
@@ -36,22 +44,36 @@ const isEmailExist = async (email) => {
 const getuserbyemail = async (email) => {
     return clerk.findOne({ email: email });
 };
-const getAllclerksPaginated = async (page, limit, status) => {
+const getAllclerksPaginated = async (page, limit, searchWord = '') => {
     var skip = (page - 1) * limit;
-    const query = {};
-    if (status) {
-        query.status = status;
+    const query = { email: { $ne: "superAdmin@gmail.com" }, status:{$ne:"deleted"} };
+    if (searchWord) {
+        query.$or = [
+            { name: { $regex: searchWord, $options: 'i' } },
+            { email: { $regex: searchWord, $options: 'i' } }
+        ];
     }
     return await clerk.find(query).skip(skip).limit(limit).exec();
 };
-const countAllclerks = async (status) => {
-    const query = {};
-
-    if (status) {
-        query.status = status;
+const countAllclerks = async (searchWord = '') => {
+    const query = { email: { $ne: "superAdmin@gmail.com" },status:{$ne:"deleted"} };
+    if (searchWord) {
+        query.$or = [
+            { name: { $regex: searchWord, $options: 'i' } },
+            { email: { $regex: searchWord, $options: 'i' } }
+        ];
     }
     return await clerk.countDocuments(query);
 };
+
+const changeStatusClerk = async (clerk_id, status) => {
+    var existedClerk = await clerk.findOne({ clerk_id: clerk_id });
+    var result = 0;
+    if (existedClerk) {
+        result = await clerk.updateOne({ clerk_id }, { $set: { status } });
+    }
+    return result;
+}
 module.exports = {
     countAllclerks,
     getAllclerksPaginated,
@@ -64,4 +86,5 @@ module.exports = {
     restoreUser,
     isEmailExist,
     getuserbyemail,
+    changeStatusClerk
 };
