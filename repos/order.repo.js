@@ -89,6 +89,8 @@ const countAllOrders=async(status)=>{
 
 const getCustomerOrders=async (customerId)=>{
     return order.find({customer_id:customerId},{})
+    .sort({ createdAt: -1 });
+
 }
 
 
