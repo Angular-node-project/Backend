@@ -11,8 +11,8 @@ const getorderbystatus=async(status)=>{
 const getorderbydid=async(orderid)=>{
     return await orderRepo.getorderbydid(orderid);
 }
-const acceptorder=async(orderid)=>{
-    return await orderRepo.acceptorder(orderid);
+const ChangeOrderStatus=async(orderid,status)=>{
+    return await orderRepo.ChangeOrderStatus(orderid,status);
 }
 const getorderbysellerid=async(sellerid)=>{
     return await orderRepo.getorderbysellerid(sellerid);
@@ -77,7 +77,7 @@ module.exports={
     getorders,
     getorderbystatus,
     getorderbydid,
-    acceptorder,
+    ChangeOrderStatus,
     getorderbysellerid,
     getorderbyproductid,
     addOrder,

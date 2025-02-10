@@ -1,6 +1,7 @@
 const orderservice=require('../services/order.service');
 const {createOrderDto}=require('../validators/order.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
+const productservice=require('../services/product.service')
 module.exports=(()=>{
 const router=require("express").Router();
 
@@ -44,11 +45,39 @@ router.get("/id/:id",async(req,res,next)=>{
         handleError(res, err);
     }
 })
-router.patch("/:id",async(req,res,next)=>{
+router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
     try{
         const id=req.params.id;
-        const orders=await orderservice.acceptorder(id);
-        return res.status(201).json(unifiedResponse(201, 'orders accepted successfully', orders));
+        const status=req.params.status;
+        const orders=await orderservice.ChangeOrderStatus(id,status);
+        const products=orders.product.map(p=>({
+            product_id:p.product_id,
+            quantity:p.quantity
+        }));
+      
+        if (status === "cancelled") {
+            for (const p of products) {
+                const existingProduct = await productservice.getProductbyid(p.product_id);
+        
+                if (existingProduct) {
+                  
+                    const currentQty = Number(existingProduct.qty) ;  
+                    const returnQty = Number(p.quantity) ;           
+        
+                    const updatedQty = currentQty + returnQty; 
+        
+                    if (!isNaN(updatedQty)) {
+                        await productservice.updateReturnedProduct(p.product_id,updatedQty );
+                    } else {
+                        console.error(`Invalid quantity for product ${p.product_id}:`, returnQty);
+                    }
+                } else {
+                    console.error(`Product not found: ${p.product_id}`);
+                }
+            }
+        }
+        
+        return res.status(201).json(unifiedResponse(201, 'orders status changed successfully', orders));
     }
     catch (err) {
         handleError(res, err);
