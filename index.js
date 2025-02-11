@@ -42,10 +42,12 @@ const routes = {
         'account.admin.controller.js':'/api/admin/account',
         'customerservice.admin.controller.js':'/api/admin/customerservice',
         'orders.seller.controller.js':'/api/seller/order',
+        'orders.cashier.controller.js':'/api/cashier/order',
       },
       protected: {
          'carts.controller.js': '/api/customer/cart',
         'orders.customer.controller.js':'/api/customer/order',
+        
         'role.admin.controller.js':'/api/admin/role'
     }
 };

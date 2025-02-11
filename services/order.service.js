@@ -47,6 +47,27 @@ const addOrder=async(orderData)=>{
         data: order
     }; 
 }
+const addCashierOrder=async(orderData)=>{
+    
+    const prices={}
+    const products={}
+
+    orderData.product.forEach(element => {
+        if(isNaN(prices[element.seller_id]))
+            prices[element.seller_id]=0;
+            prices[element.seller_id]+=(element.qty*element.price)
+        products[element.product_id]=element.qty
+    });
+
+        await sellerRepo.increaseSellerWallet(prices);
+        await productRepo.decreaseStock(products);
+
+    let order= await orderRepo.createOrder(orderData);
+    return {
+        success: true,
+        data: order
+    }; 
+}
 const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='') => {
     const orders = await orderRepo.getAllOrdersPaginated(page, limit,status,governorate);
     const totalOrderssCount = await orderRepo.countAllOrders(status,governorate);
@@ -75,7 +96,8 @@ module.exports={
     getorderbysellerid,
     getorderbyproductid,
     addOrder,
-    getCustomerOrders
+    getCustomerOrders,
+    addCashierOrder
 }
 
 
