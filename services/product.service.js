@@ -8,6 +8,9 @@ const createProduct = async (productData) => {
 const updateProduct = async (productId, productData) => {
     return await productrepo.updateProduct(productId, productData);
 }
+const updateReturnedProduct = async (productId, Updatedqty) => {
+    return await productrepo.updateReturnedProduct(productId, Updatedqty);
+}
 
 const getProducts = async () => {
     return await productrepo.getProducts();
@@ -108,5 +111,6 @@ module.exports = {
     getPaginatedActiveProductsService,
     addReviewService,
     createUpdateRequest,
-    getProductsBySellerPaginated // Export the new function
+    getProductsBySellerPaginated ,
+    updateReturnedProduct
 }

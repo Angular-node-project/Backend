@@ -10,10 +10,10 @@ const getAllRolesService = async () => {
     return await roleRepo.getAllRoles();
 }
 
-const getAllPaginatedRoles = async (page = 1, limit = 10) => {
+const getAllPaginatedRoles = async (page = 1, limit = 10,searchword) => {
 
-    const roles = await roleRepo.getAllPaginatedRoles(page, limit);
-    const totalRolesCount = await roleRepo.countAllRoles();
+    const roles = await roleRepo.getAllPaginatedRoles(page, limit,searchword);
+    const totalRolesCount = await roleRepo.countAllRoles(searchword);
 
     return {
         roles,
@@ -22,8 +22,27 @@ const getAllPaginatedRoles = async (page = 1, limit = 10) => {
         totalRolesCount
     };
 }
+
+const saveRoleService=async(newRole)=>{
+    
+    return await roleRepo.saveRole(newRole);
+}
+const updateRoleService=async(role)=>{
+    return await roleRepo.updateRole(role);
+}
+const changeStatusRoleService=async(role_id,status)=>{
+    return await roleRepo.changeStatusRole(role_id,status);
+}
+
+const getAllActiveRoles=async()=>{
+    return await roleRepo.getAllActiveRoles();
+}
 module.exports = {
     getPermisssionsService,
     getAllRolesService,
-    getAllPaginatedRoles
+    getAllPaginatedRoles,
+    saveRoleService,
+    updateRoleService,
+    changeStatusRoleService,
+    getAllActiveRoles
 }

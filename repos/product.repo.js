@@ -9,6 +9,14 @@ const createProduct = async (productData) => {
 const updateProduct = async (productid, productData) => {
     return product.findOneAndUpdate({ product_id: productid }, productData, { new: true })
 }
+const updateReturnedProduct = async (productid, updatedQty) => {
+    return product.findOneAndUpdate(
+        { product_id: productid }, 
+        { $set: { qty: updatedQty } },  
+        { new: true } 
+    );
+};
+
 const updateProductRequest = async (productid, updatedData) => {
 
     return sellerUpdateProductRequest.findOneAndUpdate({ product_id: productid }, updatedData, { new: true });
@@ -264,5 +272,6 @@ module.exports = {
     decreaseStock,
     addReview,
     getProductsBySellerPaginated,
-    countSellerProducts
+    countSellerProducts,
+    updateReturnedProduct
 }
