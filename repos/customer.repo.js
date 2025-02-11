@@ -5,15 +5,28 @@ const create=async(newCustomer)=>{
    return result
 }
 
-const updateProfile=async (updatedCustomer)=>{
-    let res = customer.findOneAndUpdate({customer_id:updatedCustomer.customer_id},{
-        name:updatedCustomer.name,
-        password:updatedCustomer.newPaswword,
-        address:updatedCustomer.address,
-        phone_number:updatedCustomer.phone_number,
-        gender:updatedCustomer.gender
-    },{new:true})
-    return res;
+const updateProfile=async (updatedCustomer,Ispass,customer_id)=>{
+ 
+    if(Ispass){
+        //* if ispass=False then no password Passed
+        res = await customer.findOneAndUpdate({customer_id:customer_id},{
+            name:updatedCustomer.name,
+            address:updatedCustomer.address,
+            phone_number:updatedCustomer.phone_number,
+            gender:updatedCustomer.gender
+        },{new:true})
+        return res
+    }else{
+        res = await customer.findOneAndUpdate({customer_id:customer_id},{
+            name:updatedCustomer.name,
+            password:updatedCustomer.newPaswword,
+            address:updatedCustomer.address,
+            phone_number:updatedCustomer.phone_number,
+            gender:updatedCustomer.gender
+        },{new:true})
+        return res
+
+    }
 };
 const updateProfileWithoutPassword=async (updatedCustomer)=>{
     let res = customer.findOneAndUpdate({customer_id:updatedCustomer.customer_id},{

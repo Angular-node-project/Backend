@@ -17,11 +17,14 @@ const getUserByCustomerIdService = async (customerId) => {
    return result;
 };
 
-const updateProfile = async (updatedCustomer) => {
+const updateProfile = async (updatedCustomer,Ispass,customer_id) => {
 
-   let res=await customerRepo.updateProfile(updatedCustomer);
+   let res=await customerRepo.updateProfile(updatedCustomer,Ispass,customer_id);
+   console.log("This From Service")
+   console.log(res)
    return res;
  };
+
 const updateProfileWithoutPassword = async (updatedCustomer) => {
 
    let res=await customerRepo.updateProfile(updatedCustomer);

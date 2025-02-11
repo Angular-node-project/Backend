@@ -32,48 +32,31 @@ module.exports = (() => {
         console.log(exception);
         return res.status(400).json(unifiedResponse(400, 'there is problem'));
       }
-    });
+    }); 
     router.patch("/:id", async (req, res, next) => {
-      try {
-         const productid=req.params.id;
-         const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
-          if (error) {
-              const errors = error.details.map(e => e.message);
-              return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
-          }
-       /* if (!req.files || Object.keys(req.files).length === 0) {
-          return res.status(400).json(unifiedResponse(400, 'Select image for the product'));
-        }
-        const uploadedFile = req.files?.pics;
-        const uploadPayload = [];
-        if (Array.isArray(uploadedFile)) {
-          for (const expressUploadedFile of uploadedFile) {
-            const { fileName, src } = imageKitPayloadBuilder(expressUploadedFile);
-            uploadPayload.push({
-              src,
-              fileName,
-            });
-          }
-          const response = await uploadService.upload({ files: uploadPayload });
-          */
-          const product =await productService.updateProduct(productid,value);
-      
-         
-            return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
-          ;
-       /* } else {
-          
-          const { fileName, src } = imageKitPayloadBuilder(uploadedFile);
-          uploadPayload.push({ src, fileName });
-          const response = await uploadService.upload({ files: uploadPayload });
-          const product =await productService.updateProduct(productid,{...value,pics:response.imageurls});
-            return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
-          ;
-        }*/
-      }catch (exception) {
-        console.log(exception);
-        return res.status(400).json(unifiedResponse(400, 'there is problem'));
-      }
+        try {
+            const productid=req.params.id;
+            const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
+             if (error) {
+                 const errors = error.details.map(e => e.message);
+                 return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
+             }
+   
+             var uploadedImgsUrl=[]; 
+             if(value.pics&& value.pics.length>0){
+               var files= value.pics.map(item=>{return {base64:item, fileName:"product"}});
+               const uploadFiles=await uploadService.upload({files:files}); 
+               uploadedImgsUrl=uploadFiles.imageurls;
+             }
+             value.pics=uploadedImgsUrl;
+             const product =await productService.updateProduct(productid,value);
+   
+             return res.status(201).json(unifiedResponse(201, 'product Updated successfully', product));
+        
+           }  catch (exception) {
+           console.log(exception);
+           return res.status(400).json(unifiedResponse(400, 'there is problem'));
+         }
     });
 
     router.get("/", async (req, res, next) => {
