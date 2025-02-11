@@ -1,6 +1,5 @@
 const { dropSearchIndex } = require("../models/product.model");
 const productrepo = require("../repos/product.repo");
-const productRequestRepo = require("../repos/productRequest.repo");
 
 const createProduct = async (productData) => {
     return await productrepo.createProduct(productData);
@@ -16,6 +15,16 @@ const getProducts = async () => {
 
 const getProductsBySeller = async (sellerId) => {
     return await productrepo.getProductsBySeller(sellerId);
+}
+const getProductsBySellerPaginated = async (sellerId, page = 1, limit = 8, sort, category, status, search) => { 
+    const products= await productrepo.getProductsBySellerPaginated(sellerId, page, limit, sort, category, status, search);
+    const totalProductsCount = await productrepo.countSellerProducts(sellerId);
+    return {
+        products,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalProductsCount / limit),
+        totalProductsCount
+    }
 }
 
 const addProduct = async (sellerId, productData) => {
@@ -49,7 +58,7 @@ const getPaginatedActiveProductsService = async (page = 1, limit = 6, sort = '',
 }
 
 const updateProductRequest = async (productId, updatedData) => {
-    return await productrepo.updateProduct(productId, updatedData);
+    return await productrepo.updateProductRequest(productId, updatedData);
 }
 
 const getproductsbyStatus = async (status) => {
@@ -98,5 +107,6 @@ module.exports = {
     deleteProduct,
     getPaginatedActiveProductsService,
     addReviewService,
-    createUpdateRequest // Export the new function
+    createUpdateRequest,
+    getProductsBySellerPaginated // Export the new function
 }

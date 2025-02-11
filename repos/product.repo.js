@@ -1,5 +1,6 @@
 const productModel = require("../models/product.model");
 const product = require("../models/product.model");
+const sellerUpdateProductRequest = require("../models/sellerUpdateProductRequest.model");
 
 const createProduct = async (productData) => {
     var result= await product.create(productData);
@@ -10,7 +11,7 @@ const updateProduct = async (productid, productData) => {
 }
 const updateProductRequest = async (productid, updatedData) => {
 
-    return product.findOneAndUpdate({ product_id: productid }, updatedData, { new: true });
+    return sellerUpdateProductRequest.findOneAndUpdate({ product_id: productid }, updatedData, { new: true });
 
 };
 
@@ -29,6 +30,51 @@ const selectedProducts = async (data) => {
 const getProductsBySeller = async (sellerId) => {
     return await product.find({ seller_id: sellerId, status: 'active' });
 }
+const getProductsBySellerPaginated = async (sellerId, page = 1, limit = 8, sort, category, status, search) => {
+    var skip = (page - 1) * limit;
+    const query = { seller_id: sellerId };
+    let sortQuery = { createdAt: -1 };
+
+    if (search) {
+        query.name = { $regex: search, $options: 'i' };
+    }
+    if (category) {
+        query.categories = { $elemMatch: { category_id: category } };
+    }
+    if (status) {
+        query.status = status;
+    }
+    if (sort) {
+        const sortOrder = sort === "desc" ? -1 : 1;
+        sortQuery = { price: sortOrder };
+    }
+
+    const pipeline = [
+        { $match: query },
+        { $skip: skip },
+        { $limit: limit },
+        {
+            $project: {
+                product_id: 1,
+                name: 1,
+                description: 1,
+                price: 1,
+                status: 1,
+                categories: 1,
+                qty: 1,
+                pics: 1,
+                reviews: 1,
+                createdAt: 1
+            }
+        }
+    ];
+
+    if (Object.keys(sortQuery).length > 0) {
+        pipeline.splice(1, 0, { $sort: sortQuery });
+    }
+
+    return await product.aggregate(pipeline);
+};
 
 const addProduct = async (sellerId, productData) => {
     const newProduct = new product({ ...productData, seller_id: sellerId, status: 'pending' });
@@ -163,6 +209,9 @@ const countAllProducts=async(category,status)=>{
     }
     return await product.countDocuments(query);
 }
+const countSellerProducts = async (sellerId) => {
+    return await product.countDocuments({ seller_id: sellerId });
+}
 
 //* Decrease Stock of products when order is created
 const decreaseStock = async (products) => {
@@ -213,5 +262,7 @@ module.exports = {
     updateProduct,
     deleteProduct,
     decreaseStock,
-    addReview
+    addReview,
+    getProductsBySellerPaginated,
+    countSellerProducts
 }
