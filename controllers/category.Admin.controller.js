@@ -20,10 +20,10 @@ router.get("/",async(req,res,next)=>{
     try{
        
                    var page = parseInt(req.query.page) || 1;
-                    var limit = parseInt(req.query.limit) || 6;
+                    var limit = parseInt(req.query.limit) ;
                     var status = req.query.status;
                     var name = req.query.name;
-                    if (page || status || name) {
+                    if (page || status || name|| limit) {
                         const result = await categoryservice.getAllCategoriesPaginated(page, limit, status, name);
                         return res.status(201).json(unifiedResponse(201, 'Paginated Categories returned successfully', result));
                     } else {
