@@ -4,7 +4,7 @@
   "description": "angular-node project",
   "main": "main.js",
   "scripts": {
-    "start": "node main,js",
+    "start": "node main.js",
     "dev": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
