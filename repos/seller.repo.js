@@ -1,3 +1,4 @@
+const sellerModel = require("../models/seller.model");
 const seller =require("../models/seller.model")
 const getSellers=async()=>{
     return seller.find({});
@@ -59,6 +60,21 @@ const increaseSellerWallet=async(sellers)=>{
 
 };
 
+
+const createSeller=async(newSeller)=>{
+    return await sellerModel.create(newSeller);
+}
+
+const isEmailExist=async(email)=>{
+    var res= await sellerModel.findOne({email:email});
+    return res?true:false;
+}
+
+const getSellerByEmail=async(email)=>{
+    var res= await sellerModel.findOne({email:email});
+    return res;
+}
+
 module.exports=
 {
     getAllSellersPaginated,
@@ -68,5 +84,8 @@ module.exports=
     softDeleteSeller,
     changeStatus,
     getSellerbyid,
-    increaseSellerWallet
+    increaseSellerWallet,
+    createSeller,
+    isEmailExist,
+    getSellerByEmail
 }
