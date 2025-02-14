@@ -5,9 +5,9 @@ const getAllMessages=async()=>{
 const getMessagebyCustomerEmail=async(email)=>{
    return await customerserviceRepo.getMessagebyCustomerEmail(email);
 }
-const getAllmessagesPaginated = async (page = 1, limit = 6,status='',email='') => {
-    const messages = await customerserviceRepo.getAllMessagesPaginated(page, limit,status,email);
-    const totalmessagesCount = await customerserviceRepo.countAllmessages(status,email);
+const getAllmessagesPaginated = async (page = 1, limit = 6,status='',search='') => {
+    const messages = await customerserviceRepo.getAllMessagesPaginated(page, limit,status,search);
+    const totalmessagesCount = await customerserviceRepo.countAllmessages(status);
     return {
         messages,
         currentPage: parseInt(page),
@@ -15,8 +15,12 @@ const getAllmessagesPaginated = async (page = 1, limit = 6,status='',email='') =
         totalmessagesCount
     }
 }
+const SendMessage=async(email)=>{
+    return await customerserviceRepo.SendMessage(email);
+}
 module.exports={
     getAllmessagesPaginated,
     getAllMessages,
-    getMessagebyCustomerEmail
+    getMessagebyCustomerEmail,
+    SendMessage
 }
