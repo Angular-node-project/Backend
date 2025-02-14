@@ -6,7 +6,6 @@ const permissions = [
   { controller: "product", action: "show" },
   { controller: "product", action: "add" },
   { controller: "product", action: "update" },
-  { controller: "product", action: "delete" },
   { controller: "product", action: "changeStatus" },
   { controller: "product", action: "checkout" },
 
