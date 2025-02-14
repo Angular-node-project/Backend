@@ -1,43 +1,21 @@
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const bcrypt = require('bcrypt');
-const { sellerRegisterDto ,sellerLoginDto} = require("../validators/seller.validator");
+const {clerkBranchLoginDto} = require("../validators/seller.validator");
 const jsonwebtoken = require("../utils/jwtToken");
-const sellerService = require('../services/seller.service');
+const clerkBranchService = require('../services/clerkBranch.service');
 
 
 module.exports = (() => {
     const router = require("express").Router();
-    router.post("/register", async (req, res, next) => {
-        try {
-            const { error, value } = sellerRegisterDto.validate(req.body, { abortEarly: false });
-             if (error) {
-                const errors = error.details.map(e => e.message);
-                return res.status(400).json(unifiedResponse(400, "validation error", errors));
-            }
-
-            let isEmailExist = await sellerService.isEmailExistService(value.email);
-            if (isEmailExist) {
-                return res.status(500).json(unifiedResponse(500, "seller already registerd try to login", null));
-            }
-            const seller= await sellerService.createSellerService(value);
-            if(seller){
-                return res.status(201).json(unifiedResponse(210, "registered successfully", seller));
-            }
-
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
-
 
     router.post('/login',async(req,res,next)=>{
         try {
-            const { error, value } = sellerLoginDto.validate(req.body, { abortEarly: false });
+            const { error, value } = clerkBranchLoginDto.validate(req.body, { abortEarly: false });
             if (error) {
               const errors = error.details.map(e => e.message);
               return res.status(400).json(unifiedResponse(400, "validation error", errors));
             }
-            var user = await sellerService.getSellerByEmailService(value.email);
+            var user = await clerkBranchService.getClerkBYEmailService(value.email);
             if (user) {
               var samePassword = await bcrypt.compare(value.password, user.password);
               if (samePassword) {

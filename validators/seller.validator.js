@@ -11,5 +11,13 @@ const sellerRegisterDto = Joi.object({
     status: Joi.string().default('pending')
 });
 
-module.exports={sellerRegisterDto}
+
+const sellerLoginDto = Joi.object({
+    email: Joi.string().trim().email().required(),
+   password: Joi.string().trim().min(6).required()
+});
+
+
+
+module.exports={sellerRegisterDto,sellerLoginDto}
                                       
