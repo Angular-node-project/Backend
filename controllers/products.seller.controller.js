@@ -1,5 +1,5 @@
 const productService = require('../services/product.service');
-const { productRequestService } = require('../services/productRequest.service');
+const  productRequestService  = require('../services/productRequest.service');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { createProductDto,createSellerProductDto } = require('../validators/product.validator');
 const { imageKitPayloadBuilder } = require("../utils/images");
@@ -70,6 +70,7 @@ module.exports = (() => {
 
     router.patch("/:sellerId/:productId", async (req, res, next) => {
         try {
+            console.log(req.body);
             const sellerId = req.params.sellerId;
             const productId = req.params.productId;
             const { error, value } = createSellerProductDto.validate(req.body, { abortEarly: false });
@@ -85,7 +86,8 @@ module.exports = (() => {
                 uploadedImgsUrl = uploadFiles.imageurls;
             }
             value.pics = uploadedImgsUrl;
-            const product = await productService.updateProductRequest(productId, value);
+           // const product = await productRequestService.createUpdateRequest(sellerId, productId, value);
+           const product =await productRequestService.createUpdateRequest(sellerId,productId,value);
 
             return res.status(201).json(unifiedResponse(201, 'Product updated successfully', product));
         } catch (exception) {

@@ -86,11 +86,62 @@ const countAllOrders=async(status)=>{
         }
     return await order.countDocuments(query);
 }
+const countOrdersBySellerId = async (sellerId) => {
+    const query = { "product.seller_id": sellerId };
+    const orders = await order.find(query).distinct('order_id');
+    return orders.length;
+}
 
 const getCustomerOrders=async (customerId)=>{
     return order.find({customer_id:customerId},{})
     .sort({ createdAt: -1 });
 
+}
+const getOrdersBySellerIdPaginated = async (sellerId, page, limit) => {
+    var skip = (page - 1) * limit;
+    const query = { "product.seller_id": sellerId };
+
+    const pipeline = [
+        { $match: query },
+        { $skip: skip },
+        { $limit: limit },
+        {
+            $lookup: {
+                from: "customers",
+                localField: "customer_id",
+                foreignField: "customer_id",
+                as: "customer"
+            }
+        },
+        { $unwind: { path: "$customer", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "clerks",
+                localField: "cashier_id",
+                foreignField: "clerk_id",
+                as: "cashier"
+            }
+        },
+        { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } },
+        {
+            $project: {
+                order_id: 1,
+                customer_id: 1,
+                "customer.name": 1,
+                "customer.email": 1,
+                cashier_id: 1,
+                "cashier.name": 1,
+                "cashier.email": 1,
+                address: 1,
+                governorate: 1,
+                phone_number: 1,
+                product: 1,
+                status: 1,
+            }
+        }
+    ];
+
+    return await order.aggregate(pipeline);
 }
 
 
@@ -104,6 +155,8 @@ module.exports={
     getorderbysellerid,
     getorderbyproductid,
     createOrder,
-    getCustomerOrders
+    getCustomerOrders,
+    getOrdersBySellerIdPaginated,
+    countOrdersBySellerId
 }
 

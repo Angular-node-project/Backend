@@ -80,6 +80,6 @@ module.exports = {
     getRequestsbyStatus,
     updateRequest,
     getAllUpdaterequestPaginated,
-    createUpdateRequest, // Export the new function
+    createUpdateRequest, 
     countUpdaterequest
 }
