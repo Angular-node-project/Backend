@@ -1,21 +1,21 @@
-const sellersrepo=require("../repos/seller.repo");
-const getSellers=async()=>{
+const sellersrepo = require("../repos/seller.repo");
+const getSellers = async () => {
     return await sellersrepo.getSellers();
 }
-const getSellersByStatus=async(status)=>{
+const getSellersByStatus = async (status) => {
     return await sellersrepo.getSellersByStatus(status);
 }
-const softDeleteSeller=async(sellerid)=>{
+const softDeleteSeller = async (sellerid) => {
     return await sellersrepo.softDeleteSeller(sellerid);
 }
-const changeStatus=async(sellerid,status)=>{
-    return await sellersrepo.changeStatus(sellerid,status);
+const changeStatus = async (sellerid, status) => {
+    return await sellersrepo.changeStatus(sellerid, status);
 }
-const getSellerbyid=async(sellerid)=>{
+const getSellerbyid = async (sellerid) => {
     return await sellersrepo.getSellerbyid(sellerid);
 }
-const getAllsellersPaginated = async (page = 1, limit = 6,sort='',status='',search='') => {
-    const sellers = await sellersrepo.getAllSellersPaginated(page, limit,sort,status,search);
+const getAllsellersPaginated = async (page = 1, limit = 6, sort = '', status = '', search = '') => {
+    const sellers = await sellersrepo.getAllSellersPaginated(page, limit, sort, status, search);
     const totalSellersCount = await sellersrepo.countAllsellers(status);
     return {
         sellers,
@@ -24,12 +24,29 @@ const getAllsellersPaginated = async (page = 1, limit = 6,sort='',status='',sear
         totalSellersCount
     }
 }
-module.exports=
+
+const createSellerService = async (newSeller) => {
+    return await sellersrepo.createSeller(newSeller);
+}
+const isEmailExistService=async(email)=>{
+    return await sellersrepo.isEmailExist(email);
+}
+const getSellerByEmailService=async(email)=>{
+    return await sellersrepo.getSellerByEmail(email);
+}
+const updateSellerService=async(seller)=>{
+    return await sellersrepo.updateSeller(seller);
+}
+module.exports =
 {
     getAllsellersPaginated,
     getSellers,
-   getSellersByStatus,
+    getSellersByStatus,
     softDeleteSeller,
     changeStatus,
-    getSellerbyid
+    getSellerbyid,
+    createSellerService,
+    isEmailExistService,
+    getSellerByEmailService,
+    updateSellerService
 }

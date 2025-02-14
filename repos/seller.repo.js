@@ -1,3 +1,4 @@
+const sellerModel = require("../models/seller.model");
 const seller =require("../models/seller.model")
 const getSellers=async()=>{
     return seller.find({});
@@ -17,7 +18,7 @@ const changeStatus=async(sellerid,status)=>{
 const getAllSellersPaginated=async(page,limit,sort,status,search)=>{
     var skip =(page-1)*limit;
     const query={};
-    let sortQuery={};
+    let sortQuery={createdAt:-1};
     if(search)
     {
         query.name = { $regex: search, $options: 'i' };  
@@ -59,6 +60,25 @@ const increaseSellerWallet=async(sellers)=>{
 
 };
 
+
+const createSeller=async(newSeller)=>{
+    return await sellerModel.create(newSeller);
+}
+
+const isEmailExist=async(email)=>{
+    var res= await sellerModel.findOne({email:email});
+    return res?true:false;
+}
+
+const getSellerByEmail=async(email)=>{
+    var res= await sellerModel.findOne({email:email});
+    return res;
+}
+const updateSeller=async(seller)=>{
+    var res=await sellerModel.findOneAndUpdate({seller_id:seller.seller_id},{$set:seller},{new:true,runValidators:true});
+    return res;
+}
+
 module.exports=
 {
     getAllSellersPaginated,
@@ -68,5 +88,9 @@ module.exports=
     softDeleteSeller,
     changeStatus,
     getSellerbyid,
-    increaseSellerWallet
+    increaseSellerWallet,
+    createSeller,
+    isEmailExist,
+    getSellerByEmail,
+    updateSeller
 }

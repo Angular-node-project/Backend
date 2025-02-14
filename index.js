@@ -43,6 +43,7 @@ const routes = {
     'customerservice.admin.controller.js': '/api/admin/customerservice',
     'orders.seller.controller.js': '/api/seller/order',
     'orders.cashier.controller.js':'/api/cashier/order',
+    'account.seller.controller.js':'/api/seller/account'
   },
   protected: {
     'carts.controller.js': { path: '/api/customer/cart', userType: "customer" },

@@ -1,6 +1,8 @@
 const sellerservice = require("../services/seller.service");
 const productservice = require("../services/product.service");
 const orderservice = require("../services/order.service");
+const bcrypt = require('bcrypt');
+const sendEmail =require("../utils/email");
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 module.exports = (() => {
     const router = require("express").Router();
@@ -66,6 +68,17 @@ module.exports = (() => {
         try {
             const sellerid = req.params.id;
             const status = req.params.status;
+            const sellerdata = await sellerservice.getSellerbyid(sellerid);
+            if (sellerdata.status == 'pending' && status == 'active') {
+                var randomPassword = Math.random().toString(36).slice(-8);
+                var hashedPassword = await bcrypt.hash(randomPassword, 10);
+                sellerdata.password=hashedPassword;
+                var result=await sellerservice.updateSellerService(sellerdata);
+                if(result){
+                    await sendEmail.sendEmail(sellerdata.email, "account activated", `Your  password is: ${randomPassword}`);
+
+                }
+            }
             const Seller = await sellerservice.changeStatus(sellerid, status);
             if (Seller) {
                 return res.status(201).json(unifiedResponse(201, 'Seller Restored successfully', Seller));
