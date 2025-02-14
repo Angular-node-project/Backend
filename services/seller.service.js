@@ -34,6 +34,9 @@ const isEmailExistService=async(email)=>{
 const getSellerByEmailService=async(email)=>{
     return await sellersrepo.getSellerByEmail(email);
 }
+const updateSellerService=async(seller)=>{
+    return await sellersrepo.updateSeller(seller);
+}
 module.exports =
 {
     getAllsellersPaginated,
@@ -44,5 +47,6 @@ module.exports =
     getSellerbyid,
     createSellerService,
     isEmailExistService,
-    getSellerByEmailService
+    getSellerByEmailService,
+    updateSellerService
 }
