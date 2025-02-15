@@ -1,3 +1,4 @@
+const branchModel = require("../models/branch.model");
 const  branch=require("../models/branch.model");
 const createBranch=async(branchdata)=>{
     return branch.create(branchdata);
@@ -40,12 +41,18 @@ const countAllBranchs=async(status)=>{
         }
     return await branch.countDocuments(query);
 }
+
+const getAllActiveBranches=async()=>{
+    var result= await branchModel.find({status:'active'});
+    return result;
+}
 module.exports={
     createBranch,
     updateBranch,
     getAllbranchesPaginated,
     countAllBranchs,
     changestatus,
-    getBranches
+    getBranches,
+    getAllActiveBranches
 
 }

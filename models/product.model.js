@@ -19,7 +19,7 @@ const productSchema = new mongoose.Schema(
         status: {
             type: String,
             enum: ["active", "inactive", "pending", "outStock","deleted"],
-            required: true,
+            required: true
         },
         pics: { type: [String], default: [] },
         reviews: {
@@ -33,6 +33,11 @@ const productSchema = new mongoose.Schema(
             ],
             default: [],
         },
+        show:{ type: String,
+            enum: ["online","offline","all"],
+            required: true,
+            default:"all"
+        }
     },
     { timestamps: true }
 );

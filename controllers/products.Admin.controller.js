@@ -2,9 +2,9 @@ const productService = require('../services/product.service');
 const orderservice = require("../services/order.service");
 const { createProductDto } = require('../validators/product.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-const { imageKitPayloadBuilder } = require("../utils/images");
 const { uploadService } = require("../services/image.service");
 const updateRequestService = require("../services/productRequest.service");
+const productBranchService=require("../services/productBranch.service");
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -25,6 +25,9 @@ module.exports = (() => {
             }
             value.pics = uploadedImgsUrl;
             const product = await productService.createProduct(value);
+            if(product){
+              const result =await productBranchService.addUpdateBranchesQtyService(product.product_id,value.branches);
+            }
 
             return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
 
@@ -50,7 +53,9 @@ module.exports = (() => {
             }
             value.pics = uploadedImgsUrl;
             const product = await productService.updateProduct(productid, value);
-
+            if(product){
+                const result =await productBranchService.addUpdateBranchesQtyService(product.product_id,value.branches);
+              }
 
             return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
             

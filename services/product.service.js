@@ -1,5 +1,6 @@
-const { dropSearchIndex } = require("../models/product.model");
+
 const productrepo = require("../repos/product.repo");
+
 
 const createProduct = async (productData) => {
     return await productrepo.createProduct(productData);
