@@ -22,12 +22,16 @@ const getAllbranchesPaginated=async(page,limit,sort,search,status)=>{
                totalBranchesCount
            }
 }
+const getAllActiveBranches=async()=>{
+    return branchrepo.getAllActiveBranches();
+}
 
 module.exports={
     createBranch,
     updateBranch,
     getAllbranchesPaginated,
     changestatus,
-    getBranches
+    getBranches,
+    getAllActiveBranches
 
 }
