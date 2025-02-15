@@ -105,8 +105,8 @@ const deleteProduct = async (sellerId, productId) => {
 
 const getActivatedProductsPaginated = async (page, limit, sort, category) => {
     var skip = (page - 1) * limit;
-    const query = { status: 'active' };
-    let sortQuery = {};
+        const query = { status: 'active' ,show:{$in:['online','all']}};
+    let sortQuery = {createdAt:-1};
     if (category) {
         query.categories = { $elemMatch: { category_id: category } };
     }
@@ -123,7 +123,7 @@ const getActivatedProductsPaginated = async (page, limit, sort, category) => {
 }
 
 const countActivatedProducts = async (category) => {
-    const query = { status: 'active' };
+    const query = { status: 'active' ,show:{ $in:['online','all']}};
     if (category) {
         query.categories = { $elemMatch: { category_id: category } }
     }
@@ -178,6 +178,15 @@ const getAllProductsPaginated = async (page = 1, limit = 8, sort, category, stat
             }
         },
         { $unwind: "$seller" }, 
+        {
+            $lookup:{
+                from:"branchproducts",
+                localField:"product_id",
+                foreignField:"product_id",
+                as:"branches"
+            }
+             
+        },
         { $skip: skip },       
         { $limit: limit },     
         {
@@ -194,7 +203,17 @@ const getAllProductsPaginated = async (page = 1, limit = 8, sort, category, stat
                 seller: {
                     seller_id: 1,
                     name: 1,
-                } 
+                } ,
+                branches:{
+                    $map:{
+                        input:"$branches",
+                        as:"b",
+                        in: {
+                            branch_id: "$$b.branch.branch_id",
+                            qty: "$$b.qty"
+                        }
+                    }
+                }
             }
         }
     ];
