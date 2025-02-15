@@ -58,8 +58,7 @@ module.exports = (() => {
               }
 
             return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
-            ;
-
+            
         } catch (exception) {
             console.log(exception);
             return res.status(400).json(unifiedResponse(400, 'there is problem'));
