@@ -42,6 +42,9 @@ const softDeletecategory=async(categoryid)=>{
 const changestatus=async(categoryid,status)=>{
     return category.findOneAndUpdate({category_id:categoryid},{status:status},{new:true});
 }
+const updateCategory=async(categoryid,categorydata)=>{
+    return category.findOneAndUpdate({category_id:categoryid},categorydata,{new:true});
+}
 module.exports={
     createCategory,
     getCategories,
@@ -50,5 +53,6 @@ module.exports={
     changestatus,
     getActiveCategories,
     getAllCategoriesPaginated,
-    countAllCategories
+    countAllCategories,
+    updateCategory
 }

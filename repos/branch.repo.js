@@ -19,8 +19,8 @@ const getAllbranchesPaginated=async(page,limit,sort,search,status)=>{
 
     if(search){
         query.$or=[
-            {name:{$regex:search,$options:i}},
-            {location:{$regex:search,$options:i}}
+            {name:{$regex:search,$options:'i'}},
+            {location:{$regex:search,$options:'i'}}
         ]
     }
     if(status)
