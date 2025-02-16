@@ -39,13 +39,15 @@ const routes = {
     'products.Admin.controller.js': '/api/admin/product',
     'order.Admin.controller.js': '/api/admin/order',
     'products.seller.controller.js': '/api/seller/product',
+    'category.seller.controller.js': '/api/seller/category',
     'products.customer.controller.js': '/api/customer/product',
     'account.customer.controller.js': '/api/customer/account',
     'account.admin.controller.js': '/api/admin/account',
     'customerservice.admin.controller.js': '/api/admin/customerservice',
     'orders.seller.controller.js': '/api/seller/order',
     'orders.cashier.controller.js':'/api/cashier/order',
-    'account.seller.controller.js':'/api/seller/account'
+    'account.seller.controller.js':'/api/seller/account',
+    'account.clerkBranch.controller.js':'/api/clerkBranch/account'
   },
   protected: {
     'carts.controller.js': { path: '/api/customer/cart', userType: "customer" },
