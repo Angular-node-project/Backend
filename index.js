@@ -38,6 +38,7 @@ const routes = {
     'products.Admin.controller.js': '/api/admin/product',
     'order.Admin.controller.js': '/api/admin/order',
     'products.seller.controller.js': '/api/seller/product',
+    'category.seller.controller.js': '/api/seller/category',
     'products.customer.controller.js': '/api/customer/product',
     'account.customer.controller.js': '/api/customer/account',
     'account.admin.controller.js': '/api/admin/account',

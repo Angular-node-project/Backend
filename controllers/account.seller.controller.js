@@ -45,7 +45,7 @@ module.exports = (() => {
               var samePassword = await bcrypt.compare(value.password, user.password);
               if (samePassword) {
                 const claims = {
-                  id: user.customer_id,
+                  id: user.seller_id,
                   email: user.email,
                   name: user.name,
                   user_type: 'seller'

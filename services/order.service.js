@@ -158,6 +158,16 @@ const getCustomerOrders=async(customerId)=>{
     return orders
 }
 
+const getOrdersBySellerIdPaginated = async (sellerId, page = 1, limit = 6) => {
+    const orders = await orderRepo.getOrdersBySellerIdPaginated(sellerId, page, limit);
+    const totalOrdersCount = await orderRepo.countOrdersBySellerId(sellerId);
+    return {
+        orders,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalOrdersCount / limit),
+        totalOrdersCount
+    }
+}
 const CheckProductAvailability=async(product)=>{
     
     
@@ -176,7 +186,9 @@ module.exports={
     getorderbyproductid,
     addOrder,
     getCustomerOrders,
-    addCashierOrder
+    addCashierOrder,
+    getOrdersBySellerIdPaginated,
+    CheckProductAvailability
 }
 
 
