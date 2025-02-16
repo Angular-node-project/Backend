@@ -21,10 +21,14 @@ const getRequestbyId=async(requestId)=>{
          totalProductsCount
      }
  }
+const createUpdateRequest = async (sellerId, productId, updateData) => {
+  return await updateRequestRepo.createUpdateRequest(sellerId, productId, updateData);
+}
  module.exports={
    getAllUpdaterequestPaginated,
    getRequests,
    getRequestbyId,
    getRequestsbyStatus,
-   updateRequest
+   updateRequest,
+   createUpdateRequest
  }
