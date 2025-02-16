@@ -33,7 +33,7 @@ module.exports = (() => {
     })
 
 
-    router.patch("/:branchid/:status", async (req, res, next) => {
+    router.patch("/changestatus/:branchid/:status", async (req, res, next) => {
         try {
             const branchid = req.params.branchid;
             const status = req.params.status;

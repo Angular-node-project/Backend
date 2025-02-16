@@ -30,6 +30,9 @@ const softDeletecategory=async(categoryid)=>{
 const changestatus=async(categoryid,status)=>{
     return await categoryrepo.changestatus(categoryid,status);
 }
+const updateCategory=async(categoryid,categorydata)=>{
+    return await categoryrepo.updateCategory(categoryid,categorydata);
+}
 module.exports={
     createCategory,
     getCategories,
@@ -37,5 +40,6 @@ module.exports={
     softDeletecategory,
     changestatus,
     getActiveCategoriesService,
-    getAllCategoriesPaginated
+    getAllCategoriesPaginated,
+    updateCategory
 }
