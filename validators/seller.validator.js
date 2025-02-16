@@ -19,5 +19,30 @@ const sellerLoginDto = Joi.object({
 
 
 
-module.exports={sellerRegisterDto,sellerLoginDto}
+const sellerUpdateRequestDto = Joi.object({
+    request_id: Joi.string(),
+     seller: { seller_id: Joi.string(), name: Joi.string() },
+     updatedProduct: {
+      product_id: Joi.string().required(),
+        categories: Joi.array().items(
+          Joi.object({
+            category_id: Joi.string().required(),
+            name: Joi.string().required()
+          })
+        ).required(),
+      name: Joi.string(),
+      description: Joi.string(),
+      seller_id: Joi.string(),
+      pics: Joi.array().items(Joi.string()),
+      details: Joi.string().empty(""),
+      qty: Joi.number(),
+      price: Joi.number(),
+      status: Joi.string().valid("active" , "inactive" , "pending" , "outStock" , "deleted").required(),
+    },
+    status: Joi.string().valid( "pending" , "approved" , "disapproved").required(),
+});
+
+
+
+module.exports={sellerRegisterDto,sellerLoginDto,sellerUpdateRequestDto}
                                       

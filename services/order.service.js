@@ -23,6 +23,42 @@ const getorderbyproductid=async(productid)=>{
 
 const addOrder=async(orderData)=>{
 
+
+    const produtsIds = [];
+    const ErrorMsg = [];
+    orderData.product.forEach((i) => {
+        produtsIds.push(i.product_id);
+    });
+
+    const selectedProducts = await productRepo.selectedProducts(produtsIds);
+
+    orderData.product = orderData.product
+        .map((cartItem) => {
+            const product = selectedProducts.find(
+                (p) => p.product_id === cartItem.product_id
+            );
+
+            if (!product) {
+                ErrorMsg.push(`Sorry but ${cartItem.name} has been Removed`)
+                return null; // Mark for removal
+            } else if (product.qty === 0) {
+                ErrorMsg.push(`Sorry but ${cartItem.name} Out of stock`)
+                return null; // Mark for removal
+            } else if (product.qty < cartItem.qty) {
+                ErrorMsg.push(`Sorry but ${cartItem.name} has only ${product.qty} `);
+                cartItem.qty = product.qty; // Update quantity to available stock
+            }
+            return cartItem; // Keep the product in the cart
+        })
+        .filter((cartItem) => cartItem !== null); // Remove null values (products marked for removal)
+        if(ErrorMsg.length>0){
+            return {
+                success: false,
+                data: orderData,
+                ErrorMsg:ErrorMsg.join(",")
+            }; 
+        }
+
     const customerId=orderData.customer_id
 
     await cartRepo.deleteCart(customerId);
@@ -49,6 +85,43 @@ const addOrder=async(orderData)=>{
 }
 const addCashierOrder=async(orderData)=>{
     
+
+    //*
+    const produtsIds = [];
+    const ErrorMsg = [];
+    orderData.product.forEach((i) => {
+        produtsIds.push(i.product_id);
+    });
+
+    const selectedProducts = await productRepo.selectedProducts(produtsIds);
+
+    orderData.product = orderData.product
+        .map((cartItem) => {
+            const product = selectedProducts.find(
+                (p) => p.product_id === cartItem.product_id
+            );
+
+            if (!product) {
+                ErrorMsg.push(`Sorry but ${cartItem.name} has been Removed`)
+                return null; // Mark for removal
+            } else if (product.qty === 0) {
+                ErrorMsg.push(`Sorry but ${cartItem.name} Out of stock`)
+                return null; // Mark for removal
+            } else if (product.qty < cartItem.qty) {
+                ErrorMsg.push(`Sorry but ${cartItem.name} has only ${product.qty} `);
+                cartItem.qty = product.qty; // Update quantity to available stock
+            }
+            return cartItem; // Keep the product in the cart
+        })
+        .filter((cartItem) => cartItem !== null); // Remove null values (products marked for removal)
+        if(ErrorMsg.length>0){
+            return {
+                success: false,
+                data: orderData,
+                ErrorMsg:ErrorMsg.join(",")
+            }; 
+        }
+    //*
     const prices={}
     const products={}
 
@@ -65,7 +138,7 @@ const addCashierOrder=async(orderData)=>{
     let order= await orderRepo.createOrder(orderData);
     return {
         success: true,
-        data: order
+        data: order,
     }; 
 }
 const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='') => {
@@ -95,6 +168,12 @@ const getOrdersBySellerIdPaginated = async (sellerId, page = 1, limit = 6) => {
         totalOrdersCount
     }
 }
+const CheckProductAvailability=async(product)=>{
+    
+    
+    return orders
+}
+
 
 
 module.exports={
@@ -108,7 +187,8 @@ module.exports={
     addOrder,
     getCustomerOrders,
     addCashierOrder,
-    getOrdersBySellerIdPaginated
+    getOrdersBySellerIdPaginated,
+    CheckProductAvailability
 }
 
 

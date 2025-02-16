@@ -2,6 +2,7 @@ const productService = require('../services/product.service');
 const  productRequestService  = require('../services/productRequest.service');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { createProductDto,createSellerProductDto } = require('../validators/product.validator');
+const { sellerUpdateRequestDto } = require('../validators/seller.validator');
 const { imageKitPayloadBuilder } = require("../utils/images");
 const { uploadService } = require("../services/image.service");
 
@@ -73,7 +74,7 @@ module.exports = (() => {
             console.log(req.body);
             const sellerId = req.params.sellerId;
             const productId = req.params.productId;
-            const { error, value } = createSellerProductDto.validate(req.body, { abortEarly: false });
+            const { error, value } = sellerUpdateRequestDto.validate(req.body, { abortEarly: false });
             if (error) {
                 const errors = error.details.map(e => e.message);
                 return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
