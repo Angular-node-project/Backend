@@ -34,6 +34,21 @@ router.get("/",async(req,res,next)=>{
         handleError(res, err);
     }
 })
+router.patch("/:categoryid", async (req, res, next) => {
+    try {
+        const categoryid = req.params.categoryid;
+        const { error, value } = createcategoryDto.validate(req.body, { abortEarly: false });
+        if (error) {
+            const errors = error.details.map(e => e.message);
+            return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
+        }
+
+        const branch = await categoryservice.updateCategory(categoryid, value);
+        return res.status(201).json(unifiedResponse(201, 'category updated successfully', branch));
+    } catch (err) {
+        handleError(res, err);
+    }
+})
 router.get("/byid/:id",async(req,res,next)=>{
     try{
             const categoryid=req.params.id;

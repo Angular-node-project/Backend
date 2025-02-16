@@ -4,7 +4,7 @@ const ProductBranchSchema = new mongoose.Schema({
     ProductBranch_id: { type: String, default: () => uuidv4(), unique: true, required: true },
     product_id: { type: String, required: true },
     branch:{ branch_id:{type:String,required:true},name:{type:String,required:true}},
-    qty:{type:String,required:true},
+    qty:{type:Number,required:true},
     status: { type: String, enum: ['active', 'inactive'], required: true, default: 'active' },
 }, { timestamps: true });
 
