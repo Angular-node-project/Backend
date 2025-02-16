@@ -1,6 +1,6 @@
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const bcrypt = require('bcrypt');
-const {clerkBranchLoginDto} = require("../validators/seller.validator");
+const {clerkBranchLoginDto} = require("../validators/clerkBranch.validator");
 const jsonwebtoken = require("../utils/jwtToken");
 const clerkBranchService = require('../services/clerkBranch.service');
 
@@ -20,14 +20,17 @@ module.exports = (() => {
               var samePassword = await bcrypt.compare(value.password, user.password);
               if (samePassword) {
                 const claims = {
-                  id: user.customer_id,
+                  id: user.clerkBranch_id,
                   email: user.email,
                   name: user.name,
-                  user_type: 'seller'
+                  role:user.role,
+                  status:user.status,
+                  branch:user.branch,
+                  user_type: 'clerkBranch'
                 }
       
                 var token = await jsonwebtoken.signToken({ claims });
-                return res.status(201).json(unifiedResponse(201, "seller logged in successfully", token))
+                return res.status(201).json(unifiedResponse(201, "clerk logged in successfully", token))
               }
             }
             return res.status(401).json(unifiedResponse(401, "email or password is not correct", null))
