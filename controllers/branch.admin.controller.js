@@ -57,7 +57,7 @@ module.exports = (() => {
                 return res.status(201).json(unifiedResponse(201, 'Paginated branches returned successfully', result));
             } else {
                 const branches = await branchservice.getBranches();
-                return res.status(201).json(unifiedResponse(201, 'All branches returned successfully', categories));
+                return res.status(201).json(unifiedResponse(201, 'All branches returned successfully', branches));
             }
         } catch (err) {
             handleError(res, err);
