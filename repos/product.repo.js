@@ -91,8 +91,6 @@ const addProduct = async (sellerId, productData) => {
 
 
 
-
-
 const deleteProduct = async (sellerId, productId) => {
     return await product.findOneAndUpdate(
         { product_id: productId, seller_id: sellerId },

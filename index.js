@@ -54,6 +54,7 @@ const routes = {
     'orders.customer.controller.js': { path: '/api/customer/order', userType: "customer" },
     'role.admin.controller.js': { path: '/api/admin/role', userType: "admin" },
     'clerks.Admin.controller.js': {path:'/api/admin/clerk',userType:"admin"},
+    'products.clerkBranch.controller.js':{path:'/api/clerkBranch/products',userType:"clerkBranch"}
   }
 };
 
