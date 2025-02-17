@@ -234,6 +234,17 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
+    router.post("/branches",async(req,res,next)=>{
+        try {
+            const productIds = req.body.productsIds;
+            const result =  await productBranchService.getBrancheaBYProductIdsService(productIds);
+           return res.status(201).json(unifiedResponse(201, 'product branches retrived successfully', result));
+            
+            
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
 
 
     return router;
