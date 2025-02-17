@@ -89,6 +89,7 @@ module.exports = (() => {
             value.pics = uploadedImgsUrl;
            // const product = await productRequestService.createUpdateRequest(sellerId, productId, value);
            const product =await productRequestService.createUpdateRequest(sellerId,productId,value);
+           console.log("vlue",value);
 
             return res.status(201).json(unifiedResponse(201, 'Product updated successfully', product));
         } catch (exception) {
@@ -96,6 +97,34 @@ module.exports = (() => {
             return res.status(400).json(unifiedResponse(400, 'There is a problem'));
         }
     });
+     router.patch("/:id", async (req, res, next) => {
+            try {
+                const productid = req.params.id;
+                const { error, value } = createProductDto.validate(req.body, { abortEarly: false });
+                if (error) {
+                    const errors = error.details.map(e => e.message);
+                    return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
+                }
+                var uploadedImgsUrl = [];
+                if (value.pics && value.pics.length > 0) {
+                    var files = value.pics.map(item => { return { base64: item, fileName: "product" } });
+                    const uploadFiles = await uploadService.upload({ files: files });
+                    uploadedImgsUrl = uploadFiles.imageurls;
+                }
+                value.pics = uploadedImgsUrl;
+                const product = await productService.updateProduct(productid, value);
+                // if(product){
+                //     const result =await productBranchService.addUpdateBranchesQtyService(product.product_id,value.branches);
+                //   }
+    
+                return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
+                
+            } catch (exception) {
+                console.log(exception);
+                return res.status(400).json(unifiedResponse(400, 'there is problem'));
+            }
+        });
+    
 
     router.patch("/changeStatus/:id/:status", async (req, res, next) => {
             try {

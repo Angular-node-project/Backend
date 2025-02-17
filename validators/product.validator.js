@@ -49,6 +49,7 @@ const createSellerProductDto = Joi.object({
   description: Joi.string().min(3).required(),
   details: Joi.string().min(3).allow(null, '').optional(),
   qty: Joi.number().min(1).required(),
+  show: Joi.string().valid("online", "offline", "all").required(),
   price: Joi.number().min(1).required(),
   seller_id: Joi.string().empty(""),
 
