@@ -6,6 +6,7 @@ const { uploadService } = require("../services/image.service");
 const updateRequestService = require("../services/productRequest.service");
 const productBranchService=require("../services/productBranch.service");
 const { updateRequest } = require('../repos/productRequest.repo');
+const updateQtyService=require("../services/qtyRequest.service");
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -87,37 +88,6 @@ module.exports = (() => {
         }
     });
 
-    router.get("/status/:status", async (req, res, next) => {
-        try {
-            const status = req.params.status;
-            const products = await productService.getproductsbyStatus(status)
-            return res.status(201).json(unifiedResponse(201, 'Products retrived successfully', products));
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
-    router.patch("/delete/:id", async (req, res, next) => {
-        try {
-            const productid = req.params.id;
-            const orders = await orderservice.getorderbyproductid(productid);
-            if (orders) {
-                const undeliveredOrders = orders.filter((o) => o.product.
-                    some((p) => p.product_id === productid && p.status !== "delivered" && p.status !== "cancelled"));
-                if (undeliveredOrders.length > 0) {
-                    return res.status(403).json(unifiedResponse(403, "Cannot deactivate product; undelivered orders exist."));
-                }
-            }
-            const products = await productService.softdeleteproduct(productid);
-            if (products) {
-                return res.status(201).json(unifiedResponse(201, 'Products deactive successfully', products));
-            }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Product not found '));
-            }
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
     router.patch("/ChangeUpdateRequest/:id/:status", async (req, res, next) => {
         try {
             const requestId = req.params.id;
@@ -174,20 +144,7 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.get("/:id", async (req, res, next) => {
-        try {
-            const id = req.params.id;
-            const products = await productService.getProductbyid(id);
-            if (products) {
-                return res.status(201).json(unifiedResponse(201, 'Product retrived successfully', products));
-            }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Product not found'));
-            }
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
+    
     router.get("/All/updateRequests", async (req, res, next) => {
         try {
             var page = parseInt(req.query.page) || 1;
@@ -209,34 +166,27 @@ module.exports = (() => {
             handleError(res, err);
         }
     });
-    router.get("/getupdateRequests/id/:id", async (req, res, next) => {
+    router.get("/updateQtyRequests", async (req, res, next) => {
         try {
-            const requestid = req.params.id;
-            const requests = await updateRequestService.getRequestbyId(requestid);
-            if (requests) {
-                return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
+            var page = parseInt(req.query.page) || 1;
+            var limit = parseInt(req.query.limit) || 6;
+            var status = req.query.status;
+            var sort = req.query.sort;
+            var search = req.query.search;
+            if (page || category || status  || search) {
+                const result = await updateQtyService.getAllQtyRequestedPaginated(page, limit, sort, status, search);
+                return res.status(201).json(unifiedResponse(201, 'Paginated Update Qty requests returned successfully', result));
+            } else {
+                const requests = await updateQtyService.getAllrequests();
+                return res.status(201).json(unifiedResponse(201, 'All Update Qty requests returned successfully', requests));
             }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Requests not found'));
-            }
+
         } catch (err) {
             handleError(res, err);
         }
-    })
-    router.get("/getupdateRequests/status/:status", async (req, res, next) => {
-        try {
-            const status = req.params.status;
-            const requests = await updateRequestService.getRequestsbyStatus(status);
-            if (requests) {
-                return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
-            }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Requests not found'));
-            }
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
+    });
+  
+   
 
 
     return router;
