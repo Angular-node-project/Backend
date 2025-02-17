@@ -12,6 +12,14 @@ const orderSchema = new mongoose.Schema({
     phone_number: { type: String, required: true },
     additional_data: { type: String, default: null },
     totalPrice: { type: Number, default: 0 },
+    branch: {
+        type: Object,
+        default: null,
+        properties: {
+            branch_id: { type: String, required: false },
+            name: { type: String, required: false }
+        }
+    },
     product: [{
         product_id: { type: String, required: true },
         seller_id: { type: String, required: true },
