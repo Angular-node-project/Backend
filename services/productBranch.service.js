@@ -14,8 +14,12 @@ const getAllProductsByBranchIdPaginated = async (branch_id,page = 1, limit = 8,s
         totalProductsCount
     }
 }
+const getBrancheaBYProductIdsService=async(productdIds)=>{
+    return await productBranchRepo.getBranchesBtProductIds(productdIds);
+}
 
 module.exports={
     addUpdateBranchesQtyService,
-    getAllProductsByBranchIdPaginated
+    getAllProductsByBranchIdPaginated,
+    getBrancheaBYProductIdsService
 }

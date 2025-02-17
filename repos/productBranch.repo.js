@@ -69,11 +69,17 @@ const countProductsByBranch=async (branch_id, search,status)=> {
     return await productModel.countDocuments(productQuery);
 }
 
+const getBranchesBtProductIds=async(productIds)=>{
+  var result= await productBranchModel.find({product_id:{$in:productIds}});
+  return result;
+
+}
 
 
 module.exports = { 
     addUpdateBranchesQty,
     getAllProductsByBranchId,
-    countProductsByBranch
+    countProductsByBranch,
+    getBranchesBtProductIds
 
  }
