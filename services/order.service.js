@@ -2,6 +2,7 @@ const orderRepo=require("../repos/order.repo");
 const cartRepo=require("../repos/cart.repo");
 const sellerRepo=require("../repos/seller.repo");
 const productRepo=require("../repos/product.repo");
+const ProductBranchRepo=require("../repos/productBranch.repo");
 const getorders=async()=>{
     return await orderRepo.getorders();
 }
@@ -83,7 +84,7 @@ const addOrder=async(orderData)=>{
         data: order
     }; 
 }
-const addCashierOrder=async(orderData)=>{
+const addCashierOrder=async(orderData,branch)=>{
     
 
     //*
@@ -135,7 +136,22 @@ const addCashierOrder=async(orderData)=>{
         await sellerRepo.increaseSellerWallet(prices);
         await productRepo.decreaseStock(products);
 
+        //* Making Order Deliverd only for cashier Order
+    orderData.status="delivered";
+    
+
     let order= await orderRepo.createOrder(orderData);
+
+    //* Add Products Branch 
+    // order.product.forEach(p=>{
+    //     let productBranch={
+    //         product_id:p.product_id,
+    //         branch:branch,
+    //         qty:p.qty
+    //     }
+    //     ProductBranchRepo.createProductsBranch(productBranch);
+    // })
+
     return {
         success: true,
         data: order,
