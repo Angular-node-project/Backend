@@ -10,7 +10,7 @@ const getAllrequests=async()=>{
 const getAllQtyRequestedPaginated = async (page, limit, sort, status,search) => {
     var skip = (page - 1) * limit;
     const query = {};
-    let sortQuery = {};
+    let sortQuery = { createdAt: -1 };
     
     if (status) {
         query.status = status;
