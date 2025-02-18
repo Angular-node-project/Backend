@@ -141,8 +141,8 @@ const addCashierOrder=async(orderData)=>{
         data: order,
     }; 
 }
-const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='') => {
-    const orders = await orderRepo.getAllOrdersPaginated(page, limit,status,governorate);
+const getAllordersPaginated = async (page = 1, limit = 6,status='',governorate='',type='') => {
+    const orders = await orderRepo.getAllOrdersPaginated(page, limit,status,governorate,type);
     const totalOrderssCount = await orderRepo.countAllOrders(status);
     return {
         orders,

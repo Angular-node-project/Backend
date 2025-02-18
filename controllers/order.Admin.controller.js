@@ -11,9 +11,10 @@ router.get("/", async (req, res, next) => {
                 var limit = parseInt(req.query.limit) || 6;  
                 var status = req.query.status; 
                 var governorate=req.query.governorate;
+                var type=req.query.type;
       
-                if (page  || status ||governorate) {
-                    const result = await orderservice.getAllordersPaginated(page, limit,status,governorate);
+                if (page  || status ||governorate||type) {
+                    const result = await orderservice.getAllordersPaginated(page, limit,status,governorate,type);
                     return res.status(201).json(unifiedResponse(201, 'Paginated Orders returned successfully', result));
                 } else {
                     const orders = await orderservice.getorders();
