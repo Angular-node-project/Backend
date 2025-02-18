@@ -7,6 +7,10 @@ const   ClerkUpdateProductQtyRequestSchema=new mongoose.Schema({
     product_name:{type:String,required:true},
     branch:{branch_id:{type:String,required:true},name:{type:String,required:true}},
     requesterClerk:{clerk_id:{type:String,required:true},name:{type:String,required:true}},
-    requiredQty:{type:String,required:true}
-})
+    requiredQty:{type:Number,required:true},
+    acceptedQty:{type:Number,required:false,default:function(){return this.requiredQty;}},
+    status:{type:String,enum:["pending","allApproved","partiallyApproved","disapproved"],default:"pending"}
+},{timestamps:true})
+
+
 module.exports= mongoose.model("ClerkUpdateProductQtyRequest",ClerkUpdateProductQtyRequestSchema)
