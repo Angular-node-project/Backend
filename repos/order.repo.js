@@ -1,4 +1,6 @@
 const order=require("../models/order.model");
+const branchOrderModel=require("../models/branchOrder.model");
+
 const getorders=async()=>{
     return order.find({});
 }
@@ -152,6 +154,14 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit) => {
     return await order.aggregate(pipeline);
 }
 
+const assignOrderToBranches=async (orderBranches)=>{
+    var result= await branchOrderModel.insertMany(orderBranches);
+    return result;
+     
+}
+
+
+
 
 module.exports={
     getAllOrdersPaginated,
@@ -165,6 +175,7 @@ module.exports={
     createOrder,
     getCustomerOrders,
     getOrdersBySellerIdPaginated,
-    countOrdersBySellerId
+    countOrdersBySellerId,
+    assignOrderToBranches
 }
 

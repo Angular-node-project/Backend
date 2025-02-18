@@ -88,6 +88,8 @@ router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
         handleError(res, err);
     }
 })
+
+
 router.post("/cashier", async (req, res, next) => {
     try {
         const { error, value } = createOrderDto.validate(req.body,{abortEarly:false});
@@ -100,6 +102,25 @@ router.post("/cashier", async (req, res, next) => {
         return res.status(201).json(unifiedResponse(201, 'Order created successfully', order));
     } catch (err) {
         handleError(res, err);
+    }
+})
+
+
+
+router.post("/assign/branches",async(req,res,next)=>{
+    try{
+        var data = req.body.data;
+        if(data){
+            var result= await orderservice.assignOrderToBranchesService(data.data);
+            if(result){
+                await orderservice.ChangeOrderStatus(data.orderId,"processing");
+            }
+            return res.status(201).json(unifiedResponse(201, 'Orders  assigned successfully', result));
+        }
+        return res.status(401).json(unifiedResponse(401, "no data sent", order));
+
+    }catch(err){
+        handleError(res,err);
     }
 })
 
