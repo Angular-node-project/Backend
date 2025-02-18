@@ -70,20 +70,34 @@ const countProductsByBranch = async (branch_id, search, status) => {
 }
 
 const createProductsBranch = async (data) => {
-    const getBranchesBtProductIds = async (productIds) => {
-        var result = await productBranchModel.find({ product_id: { $in: productIds } });
-        return result;
-
-    }
-
     return productBranchModel.create(data);
 }
+
+const getBranchesBtProductIds = async (productIds) => {
+    var result = await productBranchModel.find({ product_id: { $in: productIds } });
+    return result;
+
+}
+
+const decreaseBranchStock = async (products) => {
+
+
+    for (const key in products) {
+        await productBranchModel.findOneAndUpdate(
+            { product_id: key },
+            { $inc: { qty: -products[key] } },
+            { new: true }
+        );
+    }
+};
+
 
 module.exports = {
     addUpdateBranchesQty,
     getAllProductsByBranchId,
     countProductsByBranch,
     createProductsBranch,
-    getBranchesBtProductIds
+    getBranchesBtProductIds,
+    decreaseBranchStock
 
 }

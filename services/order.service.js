@@ -135,6 +135,8 @@ const addCashierOrder=async(orderData,branch)=>{
 
         await sellerRepo.increaseSellerWallet(prices);
         await productRepo.decreaseStock(products);
+        await ProductBranchRepo.decreaseBranchStock(products);
+
 
         //* Making Order Deliverd only for cashier Order
     orderData.status="delivered";
