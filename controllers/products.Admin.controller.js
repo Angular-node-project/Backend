@@ -5,7 +5,8 @@ const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { uploadService } = require("../services/image.service");
 const updateRequestService = require("../services/productRequest.service");
 const productBranchService=require("../services/productBranch.service");
-const { updateRequest } = require('../repos/productRequest.repo');
+const updateQtyService=require("../services/qtyRequest.service");
+const updateQtyBranchservice=require("../services/productBranch.service")
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -86,38 +87,19 @@ module.exports = (() => {
             handleError(res, err);
         }
     });
+    router.get("/:id", async (req, res, next) => {
+        try {
+           
+            const productid=req.params.id;
+                const products = await productService.getProductbyid(productid);
+                return res.status(201).json(unifiedResponse(201, 'All products returned successfully', products));
+            }
 
-    router.get("/status/:status", async (req, res, next) => {
-        try {
-            const status = req.params.status;
-            const products = await productService.getproductsbyStatus(status)
-            return res.status(201).json(unifiedResponse(201, 'Products retrived successfully', products));
-        } catch (err) {
+        catch (err) {
             handleError(res, err);
         }
-    })
-    router.patch("/delete/:id", async (req, res, next) => {
-        try {
-            const productid = req.params.id;
-            const orders = await orderservice.getorderbyproductid(productid);
-            if (orders) {
-                const undeliveredOrders = orders.filter((o) => o.product.
-                    some((p) => p.product_id === productid && p.status !== "delivered" && p.status !== "cancelled"));
-                if (undeliveredOrders.length > 0) {
-                    return res.status(403).json(unifiedResponse(403, "Cannot deactivate product; undelivered orders exist."));
-                }
-            }
-            const products = await productService.softdeleteproduct(productid);
-            if (products) {
-                return res.status(201).json(unifiedResponse(201, 'Products deactive successfully', products));
-            }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Product not found '));
-            }
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
+    });
+
     router.patch("/ChangeUpdateRequest/:id/:status", async (req, res, next) => {
         try {
             const requestId = req.params.id;
@@ -174,20 +156,7 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    router.get("/:id", async (req, res, next) => {
-        try {
-            const id = req.params.id;
-            const products = await productService.getProductbyid(id);
-            if (products) {
-                return res.status(201).json(unifiedResponse(201, 'Product retrived successfully', products));
-            }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Product not found'));
-            }
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
+    
     router.get("/All/updateRequests", async (req, res, next) => {
         try {
             var page = parseInt(req.query.page) || 1;
@@ -209,45 +178,72 @@ module.exports = (() => {
             handleError(res, err);
         }
     });
-    router.get("/getupdateRequests/id/:id", async (req, res, next) => {
+    router.get("/all/updateQtyRequests", async (req, res, next) => {
         try {
-            const requestid = req.params.id;
-            const requests = await updateRequestService.getRequestbyId(requestid);
-            if (requests) {
-                return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
+            var page = parseInt(req.query.page) || 1;
+            var limit = parseInt(req.query.limit) || 6;
+            var status = req.query.status;
+            var sort = req.query.sort;
+            var search = req.query.search;
+            if (page || category || status  || search) {
+                const result = await updateQtyService.getAllQtyRequestedPaginated(page, limit, sort, status, search);
+                return res.status(201).json(unifiedResponse(201, 'Paginated Update Qty requests returned successfully', result));
+            } else {
+                const requests = await updateQtyService.getAllrequests();
+                return res.status(201).json(unifiedResponse(201, 'All Update Qty requests returned successfully', requests));
             }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Requests not found'));
-            }
+
         } catch (err) {
             handleError(res, err);
         }
-    })
-    router.get("/getupdateRequests/status/:status", async (req, res, next) => {
+    });
+  
+    router.patch("/ChangeUpdateQuantityRequest/:id/:status", async (req, res, next) => {
         try {
+            const requestId = req.params.id;
             const status = req.params.status;
-            const requests = await updateRequestService.getRequestsbyStatus(status);
-            if (requests) {
-                return res.status(201).json(unifiedResponse(201, 'Product Requests retrived successfully', requests));
+            const qty=+req.query.qty;
+
+            const updatedQtyRequest = await updateQtyService.UpdateQtyRequest(requestId,status)
+
+           
+            const productId = updatedQtyRequest.product_id;
+             const existingProduct = await productService.getProductbyid(productId);
+             const exsistingBranchProduct=await updateQtyBranchservice.getProductBranchbyIdService(productId) 
+             if(existingProduct ||exsistingBranchProduct ){
+               const exsistQty=+existingProduct.qty;
+               const exsistingBranchqty=+exsistingBranchProduct.qty;
+
+               
+            if (status === "allApproved") {
+                const DemandQty=+updatedQtyRequest.requiredQty;
+                const total=DemandQty+exsistQty;
+                const TotalBranch=+DemandQty+exsistingBranchqty;
+            
+              const updatedQty=await productService.updateReturnedProduct(productId,total);
+              const updatedQtyBranch=await productBranchService.UpdateReuqestQtyService(productId,TotalBranch);
+              return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty,updatedQtyBranch));
             }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Requests not found'));
+            else  if (status === "partiallyApproved") {
+                const DemandQty=qty;
+                const total=DemandQty+exsistQty;
+                const TotalBranch=+DemandQty+exsistingBranchqty;
+               
+                const updatedQty=await productService.updateReturnedProduct(productId,total);
+                const updatedQtyBranch=await productBranchService.UpdateReuqestQtyService(productId,TotalBranch);
+                return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty,updatedQtyBranch));
+              }
+              else
+              {
+                return res.status(200).json(unifiedResponse(200, 'update reuqest dissapproved'));
+              }
             }
+    
         } catch (err) {
+            console.log(" Error:", err);
             handleError(res, err);
         }
-    })
-    router.post("/branches",async(req,res,next)=>{
-        try {
-            const productIds = req.body.productsIds;
-            const result =  await productBranchService.getBrancheaBYProductIdsService(productIds);
-           return res.status(201).json(unifiedResponse(201, 'product branches retrived successfully', result));
-            
-            
-        } catch (err) {
-            handleError(res, err);
-        }
-    })
+    });
 
 
     return router;

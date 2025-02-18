@@ -18,7 +18,7 @@ getAllBranchClerks=async()=>{
 const getAllclerkbranchesPaginated=async(page,limit,sort,search,status)=>{
     var skip =(page-1)*limit;
        const query={};
-   
+       let sortQuery = { createdAt: -1 };
        if(search){
            query.$or=[
                {name:{$regex:search,$options:'i'}},
@@ -32,6 +32,7 @@ const getAllclerkbranchesPaginated=async(page,limit,sort,search,status)=>{
            query.status=status ;
        }
        return await  clerkBranchModel.find(query)
+                            .sort(sortQuery)
                             .skip(skip)
                             .limit(limit)
                             .exec();  

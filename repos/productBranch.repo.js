@@ -78,6 +78,14 @@ const getBranchesBtProductIds = async (productIds) => {
     return result;
 
 }
+const UpdateReuqestQty=async(productId,Updatedqty)=>{
+   return productBranchModel.findOneAndUpdate( { product_id: productId }, 
+    { $set: { qty: Updatedqty } },  
+    { new: true } )
+}
+const getProductBranchbyId=async(productId)=>{
+    return productBranchModel.findOne({product_id:productId})
+}
 
 const decreaseBranchStock = async (products) => {
 
@@ -98,6 +106,8 @@ module.exports = {
     countProductsByBranch,
     createProductsBranch,
     getBranchesBtProductIds,
-    decreaseBranchStock
+    decreaseBranchStock,
+    UpdateReuqestQty,
+    getProductBranchbyId
 
 }

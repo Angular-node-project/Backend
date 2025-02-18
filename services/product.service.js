@@ -9,6 +9,7 @@ const createProduct = async (productData) => {
 const updateProduct = async (productId, productData) => {
     return await productrepo.updateProduct(productId, productData);
 }
+
 const updateReturnedProduct = async (productId, Updatedqty) => {
     return await productrepo.updateReturnedProduct(productId, Updatedqty);
 }
@@ -113,5 +114,6 @@ module.exports = {
     addReviewService,
     createUpdateRequest,
     getProductsBySellerPaginated ,
-    updateReturnedProduct
+    updateReturnedProduct,
+    
 }

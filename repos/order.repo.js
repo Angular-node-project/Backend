@@ -1,4 +1,6 @@
 const order=require("../models/order.model");
+const branchOrderModel=require("../models/branchOrder.model");
+
 const getorders=async()=>{
     return order.find({});
 }
@@ -25,6 +27,7 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
     var skip =(page-1)*limit;
     const query={};
 
+    let sortQuery = { createdAt: -1 };
     if(governorate){
         query.governorate= {$regex: governorate, $options: 'i'}  ;
     }
@@ -72,7 +75,9 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
             }
         }
     ];
-
+    if (Object.keys(sortQuery).length > 0) {
+        pipeline.splice(1, 0, { $sort: sortQuery });
+    }
     return await  order.aggregate(pipeline);
 }
 
@@ -144,6 +149,14 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit) => {
     return await order.aggregate(pipeline);
 }
 
+const assignOrderToBranches=async (orderBranches)=>{
+    var result= await branchOrderModel.insertMany(orderBranches);
+    return result;
+     
+}
+
+
+
 
 module.exports={
     getAllOrdersPaginated,
@@ -157,6 +170,7 @@ module.exports={
     createOrder,
     getCustomerOrders,
     getOrdersBySellerIdPaginated,
-    countOrdersBySellerId
+    countOrdersBySellerId,
+    assignOrderToBranches
 }
 

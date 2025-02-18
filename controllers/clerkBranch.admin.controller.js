@@ -1,12 +1,12 @@
 const clerkbranchservice = require("../services/clerkBranch.service");
-const { clerkBranchLoginDto } = require('../validators/clerkBranch.validator');
+const { clerkBranchCreateDto } = require('../validators/clerkBranch.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const bcrypt = require('bcrypt');
 module.exports = (() => {
     const router = require("express").Router();
     router.post("/", async (req, res, next) => {
         try {
-            const { error, value } = clerkBranchLoginDto.validate(req.body, { abortEarly: false });
+            const { error, value } = clerkBranchCreateDto.validate(req.body, { abortEarly: false });
              if (error) {
                 const errors = error.details.map(e => e.message);
                 return res.status(400).json(unifiedResponse(400, "validation error", errors));
@@ -29,7 +29,7 @@ module.exports = (() => {
     router.patch("/:clerkBranchId", async (req, res, next) => {
         try {
             const clerkBranchId=req.params.clerkBranchId;
-            const { error, value } = clerkBranchLoginDto.validate(req.body, { abortEarly: false });
+            const { error, value } = clerkBranchCreateDto.validate(req.body, { abortEarly: false });
              if (error) {
                 const errors = error.details.map(e => e.message);
                 return res.status(400).json(unifiedResponse(400, "validation error", errors));

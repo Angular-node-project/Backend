@@ -192,6 +192,10 @@ const CheckProductAvailability=async(product)=>{
     return orders
 }
 
+const assignOrderToBranchesService=async(orderBranches)=>{
+    return orderRepo.assignOrderToBranches(orderBranches);
+}
+
 
 
 module.exports={
@@ -206,7 +210,8 @@ module.exports={
     getCustomerOrders,
     addCashierOrder,
     getOrdersBySellerIdPaginated,
-    CheckProductAvailability
+    CheckProductAvailability,
+    assignOrderToBranchesService
 }
 
 

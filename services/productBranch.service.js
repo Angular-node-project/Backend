@@ -17,9 +17,18 @@ const getAllProductsByBranchIdPaginated = async (branch_id,page = 1, limit = 8,s
 const getBrancheaBYProductIdsService=async(productdIds)=>{
     return await productBranchRepo.getBranchesBtProductIds(productdIds);
 }
+const UpdateReuqestQtyService=async(productId,Updatedqty)=>{
+   return await productBranchRepo.UpdateReuqestQty(productId,Updatedqty)
+}
+const getProductBranchbyIdService=async(productId)=>{
+    return await productBranchRepo.getProductBranchbyId(productId);
+}
+
 
 module.exports={
     addUpdateBranchesQtyService,
     getAllProductsByBranchIdPaginated,
-    getBrancheaBYProductIdsService
+    getBrancheaBYProductIdsService,
+    UpdateReuqestQtyService,
+    getProductBranchbyIdService
 }
