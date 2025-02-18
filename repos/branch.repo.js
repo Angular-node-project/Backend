@@ -16,6 +16,7 @@ const getBranches=async()=>{
 const getAllbranchesPaginated=async(page,limit,sort,search,status)=>{
  var skip =(page-1)*limit;
     const query={};
+    let sortQuery = { createdAt: -1 };
 
     if(search){
         query.$or=[
@@ -28,8 +29,9 @@ const getAllbranchesPaginated=async(page,limit,sort,search,status)=>{
         query.status=status ;
     }
     return await  branch.find(query)
+                         .sort(sortQuery)
                          .skip(skip)
-                         .limit(limit)
+                         .limit(limit)  
                          .exec();  
 }
 const countAllBranchs=async(status)=>{

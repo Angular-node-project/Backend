@@ -27,6 +27,7 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
     var skip =(page-1)*limit;
     const query={};
 
+    let sortQuery = { createdAt: -1 };
     if(governorate){
         query.governorate= {$regex: governorate, $options: 'i'}  ;
     }
@@ -74,7 +75,9 @@ const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
             }
         }
     ];
-
+    if (Object.keys(sortQuery).length > 0) {
+        pipeline.splice(1, 0, { $sort: sortQuery });
+    }
     return await  order.aggregate(pipeline);
 }
 
