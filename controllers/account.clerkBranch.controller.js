@@ -15,7 +15,7 @@ module.exports = (() => {
               const errors = error.details.map(e => e.message);
               return res.status(400).json(unifiedResponse(400, "validation error", errors));
             }
-            var user = await clerkBranchService.getClerkBYEmailService(value.email);
+            var user = await clerkBranchService.getClerkByEmailService(value.email)
             if (user) {
               var samePassword = await bcrypt.compare(value.password, user.password);
               if (samePassword) {

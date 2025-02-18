@@ -5,6 +5,7 @@ const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { uploadService } = require("../services/image.service");
 const updateRequestService = require("../services/productRequest.service");
 const productBranchService=require("../services/productBranch.service");
+const { updateRequest } = require('../repos/productRequest.repo');
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -134,11 +135,13 @@ module.exports = (() => {
             if (status === "approved") {
                 const productId = updatedRequest.updatedProduct.product_id;
                 console.log(" Checking Product ID:", `"${productId}"`);
+              
 
-                const updatedProduct = await productService.updateProductRequest(updatedRequest.updatedProduct.product_id,
+    
+                const updatedProduct = await productService.updateProduct(updatedRequest.updatedProduct.product_id,
                     updatedRequest.updatedProduct);
-
                 if (updatedProduct) {
+                 
                     console.log(" Product updated successfully:", updatedProduct);
                     return res.status(200).json(unifiedResponse(200, 'Product update accepted successfully', updatedProduct));
                 } else {

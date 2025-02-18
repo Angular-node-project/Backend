@@ -21,6 +21,7 @@ const updateProductRequest = async (productid, updatedData) => {
 
     return sellerUpdateProductRequest.findOneAndUpdate({ product_id: productid }, updatedData, { new: true });
 
+
 };
 
 //* Return all Products
