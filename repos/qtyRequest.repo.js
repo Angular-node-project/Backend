@@ -25,7 +25,7 @@ const getAllQtyRequestedPaginated = async (page, limit, sort, status,search) => 
     }
     if (sort) {
         const sortOrder = sort === 'desc' ? -1 : 1;
-        sortQuery = { price: sortOrder }
+        sortQuery = { product_name: sortOrder }
     }
     return await clerkUpdateProductQtyRequestModel.find(query)
         .sort(sortQuery)
@@ -42,10 +42,14 @@ const countAllRequests=async(status)=>{
         }
     return await clerkUpdateProductQtyRequestModel.countDocuments(query);
 }
+const UpdateQtyRequest=async(requestId,status)=>{
+    return clerkUpdateProductQtyRequestModel.findOneAndUpdate({request_id:requestId},{status:status },{new:true})
+}
 
 module.exports={
     addQtyRequest,
     getAllQtyRequestedPaginated,
     countAllRequests,
-    getAllrequests
+    getAllrequests,
+    UpdateQtyRequest
 }

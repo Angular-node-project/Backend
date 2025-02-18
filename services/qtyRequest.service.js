@@ -5,9 +5,9 @@ const addQtyRequestService=async(newRequest)=>{
 const getAllrequests=async()=>{
     return await qtyRequestRepo.getAllrequests();
 }
-const getAllQtyRequestedPaginated = async (page, limit, sort, status,search) => {
-      const Qtyrequests=await qtyRequestRepo.getAllQtyRequestedPaginated(page,limit,sort,search,status);
-        const totalQtyrequestsCount = await qtyRequestRepo.getAllQtyRequestedPaginated(status);
+const getAllQtyRequestedPaginated = async (page=1, limit=6, sort='', status='',search='') => {
+      const Qtyrequests=await qtyRequestRepo.getAllQtyRequestedPaginated(page,limit,sort,status,search);
+        const totalQtyrequestsCount = await qtyRequestRepo.countAllRequests(status);
                return {
                 Qtyrequests,
                    currentPage: parseInt(page),
@@ -15,9 +15,12 @@ const getAllQtyRequestedPaginated = async (page, limit, sort, status,search) => 
                    totalQtyrequestsCount
                }
 }
-
+const UpdateQtyRequest=async(requestId,status)=>{
+    return await qtyRequestRepo.UpdateQtyRequest(requestId,status);
+}
 module.exports={
     addQtyRequestService,
     getAllrequests,
-    getAllQtyRequestedPaginated
+    getAllQtyRequestedPaginated,
+    UpdateQtyRequest
 }

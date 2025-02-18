@@ -37,9 +37,10 @@ const sellerUpdateRequestDto = Joi.object({
       details: Joi.string().empty(""),
       qty: Joi.number(),
       price: Joi.number(),
+      show: Joi.string().valid("online", "offline", "all"),
       status: Joi.string().valid("active" , "inactive" , "pending" , "outStock" , "deleted").required(),
     },
-    status: Joi.string().valid( "pending" , "approved" , "disapproved").required(),
+    status: Joi.string()
 });
 
 
