@@ -11,6 +11,7 @@ module.exports.APP_CONFIG = {
     IMAGEKIT_ENDPOINT_URL: process.env.IMAGEKIT_ENDPOINT_URL,
     IMAGEKIT_INSTANCE_ID: process.env.IMAGEKIT_INSTANCE_ID,
      USER_EMAIL:process.env.USER_EMAIL,
-     USER_PASS:process.env.USER_PASS
+     USER_PASS:process.env.USER_PASS,
+     STRIPE_SECRET_KEY:process.env.STRIPE_SECRET_KEY
   };
   

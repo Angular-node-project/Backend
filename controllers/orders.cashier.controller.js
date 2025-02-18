@@ -9,7 +9,7 @@ module.exports = (() => {
         try {
             // Validate request data
             // cashier_id=req.data.id
-            cashier_id="1"
+            cashier_id=req.data.id;
             const { error, value } = createCashierOrderDto.validate(req.body,{abortEarly:false});
             console.log(value);
             
