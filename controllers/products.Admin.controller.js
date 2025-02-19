@@ -70,7 +70,7 @@ module.exports = (() => {
     router.get("/", async (req, res, next) => {
         try {
             var page = parseInt(req.query.page) || 1;
-            var limit = parseInt(req.query.limit) || 8;
+            var limit = parseInt(req.query.limit) || 5;
             var category = req.query.category;
             var status = req.query.status;
             var sort = req.query.sort;
