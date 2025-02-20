@@ -10,6 +10,7 @@ module.exports = (() => {
             // Validate request data
             // cashier_id=req.data.id
             cashier_id=req.data.id;
+            branch=req.data.branch;
             const { error, value } = createCashierOrderDto.validate(req.body,{abortEarly:false});
             console.log(value);
             
@@ -19,7 +20,7 @@ module.exports = (() => {
             }
             value.cashier_id=cashier_id;
             // Service call
-            const order = await orderService.addCashierOrder(value)
+            const order = await orderService.addCashierOrder(value,branch)
             return res.status(201).json(unifiedResponse(201, 'Order created successfully', order));
         } catch (err) {
             handleError(res, err);

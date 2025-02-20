@@ -13,6 +13,8 @@ module.exports = (() => {
         try{
 
             var branch_id=req.data.branch.branch_id;
+            console.log("Here is ------------------------")
+            console.log(branch_id)
             var page = parseInt(req.query.page) || 1;
             var limit = parseInt(req.query.limit) || 8;
             var status = req.query.status;
