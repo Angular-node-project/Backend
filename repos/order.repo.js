@@ -23,63 +23,68 @@ const createOrder=async(data)=>{
 
     return order.create(data);
 }
-const getAllOrdersPaginated=async(page,limit,status,governorate)=>{
-    var skip =(page-1)*limit;
-    const query={};
+const getAllOrdersPaginated = async (page, limit, status, governorate, type) => {
+    var skip = (page - 1) * limit;
+    const query = {};
 
     let sortQuery = { createdAt: -1 };
-    if(governorate){
-        query.governorate= {$regex: governorate, $options: 'i'}  ;
+
+    if (governorate) {
+        query.governorate = { $regex: governorate, $options: 'i' };
     }
-    if(status)
-    {
-        query.status=status ;
+    if (status) {
+        query.status = status;
     }
-    
+    if (type === "Online") {
+        query["customer_id"] = { $exists: true, $ne: null }; 
+    } else if (type === "Offline") {
+        query["cashier_id"] = { $exists: true, $ne: null }; 
+    }
+
     const pipeline = [
-        { $match: query },  
+        { $match: query },
+        { $sort: sortQuery }, 
         {
             $lookup: {
-                from: "customers",   
+                from: "customers",
                 localField: "customer_id",
                 foreignField: "customer_id",
                 as: "customer"
             }
         },
-        { $unwind:{ path: "$customer", preserveNullAndEmptyArrays: true }}, 
+        { $unwind: { path: "$customer", preserveNullAndEmptyArrays: true } },
         {
-            $lookup:{
-                from: "clerks",   
+            $lookup: {
+                from: "clerkbranches",
                 localField: "cashier_id",
-                foreignField: "clerk_id",
+                foreignField: "clerkBranch_id", 
                 as: "cashier"
             }
         },
-        { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } }, 
-        { $skip: skip },       
-        { $limit: limit },     
+        { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } },
+        { $skip: skip },
+        { $limit: limit },
         {
             $project: {
-                order_id:1,
+                order_id: 1,
                 customer_id: 1,
                 "customer.name": 1,
-                 "customer.email": 1,
+                "customer.email": 1,
                 cashier_id: 1,
-                 "cashier.name": 1,
-                  "cashier.email": 1,
-                  address: 1,
-                  governorate:1,
-                  phone_number:1,
-                  product:1,
-                  status:1,
+                "cashier.name": 1,
+                "cashier.email": 1,
+                address: 1,
+                governorate: 1,
+                phone_number: 1,
+                product: 1,
+                status: 1
             }
         }
     ];
-    if (Object.keys(sortQuery).length > 0) {
-        pipeline.splice(1, 0, { $sort: sortQuery });
-    }
-    return await  order.aggregate(pipeline);
-}
+
+    return await order.aggregate(pipeline);
+};
+
 
 
 const countAllOrders=async(status)=>{
