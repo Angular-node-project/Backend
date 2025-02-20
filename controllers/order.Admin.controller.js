@@ -1,7 +1,8 @@
 const orderservice=require('../services/order.service');
 const {createOrderDto}=require('../validators/order.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-const productservice=require('../services/product.service')
+const productservice=require('../services/product.service');
+const productBranch=require("../services/productBranch.service");
 module.exports=(()=>{
 const router=require("express").Router();
 
@@ -112,7 +113,11 @@ router.post("/assign/branches",async(req,res,next)=>{
         var data = req.body.data;
         if(data){
             var result= await orderservice.assignOrderToBranchesService(data.data);
+            
             if(result){
+                for(var item of data.data){
+                     await productBranch.decreaseProductByBranchId(item.product.product_id,item.branch.branch_id,item.qty);
+                }
                 await orderservice.ChangeOrderStatus(data.orderId,"processing");
             }
             return res.status(201).json(unifiedResponse(201, 'Orders  assigned successfully', result));

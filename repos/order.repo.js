@@ -73,6 +73,7 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
                 cashier_id: 1,
                 "cashier.name": 1,
                 "cashier.email": 1,
+                totalPrice:1,
                 address: 1,
                 governorate: 1,
                 phone_number: 1,
