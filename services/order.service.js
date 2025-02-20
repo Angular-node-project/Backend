@@ -2,6 +2,7 @@ const orderRepo=require("../repos/order.repo");
 const cartRepo=require("../repos/cart.repo");
 const sellerRepo=require("../repos/seller.repo");
 const productRepo=require("../repos/product.repo");
+const OrderBranchRepo=require("../repos/branchorder.repo");
 const ProductBranchRepo=require("../repos/productBranch.repo");
 const getorders=async()=>{
     return await orderRepo.getorders();
@@ -144,15 +145,17 @@ const addCashierOrder=async(orderData,branch)=>{
 
     let order= await orderRepo.createOrder(orderData);
 
-    //* Add Products Branch 
-    // order.product.forEach(p=>{
-    //     let productBranch={
-    //         product_id:p.product_id,
-    //         branch:branch,
-    //         qty:p.qty
-    //     }
-    //     ProductBranchRepo.createProductsBranch(productBranch);
-    // })
+    //* Add Orders in  Branch 
+    order.product.forEach(p=>{
+        let branchOrder={
+            order_id:order.order_id,
+            product:{product_id:p.product_id,name:p.name},
+            branch:branch,
+            qty:p.qty,
+            status:"delivered"
+        }
+        OrderBranchRepo.createOrdersBranch(branchOrder)
+    })
 
     return {
         success: true,

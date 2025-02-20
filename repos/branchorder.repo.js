@@ -64,6 +64,9 @@ const getAllBrnachOrdersPaginated = async (page, limit, status,search,branch_id)
     
 }    
 
+const createOrdersBranch = async (data) => {
+    return branchordermodel.create(data);
+}
 
 const countAllBranchOrders=async(status)=>{
     const query={};
@@ -77,5 +80,6 @@ const countAllBranchOrders=async(status)=>{
 module.exports={
     getALllBranchOrders,
     getAllBrnachOrdersPaginated,
-    countAllBranchOrders
+    countAllBranchOrders,
+    createOrdersBranch
 }
