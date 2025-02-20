@@ -17,6 +17,15 @@ const sellerLoginDto = Joi.object({
    password: Joi.string().trim().min(6).required()
 });
 
+const sellerProfileDto = Joi.object({
+  name: Joi.string().trim().min(3).max(100).required(),
+  email: Joi.string().trim().email().optional(),
+  national_id: Joi.string().trim().optional(),
+  phone_number: Joi.string().pattern(/^[0-9]{10,15}$/).optional().allow(null,'').messages({
+      'string.pattern.base': 'Phone number must be 10 to 15 digits long'
+  }).optional(),
+  registeration_number: Joi.string().optional()
+});
 
 
 const sellerUpdateRequestDto = Joi.object({
@@ -45,5 +54,5 @@ const sellerUpdateRequestDto = Joi.object({
 
 
 
-module.exports={sellerRegisterDto,sellerLoginDto,sellerUpdateRequestDto}
+module.exports={sellerRegisterDto,sellerLoginDto,sellerUpdateRequestDto,sellerProfileDto}
                                       
