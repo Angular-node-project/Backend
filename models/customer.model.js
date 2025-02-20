@@ -10,6 +10,6 @@ const customerSchema = new mongoose.Schema({
     phone_number: { type: String ,required:false},                            
     gender: { type: String, enum: ['male', 'female'],required:false }, 
     status: { type: String, enum: ['active', 'inactive'], required: true,default:"active" } 
-});
+},{ timestamps: true });
 
 module.exports = mongoose.model('Customer', customerSchema);
