@@ -4,9 +4,9 @@ const { createProductDto } = require('../validators/product.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { uploadService } = require("../services/image.service");
 const updateRequestService = require("../services/productRequest.service");
-const productBranchService=require("../services/productBranch.service");
-const updateQtyService=require("../services/qtyRequest.service");
-const updateQtyBranchservice=require("../services/productBranch.service")
+const productBranchService = require("../services/productBranch.service");
+const updateQtyService = require("../services/qtyRequest.service");
+const updateQtyBranchservice = require("../services/productBranch.service")
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -27,8 +27,8 @@ module.exports = (() => {
             }
             value.pics = uploadedImgsUrl;
             const product = await productService.createProduct(value);
-            if(product){
-              const result =await productBranchService.addUpdateBranchesQtyService(product.product_id,value.branches);
+            if (product) {
+                const result = await productBranchService.addUpdateBranchesQtyService(product.product_id, value.branches);
             }
 
             return res.status(201).json(unifiedResponse(201, 'product created successfully', product));
@@ -55,12 +55,12 @@ module.exports = (() => {
             }
             value.pics = uploadedImgsUrl;
             const product = await productService.updateProduct(productid, value);
-            if(product){
-                const result =await productBranchService.addUpdateBranchesQtyService(product.product_id,value.branches);
-              }
+            if (product) {
+                const result = await productBranchService.addUpdateBranchesQtyService(product.product_id, value.branches);
+            }
 
             return res.status(201).json(unifiedResponse(201, 'product updated successfully', product));
-            
+
         } catch (exception) {
             console.log(exception);
             return res.status(400).json(unifiedResponse(400, 'there is problem'));
@@ -89,11 +89,11 @@ module.exports = (() => {
     });
     router.get("/:id", async (req, res, next) => {
         try {
-           
-            const productid=req.params.id;
-                const products = await productService.getProductbyid(productid);
-                return res.status(201).json(unifiedResponse(201, 'All products returned successfully', products));
-            }
+
+            const productid = req.params.id;
+            const products = await productService.getProductbyid(productid);
+            return res.status(201).json(unifiedResponse(201, 'All products returned successfully', products));
+        }
 
         catch (err) {
             handleError(res, err);
@@ -117,13 +117,13 @@ module.exports = (() => {
             if (status === "approved") {
                 const productId = updatedRequest.updatedProduct.product_id;
                 console.log(" Checking Product ID:", `"${productId}"`);
-              
 
-    
+
+
                 const updatedProduct = await productService.updateProduct(updatedRequest.updatedProduct.product_id,
                     updatedRequest.updatedProduct);
                 if (updatedProduct) {
-                 
+
                     console.log(" Product updated successfully:", updatedProduct);
                     return res.status(200).json(unifiedResponse(200, 'Product update accepted successfully', updatedProduct));
                 } else {
@@ -156,7 +156,7 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
-    
+
     router.get("/All/updateRequests", async (req, res, next) => {
         try {
             var page = parseInt(req.query.page) || 1;
@@ -185,7 +185,7 @@ module.exports = (() => {
             var status = req.query.status;
             var sort = req.query.sort;
             var search = req.query.search;
-            if (page || category || status  || search) {
+            if (page || category || status || search) {
                 const result = await updateQtyService.getAllQtyRequestedPaginated(page, limit, sort, status, search);
                 return res.status(201).json(unifiedResponse(201, 'Paginated Update Qty requests returned successfully', result));
             } else {
@@ -197,54 +197,64 @@ module.exports = (() => {
             handleError(res, err);
         }
     });
-  
+
     router.patch("/ChangeUpdateQuantityRequest/:id/:status", async (req, res, next) => {
         try {
             const requestId = req.params.id;
             const status = req.params.status;
-            const qty=+req.query.qty;
+            const qty = +req.query.qty;
 
-            const updatedQtyRequest = await updateQtyService.UpdateQtyRequest(requestId,status)
+            const updatedQtyRequest = await updateQtyService.UpdateQtyRequest(requestId, status)
 
-           
+
             const productId = updatedQtyRequest.product_id;
-             const existingProduct = await productService.getProductbyid(productId);
-             const exsistingBranchProduct=await updateQtyBranchservice.getProductBranchbyIdService(productId) 
-             if(existingProduct ||exsistingBranchProduct ){
-               const exsistQty=+existingProduct.qty;
-               const exsistingBranchqty=+exsistingBranchProduct.qty;
+            const existingProduct = await productService.getProductbyid(productId);
+            const exsistingBranchProduct = await updateQtyBranchservice.getProductBranchbyIdService(productId)
+            if (existingProduct || exsistingBranchProduct) {
+                const exsistQty = +existingProduct.qty;
+                const exsistingBranchqty = +exsistingBranchProduct.qty;
 
-               
-            if (status === "allApproved") {
-                const DemandQty=+updatedQtyRequest.requiredQty;
-                const total=DemandQty+exsistQty;
-                const TotalBranch=+DemandQty+exsistingBranchqty;
-            
-              const updatedQty=await productService.updateReturnedProduct(productId,total);
-              const updatedQtyBranch=await productBranchService.UpdateReuqestQtyService(productId,TotalBranch);
-              return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty,updatedQtyBranch));
+
+                if (status === "allApproved") {
+                    const DemandQty = +updatedQtyRequest.requiredQty;
+                    const total = DemandQty + exsistQty;
+                    const TotalBranch = +DemandQty + exsistingBranchqty;
+
+                    const updatedQty = await productService.updateReturnedProduct(productId, total);
+                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch);
+                    return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty, updatedQtyBranch));
+                }
+                else if (status === "partiallyApproved") {
+                    const DemandQty = qty;
+                    const total = DemandQty + exsistQty;
+                    const TotalBranch = +DemandQty + exsistingBranchqty;
+
+                    const updatedQty = await productService.updateReturnedProduct(productId, total);
+                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch);
+                    return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty, updatedQtyBranch));
+                }
+                else {
+                    return res.status(200).json(unifiedResponse(200, 'update reuqest dissapproved'));
+                }
             }
-            else  if (status === "partiallyApproved") {
-                const DemandQty=qty;
-                const total=DemandQty+exsistQty;
-                const TotalBranch=+DemandQty+exsistingBranchqty;
-               
-                const updatedQty=await productService.updateReturnedProduct(productId,total);
-                const updatedQtyBranch=await productBranchService.UpdateReuqestQtyService(productId,TotalBranch);
-                return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty,updatedQtyBranch));
-              }
-              else
-              {
-                return res.status(200).json(unifiedResponse(200, 'update reuqest dissapproved'));
-              }
-            }
-    
+
         } catch (err) {
             console.log(" Error:", err);
             handleError(res, err);
         }
     });
 
+    router.post("/branches", async (req, res, next) => {
+        try {
+            const productIds = req.body.productsIds;
+            const result = await productBranchService.getBrancheaBYProductIdsService(productIds);
+            return res.status(201).json(unifiedResponse(201, 'product branches retrived successfully', result));
+
+
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
 
     return router;
 

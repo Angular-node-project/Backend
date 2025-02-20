@@ -23,6 +23,9 @@ const UpdateReuqestQtyService=async(productId,Updatedqty)=>{
 const getProductBranchbyIdService=async(productId)=>{
     return await productBranchRepo.getProductBranchbyId(productId);
 }
+const decreaseProductByBranchId=async (product_Id, branch_Id, qty)=>{
+    return await productBranchRepo.decreaseProductByBranchId(product_Id,branch_Id,qty);
+}
 
 
 module.exports={
@@ -30,5 +33,6 @@ module.exports={
     getAllProductsByBranchIdPaginated,
     getBrancheaBYProductIdsService,
     UpdateReuqestQtyService,
-    getProductBranchbyIdService
+    getProductBranchbyIdService,
+    decreaseProductByBranchId
 }
