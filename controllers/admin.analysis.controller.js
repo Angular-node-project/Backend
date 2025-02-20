@@ -54,6 +54,30 @@ module.exports = (() => {
             handleError(res, error);
         }
     })
+    router.get('/SellersCountsBystatus',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.SellersCountsBystatus();
+            return res.status(201).json(unifiedResponse(201, "SellersCountsBystatus", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
+    router.get('/getSellerRegistrationMonth',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.getSellerRegistrationMonth();
+            return res.status(201).json(unifiedResponse(201, "getSellerRegistrationMonth", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
+    router.get('/getSellerRegistrationsPerWeek',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.getSellerRegistrationsPerWeek();
+            return res.status(201).json(unifiedResponse(201, "getSellerRegistrationsPerWeek", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
 
 
 

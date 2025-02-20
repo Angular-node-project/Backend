@@ -47,21 +47,23 @@ module.exports = (() => {
                 return res.status(400).json(unifiedResponse(400, 'Validation Error', errors));
             }
 
+            const line_items = value.product.map(product => ({
+                price_data: {
+                    currency: "usd", // Set the currency as USD
+                    product_data: {
+                        name: product.name // Use the product's name
+                    },
+                    unit_amount: product.price * 100 // Convert price to cents (Stripe requires amounts in cents)
+                },
+                quantity: product.qty // Use the product's quantity
+            }));
+            console.log(value)
             //* Create Session
             const session= await stripe.checkout.sessions.create({
-                line_items:[{
-                    price_data:{
-                        currency:"usd",
-                        product_data:{
-                            name:"BLa Blaaaaaaaa"
-                        },
-                        unit_amount:100
-                    },
-                    quantity:5
-                }],
+                line_items:line_items,
                 mode:"payment",
-                success_url:"http://localhost:4200/profile",
-                cancel_url:"http://localhost:4200/cart"
+                success_url:"http://localhost:4200/sucess",
+                cancel_url:"http://localhost:4200/failed"
                 
             })
             // console.log(session.url)
