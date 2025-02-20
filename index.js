@@ -38,6 +38,7 @@ const routes = {
     'clerkBranch.admin.controller.js': '/api/admin/clerkBranch',
     'products.Admin.controller.js': '/api/admin/product',
     'order.Admin.controller.js': '/api/admin/order',
+    
     'products.seller.controller.js': '/api/seller/product',
     'category.seller.controller.js': '/api/seller/category',
     'products.customer.controller.js': '/api/customer/product',
@@ -54,7 +55,9 @@ const routes = {
     'role.admin.controller.js': { path: '/api/admin/role', userType: "admin" },
     'clerks.Admin.controller.js': {path:'/api/admin/clerk',userType:"admin"},
     'products.clerkBranch.controller.js':{path:'/api/clerkBranch/products',userType:"clerkBranch"},
-    'orders.cashier.controller.js':{path:'/api/clerkBranch/cashier/order',userType:"clerkBranch"}
+    'orders.cashier.controller.js':{path:'/api/clerkBranch/cashier/order',userType:"clerkBranch"},
+   'branchorder.clerkBranch.controller.js':{path:'/api/clerkBranch/branchOrder',userType:"clerkBranch"},
+  
   }
 };
 
