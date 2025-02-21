@@ -20,6 +20,7 @@ module.exports = (() => {
             if (isEmailExist) {
                 return res.status(500).json(unifiedResponse(500, "seller already registerd try to login", null));
             }
+            
             const seller= await sellerService.createSellerService(value);
             if(seller){
                 return res.status(201).json(unifiedResponse(201, "registered successfully", seller));

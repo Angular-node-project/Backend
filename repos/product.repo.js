@@ -272,6 +272,11 @@ const addReview = async (productId, customer, review) => {
     return result;
 }
 
+const getTopNewProducts=async()=>{
+    var products= await productModel.find({status:"active",show:{$in:['online','all']}}).sort({createdAt:-1}).limit(3);
+    return products;
+}
+
 
 module.exports = {
     getAllProductsPaginated
@@ -295,5 +300,6 @@ module.exports = {
     getProductsBySellerPaginated,
     countSellerProducts,
     updateReturnedProduct,
+    getTopNewProducts
   
 }
