@@ -40,10 +40,11 @@ module.exports = (() => {
               return res.status(400).json(unifiedResponse(400, "validation error", errors));
             }
             var user = await sellerService.getSellerByEmailService(value.email);
-            if(user.status!='active'){
+          
+            if (user) {
+              if(user.status!='active'){
                 return res.status(401).json(unifiedResponse(401, "you are not allowed to enter the system", null));
             }
-            if (user) {
               var samePassword = await bcrypt.compare(value.password, user.password);
               if (samePassword) {
                 const claims = {
