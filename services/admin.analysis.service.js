@@ -2,7 +2,9 @@ const customerModel = require('../models/customer.model');
 const OrderModel = require('../models/order.model');
 const CategoriesModel = require('../models/category.model');
 const SellerModel = require('../models/seller.model');
-
+const BranchModel=require('../models/branch.model')
+const ProductModel=require('../models/product.model');
+const orderModel = require('../models/order.model');
 
 const CustomersCounts = async () => {
     try {
@@ -364,6 +366,56 @@ const getSellerRegistrationsPerWeek = async () => {
     }
 };
 
+//* Cards
+const NumofProducts=async ()=>{
+    try {
+        const totalProducts = await ProductModel.countDocuments(); // Count all documents in the collection
+        console.log(`Total number of Products: ${ProductModel}`);
+        return totalProducts;
+    } catch (error) {
+        console.error('Error counting total Products:', error);
+        throw error;
+    }
+}
+const NumofOrders=async ()=>{
+    try {
+        const totalOrders = await OrderModel.countDocuments(); // Count all documents in the collection
+        console.log(`Total number of orders: ${totalOrders}`);
+        return totalOrders;
+    } catch (error) {
+        console.error('Error counting total orders:', error);
+        throw error;
+    }
+}
+const NumofBranches=async ()=>{
+    try {
+        const totalBranches = await BranchModel.countDocuments(); // Count all documents in the collection
+        console.log(`Total number of Branches: ${totalBranches}`);
+        return totalBranches;
+    } catch (error) {
+        console.error('Error counting total Branches:', error);
+        throw error;
+    }
+}
+const TotalSales=async ()=>{
+        try {
+            const result = await orderModel.aggregate([
+                { $group: { _id: null, totalOrdersPrice: { $sum: "$totalPrice" } } } // Sum up the totalPrice field
+            ]);
+    
+            // Extract the total price from the result
+            const totalOrdersPrice = result.length > 0 ? result[0].totalOrdersPrice : 0;
+    
+            console.log(`Total orders price: ${totalOrdersPrice}`);
+            return totalOrdersPrice;
+        } catch (error) {
+            console.error('Error calculating total orders price:', error);
+            throw error;
+        }
+    
+}
+
+
 module.exports = {
     //*Customers 
     CustomersCounts,
@@ -376,8 +428,12 @@ module.exports = {
     //* Sellers
     SellersCountsBystatus,
     getSellerRegistrationsPerWeek,
-    getSellerRegistrationMonth
-    
+    getSellerRegistrationMonth,
+    //* Cards
+    NumofOrders,
+    NumofProducts,
+    NumofBranches,
+    TotalSales
 }
 
 
