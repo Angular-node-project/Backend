@@ -108,10 +108,12 @@ const getCustomerOrders=async (customerId)=>{
     .sort({ createdAt: -1 });
 
 }
-const getOrdersBySellerIdPaginated = async (sellerId, page, limit) => {
+const getOrdersBySellerIdPaginated = async (sellerId, page, limit,governorate) => {
     var skip = (page - 1) * limit;
     const query = { "product.seller_id": sellerId };
-
+if (governorate) {
+        query.governorate = { $regex: governorate, $options: 'i' };
+    }
     const pipeline = [
         { $match: query },
         { $skip: skip },
@@ -134,6 +136,17 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit) => {
             }
         },
         { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } },
+        {
+            $addFields: {
+                product: {
+                    $filter: {
+                        input: "$product",
+                        as: "prod",
+                        cond: { $eq: ["$$prod.seller_id", sellerId] }
+                    }
+                }
+            }
+        },
         {
             $project: {
                 order_id: 1,

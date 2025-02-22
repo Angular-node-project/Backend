@@ -133,6 +133,16 @@ module.exports = (() => {
 
     })
 
+     router.get("/top/new",async(req,res,next)=>{
+       try{
+        const products=await productService.topNewProducts();
+        return res.status(200).json(unifiedResponse(200, "products retrived successfully", products));
+       }catch(err){
+        handleError(res,err);
+       }
+
+     })
+
     return router;
 
 })()
