@@ -16,7 +16,7 @@ module.exports = (() => {
             console.log("Here is ------------------------")
             console.log(branch_id)
             var page = parseInt(req.query.page) || 1;
-            var limit = parseInt(req.query.limit) || 8;
+            var limit = parseInt(req.query.limit) || 5;
             var status = req.query.status;
             var search = req.query.search;
             var result= await productBranchService.getAllProductsByBranchIdPaginated(branch_id,page,limit,search,status);
@@ -34,6 +34,20 @@ module.exports = (() => {
             handleError(res,err);
         }
      })
+
+
+     router.get("/qty",async(req,res,next)=>{
+        try{
+            var product_id=req.query.product_id;
+            var branch_id=req.data.branch.branch_id;
+            var result=await productBranchService.getProductBranchQtyService(branch_id,product_id);
+            return res.status(201).json(unifiedResponse(201, 'qty retrived succesfully', result));
+        }catch(err){
+            handleError(res,err);
+        }
+     })
+
+
 
      router.post("/qty/request",async(req,res,next)=>{
         try{

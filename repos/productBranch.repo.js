@@ -113,6 +113,20 @@ const decreaseProductByBranchId = async (product_Id, branch_Id, qty) => {
 
 }
 
+const getProductBranchQty=async(branch_Id,productId)=>{
+    var data= await productBranchModel.findOne({"branch.branch_id":branch_Id,product_id:productId},{qty:1});
+    var qty= data?data.qty:0;
+    return qty;
+}
+const isProductAssignedToBranch=async(product_id)=>{
+    var data= await productBranchModel.find({product_id:product_id});
+    var result=false;
+    if(data){
+        result=data.length>0?true:false;
+    }
+    return result;
+}
+
 
 module.exports = {
     addUpdateBranchesQty,
@@ -123,6 +137,8 @@ module.exports = {
     decreaseBranchStock,
     UpdateReuqestQty,
     getProductBranchbyId,
-    decreaseProductByBranchId
+    decreaseProductByBranchId,
+    getProductBranchQty,
+    isProductAssignedToBranch
 
 }

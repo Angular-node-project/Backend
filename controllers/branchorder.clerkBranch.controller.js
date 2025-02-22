@@ -21,5 +21,18 @@ module.exports = (() => {
             handleError(res, err);
         }
     })
+
+  router.put("/changestatus/:orderId/:status",async(req,res,next)=>{
+    try{
+      var order_Id=req.params.orderId;
+      var branch_Id=req.data.branch.branch_id;
+      var status=req.params.status;
+      var result= await branchOrderService.changeBranchOrderStatusService(order_Id,branch_Id,status);
+      return res.status(201).json(unifiedResponse(201, 'order branch status changed', result));
+    }catch(err){
+        handleError(res,err);
+    }
+  }) 
+    
     return router;
 })()

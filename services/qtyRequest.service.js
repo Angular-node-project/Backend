@@ -1,9 +1,11 @@
 const qtyRequestRepo= require("../repos/qtyRequest.repo");
 const addQtyRequestService=async(newRequest)=>{
-    return qtyRequestRepo.addQtyRequest(newRequest); 
+    var result= qtyRequestRepo.addQtyRequest(newRequest); 
+    return result;
 }
 const getAllrequests=async()=>{
-    return await qtyRequestRepo.getAllrequests();
+  var result= await qtyRequestRepo.getAllrequests();
+  return result;
 }
 const getAllQtyRequestedPaginated = async (page=1, limit=6, sort='', status='',search='') => {
       const Qtyrequests=await qtyRequestRepo.getAllQtyRequestedPaginated(page,limit,sort,status,search);
