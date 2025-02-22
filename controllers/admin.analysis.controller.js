@@ -78,6 +78,38 @@ module.exports = (() => {
             handleError(res, error);
         }
     })
+    router.get('/NumofOrders',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.NumofOrders();
+            return res.status(201).json(unifiedResponse(201, "NumofOrders", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
+    router.get('/NumofProducts',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.NumofProducts();
+            return res.status(201).json(unifiedResponse(201, "NumofProducts", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
+    router.get('/NumofBranches',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.NumofBranches();
+            return res.status(201).json(unifiedResponse(201, "NumofBranches", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
+    router.get('/TotalSales',async(req,res,next)=>{
+        try {
+            RegistrationsPerWeek=await adminService.TotalSales();
+            return res.status(201).json(unifiedResponse(201, "TotalSales", RegistrationsPerWeek));
+        } catch (error) {
+            handleError(res, error);
+        }
+    })
 
 
 
