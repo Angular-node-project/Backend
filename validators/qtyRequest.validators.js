@@ -5,7 +5,7 @@ const qtyRequestAddDto = Joi.array().items(
         product_id: Joi.string().required(),
         product_name: Joi.string().required(),
         requiredQty: Joi.number().integer().positive().required()
-    })
+    }).unknown(true)
 );
 
 module.exports = {qtyRequestAddDto};

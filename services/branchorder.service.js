@@ -13,12 +13,14 @@ const getAllBrnachOrdersPaginated = async (page=1, limit=6, status='',search='',
                totalBrancheOrdersCount
            }
 };
-
-
+const changeBranchOrderStatusService=async(order_Id,branch_Id,status)=>{
+    await branchorderrepo.changeBranchOrderStatus(order_Id,branch_Id,status);
+}
 
 
 module.exports={
     getALllBranchOrders,
     getAllBrnachOrdersPaginated,
+    changeBranchOrderStatusService
    
 }

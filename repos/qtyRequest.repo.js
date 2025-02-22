@@ -1,8 +1,9 @@
 const clerkUpdateProductQtyRequestModel=require("../models/clerkUpdateProductQtyRequest.model");
 
 const addQtyRequest=async(newRequest)=>{
-    var result= await clerkUpdateProductQtyRequestModel.insertMany(newRequest);
-    return result;
+
+        var result= await clerkUpdateProductQtyRequestModel.create(newRequest);
+        return result;
 }
 const getAllrequests=async()=>{
     return clerkUpdateProductQtyRequestModel.find({});

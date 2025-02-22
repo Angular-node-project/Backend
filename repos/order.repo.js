@@ -46,6 +46,14 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
         { $sort: sortQuery }, 
         {
             $lookup: {
+                from: "branchorders",
+                localField: "order_id",
+                foreignField: "order_id",
+                as: "branchOrders"
+            }
+        },
+        {
+            $lookup: {
                 from: "customers",
                 localField: "customer_id",
                 foreignField: "customer_id",
@@ -62,6 +70,27 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
             }
         },
         { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } },
+        // {
+        //     $addFields: {
+        //         status: {
+        //             $cond: {
+        //                 if: { $eq: [{ $size: "$branchOrders" }, 0] },
+        //                 then: "pending",
+        //                 else: {
+        //                     $switch: {
+        //                         branches: [
+        //                             { case: { $gt: [{ $size: { $filter: { input: "$branchOrders", as: "bo", cond: { $eq: ["$$bo.status", "pending"] } } } }, 0] }, then: "pending" },
+        //                             { case: { $gt: [{ $size: { $filter: { input: "$branchOrders", as: "bo", cond: { $eq: ["$$bo.status", "processing"] } } } }, 0] }, then: "processing" },
+        //                             { case: { $gt: [{ $size: { $filter: { input: "$branchOrders", as: "bo", cond: { $eq: ["$$bo.status", "shipping"] } } } }, 0] }, then: "shipping" },
+        //                             { case: { $eq: [{ $size: "$branchOrders" }, { $size: { $filter: { input: "$branchOrders", as: "bo", cond: { $eq: ["$$bo.status", "delivered"] } } } }] }, then: "delivered" },
+        //                         ],
+        //                         default: "pending"
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // },
         { $skip: skip },
         { $limit: limit },
         {
