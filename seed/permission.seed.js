@@ -3,32 +3,57 @@ const Permission = require("../models/permission.model"); // Adjust the path if 
 const { v4: uuidv4 } = require("uuid");
 
 const permissions = [
-  { controller: "product", action: "show" },
-  { controller: "product", action: "add" },
-  { controller: "product", action: "update" },
-  { controller: "product", action: "changeStatus" },
-  { controller: "product", action: "checkout" },
 
-  { controller: "clerks", action: "show" },
-  { controller: "clerks", action: "add" },
-  { controller: "clerks", action: "update" },
-  { controller: "clerks", action: "delete" },
-  { controller: "clerks", action: "changeStatus" },
+  { controller:"analysis",action:"show" },
+  { controller: "products", action: "show" },
+  { controller: "products", action: "add" },
+  { controller: "products", action: "update" },
+  { controller: "products", action: "changeStatus" },
+
+  { controller: "systemClerks", action: "show" },
+  { controller: "systemClerks", action: "add" },
+  { controller: "systemClerks", action: "update" },
+  { controller: "systemClerks", action: "delete" },
+  { controller: "systemClerks", action: "changeStatus" },
+
+  { controller: "branchClerks", action: "show" },
+  { controller: "branchClerks", action: "add" },
+  { controller: "branchClerks", action: "update" },
+  { controller: "branchClerks", action: "changeStatus" },
+
+  { controller: "roles", action: "show" },
+  { controller: "roles", action: "add" },
+  { controller: "roles", action: "update" },
+  { controller: "roles", action: "delete" },
+  { controller: "roles", action: "changeStatus" },
+
+  {controller:"clerkRequests",action:"show"},
+  {controller:"clerkRequests",action:"changeStatus"},
 
 
-  { controller: "seller", action: "show" },
-  { controller: "seller", action: "changeStatus" },
-
-  { controller: "updateProductRequest", action: "show" },
-  { controller: "updateProductRequest", action: "changeStatus" },
+  { controller: "categories", action: "show" },
+  { controller: "categories", action: "add" },
+  { controller: "categories", action: "update" },
+  { controller: "categories", action: "changeStatus" },
 
   { controller: "customerService", action: "show" },
   { controller: "customerService", action: "reply" },
 
-  { controller: "category", action: "show" },
-  { controller: "category", action: "add" },
-  { controller: "category", action: "update" },
-  { controller: "category", action: "changeStatus" },
+  {controller:"branches",action:"show"},
+  {controller:"branches",action:"add"},
+  {controller:"branches",action:"update"},
+  {controller:"branches",action:"changeStatus"},
+
+  { controller: "sellers", action: "show" },
+  { controller: "sellers", action: "add" },
+  { controller: "sellers", action: "update" },
+  { controller: "sellers", action: "changeStatus" },
+
+  { controller: "sellerRequests", action: "show" },
+  { controller: "sellerRequests", action: "changeStatus" },
+
+
+
 ];
 
 async function seedPermissions() {

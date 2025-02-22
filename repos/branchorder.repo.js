@@ -1,6 +1,9 @@
-const branchordermodel=require("../models/branchOrder.model");
-const getALllBranchOrders=async()=>{
-    return  branchordermodel.find({});
+const branchordermodel = require("../models/branchOrder.model");
+const orderModel=require("../models/order.model");
+
+
+const getALllBranchOrders = async () => {
+    return branchordermodel.find({});
 }
 const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_id) => {
     var skip = (page - 1) * limit;
@@ -38,7 +41,7 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
                 as: "orderDetails"
             }
         },
-        { $unwind: "$orderDetails" },  
+        { $unwind: "$orderDetails" },
         {
             $lookup: {
                 from: "customers",
@@ -47,7 +50,7 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
                 as: "customerDetails"
             }
         },
-        { $unwind: { path: "$customerDetails", preserveNullAndEmptyArrays: true } },  
+        { $unwind: { path: "$customerDetails", preserveNullAndEmptyArrays: true } },
         {
             $lookup: {
                 from: "clerkbranches",
@@ -56,7 +59,7 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
                 as: "cashierDetails"
             }
         },
-        { $unwind: { path: "$cashierDetails", preserveNullAndEmptyArrays: true } },  
+        { $unwind: { path: "$cashierDetails", preserveNullAndEmptyArrays: true } },
         {
             $group: {
                 _id: { order_id: "$order_id", branch_id: "$branch.branch_id" },
@@ -64,10 +67,10 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
                 branch: { $first: "$branch" },
                 status: { $first: "$status" },
                 totalPrice: { $first: "$orderDetails.totalPrice" },
-                customer_id: { $first: "$orderDetails.customer_id" },  
-                customer_name: { $first: "$customerDetails.name" }, 
-                cashier_id: { $first: "$orderDetails.cashier_id" }, 
-                cashier_name: { $first: "$cashierDetails.name" },  
+                customer_id: { $first: "$orderDetails.customer_id" },
+                customer_name: { $first: "$customerDetails.name" },
+                cashier_id: { $first: "$orderDetails.cashier_id" },
+                cashier_name: { $first: "$cashierDetails.name" },
                 orders: {
                     $push: {
                         branchOrder_id: "$branchOrder_id",
@@ -85,28 +88,72 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
         { $skip: skip },
         { $limit: limit }
     ];
-    
+
     return await branchordermodel.aggregate(pipeline);
 }
-    
+
 
 
 const createOrdersBranch = async (data) => {
     return branchordermodel.create(data);
 }
 
-const countAllBranchOrders=async(status)=>{
-    const query={};
+const countAllBranchOrders = async (status) => {
+    const query = {};
 
-    if(status)
-        {
-            query.status=status ;
-        }
+    if (status) {
+        query.status = status;
+    }
     return await branchordermodel.countDocuments(query);
 }
-module.exports={
+
+const changeBranchOrderStatus = async (order_Id, branch_Id, status) => {
+
+    await branchordermodel.updateMany(
+        { "branch.branch_id": branch_Id, order_id: order_Id },
+        { $set: { status: status } });
+
+
+    const statuses = await branchordermodel.aggregate([
+        { $match: { order_id: order_Id } },
+        { $group: { _id: null, uniqeStatuses: { $addToSet: "$status" } } }
+    ]);
+    if (!statuses.length) return; 
+
+    const uniqueStatuses = statuses[0].uniqueStatuses;
+
+    let newOrderStatus;
+    if (uniqueStatuses.includes("pending")) {
+        newOrderStatus = "pending";
+    } else if (uniqueStatuses.every(status => status === "cancelled")) {
+        newOrderStatus = "cancelled";
+    } else if (uniqueStatuses.includes("processing")) {
+        newOrderStatus = "processing";
+    } else if (uniqueStatuses.includes("shipping")) {
+        newOrderStatus = "shipping";
+    } else if (uniqueStatuses.every(status => status === "delivered")) {
+        newOrderStatus = "delivered";
+    }
+
+    if (newOrderStatus) {
+       await orderModel.updateOne(
+            { order_id: order_Id },
+            { $set: { status: newOrderStatus } }
+        );
+    }
+
+   
+}
+
+
+const cancelOrder=async(order_Id,branch_Id)=>{
+ //   const branchOrders= await branchordermodel.find({order_id:order_Id,"branch.bra"})
+
+}
+module.exports = {
     getALllBranchOrders,
     getAllBrnachOrdersPaginated,
     countAllBranchOrders,
-    createOrdersBranch
+    createOrdersBranch,
+    changeBranchOrderStatus
 }

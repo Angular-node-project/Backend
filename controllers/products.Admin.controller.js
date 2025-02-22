@@ -146,13 +146,18 @@ module.exports = (() => {
         try {
             const id = req.params.id;
             const status = req.params.status;
-            const products = await productService.ChangeStatusproduct(id, status);
-            if (products) {
-                return res.status(201).json(unifiedResponse(201, `Products ${status} successfully`, products));
+            var isProductAssignedToBranch=await productBranchService.isProductAssignedToBranchService(id);
+            if(isProductAssignedToBranch){
+                const products = await productService.ChangeStatusproduct(id, status);
+                if (products) {
+                    return res.status(201).json(unifiedResponse(201, `Products ${status} successfully`, products));
+                }
+                else {
+                    return res.status(403).json(unifiedResponse(403, 'Product not found ',null));
+                }
             }
-            else {
-                return res.status(403).json(unifiedResponse(403, 'Product not found '));
-            }
+            return res.status(401).json(unifiedResponse(401, 'please assing branches to this product first',null));
+
         } catch (err) {
             handleError(res, err);
         }
