@@ -17,9 +17,9 @@ const getAllProductsByBranchIdPaginated = async (branch_id,page = 1, limit = 8,s
 const getBrancheaBYProductIdsService=async(productdIds)=>{
     return await productBranchRepo.getBranchesBtProductIds(productdIds);
 }
-const UpdateReuqestQtyService=async(productId,Updatedqty)=>{
-   var result= await productBranchRepo.UpdateReuqestQty(productId,Updatedqty)
-   return result;
+const UpdateReuqestQtyService=async(productId,Updatedqty,branchId)=>{
+   return await productBranchRepo.UpdateReuqestQty(productId,Updatedqty,branchId)
+   
 }
 const getProductBranchbyIdService=async(productId,branchId)=>{
     return await productBranchRepo.getProductBranchbyId(productId,branchId);

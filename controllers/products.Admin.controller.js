@@ -231,7 +231,7 @@ module.exports = (() => {
                     const TotalBranch = +DemandQty + exsistingBranchqty;
 
                     const updatedQty = await productService.updateReturnedProduct(productId, total);
-                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch);
+                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch,BranchId);
                     console.log("branch qty"+updatedQtyBranch.qty)
                     
                     return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty, updatedQtyBranch));
@@ -242,7 +242,7 @@ module.exports = (() => {
                     const TotalBranch = +DemandQty + exsistingBranchqty;
 
                     const updatedQty = await productService.updateReturnedProduct(productId, total);
-                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch);
+                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch,BranchId);
                  
                     return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty, updatedQtyBranch));
                 }
