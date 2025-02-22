@@ -18,15 +18,18 @@ const getBrancheaBYProductIdsService=async(productdIds)=>{
     return await productBranchRepo.getBranchesBtProductIds(productdIds);
 }
 const UpdateReuqestQtyService=async(productId,Updatedqty)=>{
-   return await productBranchRepo.UpdateReuqestQty(productId,Updatedqty)
+   var result= await productBranchRepo.UpdateReuqestQty(productId,Updatedqty)
+   return result;
 }
-const getProductBranchbyIdService=async(productId)=>{
-    return await productBranchRepo.getProductBranchbyId(productId);
+const getProductBranchbyIdService=async(productId,branchId)=>{
+    return await productBranchRepo.getProductBranchbyId(productId,branchId);
 }
 const decreaseProductByBranchId=async (product_Id, branch_Id, qty)=>{
     return await productBranchRepo.decreaseProductByBranchId(product_Id,branch_Id,qty);
 }
-
+const createProductsBranch = async (data) => {
+    return await productBranchRepo.createProductsBranch(data)
+}
 
 module.exports={
     addUpdateBranchesQtyService,
@@ -34,5 +37,6 @@ module.exports={
     getBrancheaBYProductIdsService,
     UpdateReuqestQtyService,
     getProductBranchbyIdService,
-    decreaseProductByBranchId
+    decreaseProductByBranchId,
+    createProductsBranch
 }
