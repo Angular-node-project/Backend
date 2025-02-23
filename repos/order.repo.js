@@ -1,28 +1,59 @@
-const order=require("../models/order.model");
-const branchOrderModel=require("../models/branchOrder.model");
+const order = require("../models/order.model");
+const branchOrderModel = require("../models/branchOrder.model");
+const productBranchModel = require("../models/productBranch.model");
+const productModel = require("../models/product.model");
+const orderModel = require("../models/order.model");
 
-const getorders=async()=>{
-    return order.find({});
+const getorders = async () => {
+    return await order.find({});
 }
-const getorderbystatus=async(status)=>{
-    return order.find({status:status});
+const getorderbystatus = async (status) => {
+    return await order.find({ status: status });
 }
-const getorderbydid=async(orderid)=>{
-    return order.find({order_id:orderid});
+const getorderbydid = async (orderid) => {
+    return await order.find({ order_id: orderid });
 }
-const ChangeOrderStatus=async(orderid,status)=>{
-    return order.findOneAndUpdate({order_id:orderid},{status: status},{new:true});
+const ChangeOrderStatus = async (orderid, status) => {
+    await branchOrderModel.updateMany({ order_id: orderid }, { status: status });
+    return await order.findOneAndUpdate({ order_id: orderid }, { status: status }, { new: true });
 }
-const getorderbysellerid=async(sellerid)=>{
-    return order.find({ "product.seller_id":sellerid});
+const getorderbysellerid = async (sellerid) => {
+    return await order.find({ "product.seller_id": sellerid });
 }
-const getorderbyproductid=async(productid)=>{
-    return order.find({ "product.product_id":productid});
+const getorderbyproductid = async (productid) => {
+    return await order.find({ "product.product_id": productid });
 }
-const createOrder=async(data)=>{
+const createOrder = async (data) => {
 
-    return order.create(data);
+    return await order.create(data);
 }
+
+const cancelAllOrderBranches = async (order_id) => {
+    var branchOrders = await branchOrderModel.find({ order_id: order_id });
+    if (!branchOrders.length) {
+        const Order = await orderModel.findOne({ order_id: order_id });
+        if (!Order || !Order.product.length) { return; }
+        for (const product of Order.product) {
+            await productModel.updateOne(
+                { product_id: product.product_id },
+                { $inc: { qty: product.qty } }
+            )
+        }
+    } else {
+        for (const branchorder of branchOrders) {
+            const { product, qty } = branchorder;
+            await productBranchModel.updateOne(
+                { product_id: product.product_id },
+                { $inc: { qty: qty } }
+            )
+            await productModel.updateOne(
+                { product_id: product.product_id },
+                { $inc: { qty: qty } }
+            )
+        }
+    }
+}
+
 const getAllOrdersPaginated = async (page, limit, status, governorate, type) => {
     var skip = (page - 1) * limit;
     const query = {};
@@ -36,14 +67,14 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
         query.status = status;
     }
     if (type === "Online") {
-        query["customer_id"] = { $exists: true, $ne: null }; 
+        query["customer_id"] = { $exists: true, $ne: null };
     } else if (type === "Offline") {
-        query["cashier_id"] = { $exists: true, $ne: null }; 
+        query["cashier_id"] = { $exists: true, $ne: null };
     }
 
     const pipeline = [
         { $match: query },
-        { $sort: sortQuery }, 
+        { $sort: sortQuery },
         {
             $lookup: {
                 from: "branchorders",
@@ -65,7 +96,7 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
             $lookup: {
                 from: "clerkbranches",
                 localField: "cashier_id",
-                foreignField: "clerkBranch_id", 
+                foreignField: "clerkBranch_id",
                 as: "cashier"
             }
         },
@@ -102,12 +133,13 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
                 cashier_id: 1,
                 "cashier.name": 1,
                 "cashier.email": 1,
-                totalPrice:1,
+                totalPrice: 1,
                 address: 1,
                 governorate: 1,
                 phone_number: 1,
                 product: 1,
-                status: 1
+                status: 1,
+                createdAt:1
             }
         }
     ];
@@ -117,13 +149,12 @@ const getAllOrdersPaginated = async (page, limit, status, governorate, type) => 
 
 
 
-const countAllOrders=async(status)=>{
-    const query={};
+const countAllOrders = async (status) => {
+    const query = {};
 
-    if(status)
-        {
-            query.status=status ;
-        }
+    if (status) {
+        query.status = status;
+    }
     return await order.countDocuments(query);
 }
 const countOrdersBySellerId = async (sellerId) => {
@@ -132,15 +163,15 @@ const countOrdersBySellerId = async (sellerId) => {
     return orders.length;
 }
 
-const getCustomerOrders=async (customerId)=>{
-    return order.find({customer_id:customerId},{})
-    .sort({ createdAt: -1 });
+const getCustomerOrders = async (customerId) => {
+    return order.find({ customer_id: customerId }, {})
+        .sort({ createdAt: -1 });
 
 }
-const getOrdersBySellerIdPaginated = async (sellerId, page, limit,governorate) => {
+const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) => {
     var skip = (page - 1) * limit;
     const query = { "product.seller_id": sellerId };
-if (governorate) {
+    if (governorate) {
         query.governorate = { $regex: governorate, $options: 'i' };
     }
     const pipeline = [
@@ -197,16 +228,16 @@ if (governorate) {
     return await order.aggregate(pipeline);
 }
 
-const assignOrderToBranches=async (orderBranches)=>{
-    var result= await branchOrderModel.insertMany(orderBranches);
+const assignOrderToBranches = async (orderBranches) => {
+    var result = await branchOrderModel.insertMany(orderBranches);
     return result;
-     
+
 }
 
 
 
 
-module.exports={
+module.exports = {
     getAllOrdersPaginated,
     countAllOrders,
     getorders,
@@ -219,6 +250,7 @@ module.exports={
     getCustomerOrders,
     getOrdersBySellerIdPaginated,
     countOrdersBySellerId,
-    assignOrderToBranches
+    assignOrderToBranches,
+    cancelAllOrderBranches
 }
 
