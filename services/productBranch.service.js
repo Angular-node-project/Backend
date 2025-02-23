@@ -17,11 +17,12 @@ const getAllProductsByBranchIdPaginated = async (branch_id,page = 1, limit = 8,s
 const getBrancheaBYProductIdsService=async(productdIds)=>{
     return await productBranchRepo.getBranchesBtProductIds(productdIds);
 }
-const UpdateReuqestQtyService=async(productId,Updatedqty)=>{
-   return await productBranchRepo.UpdateReuqestQty(productId,Updatedqty)
+const UpdateReuqestQtyService=async(productId,Updatedqty,branchId)=>{
+   return await productBranchRepo.UpdateReuqestQty(productId,Updatedqty,branchId)
+   
 }
-const getProductBranchbyIdService=async(productId)=>{
-    return await productBranchRepo.getProductBranchbyId(productId);
+const getProductBranchbyIdService=async(productId,branchId)=>{
+    return await productBranchRepo.getProductBranchbyId(productId,branchId);
 }
 const decreaseProductByBranchId=async (product_Id, branch_Id, qty)=>{
     return await productBranchRepo.decreaseProductByBranchId(product_Id,branch_Id,qty);
@@ -34,7 +35,9 @@ const isProductAssignedToBranchService=async(product_id)=>{
 
 }
 
-
+const createProductsBranch = async (data) => {
+    return await productBranchRepo.createProductsBranch(data)
+}
 
 module.exports={
     addUpdateBranchesQtyService,
@@ -44,5 +47,6 @@ module.exports={
     getProductBranchbyIdService,
     decreaseProductByBranchId,
     getProductBranchQtyService,
-    isProductAssignedToBranchService
+    isProductAssignedToBranchService,
+    createProductsBranch
 }

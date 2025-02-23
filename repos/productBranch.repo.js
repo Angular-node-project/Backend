@@ -78,14 +78,21 @@ const getBranchesBtProductIds = async (productIds) => {
     return result;
 
 }
-const UpdateReuqestQty = async (productId, Updatedqty) => {
-    return productBranchModel.findOneAndUpdate({ product_id: productId },
+const UpdateReuqestQty = async (productId, Updatedqty,branchId) => {
+  return  await productBranchModel.findOneAndUpdate({ product_id: productId ,
+        'branch.branch_id':branchId
+    },
         { $set: { qty: Updatedqty } },
         { new: true })
+    
 }
-const getProductBranchbyId = async (productId) => {
-    return productBranchModel.findOne({ product_id: productId })
-}
+const getProductBranchbyId = async (productId, branchId) => {
+    return productBranchModel.findOne({ 
+        product_id: productId, 
+        'branch.branch_id': branchId 
+    });
+};
+
 
 const decreaseBranchStock = async (products) => {
 

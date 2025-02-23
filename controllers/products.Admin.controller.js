@@ -6,7 +6,8 @@ const { uploadService } = require("../services/image.service");
 const updateRequestService = require("../services/productRequest.service");
 const productBranchService = require("../services/productBranch.service");
 const updateQtyService = require("../services/qtyRequest.service");
-const updateQtyBranchservice = require("../services/productBranch.service")
+const updateQtyBranchservice = require("../services/productBranch.service");
+const { UpdateQtyRequest } = require('../repos/qtyRequest.repo');
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -213,34 +214,88 @@ module.exports = (() => {
 
 
             const productId = updatedQtyRequest.product_id;
+            const BranchId = updatedQtyRequest.branch.branch_id;
             const existingProduct = await productService.getProductbyid(productId);
-            const exsistingBranchProduct = await updateQtyBranchservice.getProductBranchbyIdService(productId)
-            if (existingProduct || exsistingBranchProduct) {
-                const exsistQty = +existingProduct.qty;
+            if(!existingProduct)
+            {
+                return res.status(200).json(unifiedResponse(200, 'products not found'));
+            }
+            const exsistQty = +existingProduct.qty;
+            const exsistingBranchProduct = await updateQtyBranchservice.getProductBranchbyIdService(productId,BranchId)
+            if (exsistingBranchProduct ) {
+                console.log("in branch")
                 const exsistingBranchqty = +exsistingBranchProduct.qty;
-
-
                 if (status === "allApproved") {
                     const DemandQty = +updatedQtyRequest.requiredQty;
-                    const total = DemandQty + exsistQty;
+                    const total = +DemandQty + exsistQty;
                     const TotalBranch = +DemandQty + exsistingBranchqty;
 
                     const updatedQty = await productService.updateReturnedProduct(productId, total);
-                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch);
+                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch,BranchId);
+                    console.log("branch qty"+updatedQtyBranch.qty)
+                    
                     return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty, updatedQtyBranch));
                 }
                 else if (status === "partiallyApproved") {
                     const DemandQty = qty;
-                    const total = DemandQty + exsistQty;
+                    const total = +DemandQty + exsistQty;
                     const TotalBranch = +DemandQty + exsistingBranchqty;
 
                     const updatedQty = await productService.updateReturnedProduct(productId, total);
-                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch);
+                    const updatedQtyBranch = await productBranchService.UpdateReuqestQtyService(productId, TotalBranch,BranchId);
+                 
                     return res.status(200).json(unifiedResponse(200, 'Product Request approved totally  successfully', updatedQty, updatedQtyBranch));
                 }
                 else {
                     return res.status(200).json(unifiedResponse(200, 'update reuqest dissapproved'));
                 }
+            }else
+            {
+                console.log("not in branch")
+                if (status === "allApproved") {
+                   
+                    const DemandQty = +updatedQtyRequest.requiredQty;
+                    const total = +DemandQty + exsistQty;
+                    const newproduct={
+                        product_id:updatedQtyRequest.product_id,
+                        branch:{
+                            branch_id:updatedQtyRequest.branch.branch_id,
+                            name:updatedQtyRequest.branch.name
+                        },
+                        qty:DemandQty,
+                        status:'active',
+    
+                    }
+              
+                    const AddProductToBranch=await productBranchService.createProductsBranch(newproduct)
+                    const updatedQty = await productService.updateReturnedProduct(productId, total);
+                   
+                    console.log(AddProductToBranch)
+                  
+                    return res.status(200).json(unifiedResponse(200, 'New Product Request approved totally  successfully', AddProductToBranch));
+                }
+                else if (status === "partiallyApproved") {
+                    const DemandQty = qty;
+                    const total =+ DemandQty + exsistQty;
+                    const newproduct={
+                        product_id:updatedQtyRequest.product_id,
+                        branch:{
+                            branch_id:updatedQtyRequest.branch.branch_id,
+                            name:updatedQtyRequest.branch.name
+                        },
+                        qty:DemandQty,
+                        status:'active',
+    
+                    }
+                    const AddProductToBranch=await productBranchService.createProductsBranch(newproduct)
+                   
+                    const updatedQty = await productService.updateReturnedProduct(productId, total);
+                   
+                    return res.status(200).json(unifiedResponse(200, 'New Product Request approved totally  successfully', AddProductToBranch));
+                }
+                else {
+                    return res.status(200).json(unifiedResponse(200, 'New update reuqest dissapproved'));
+                } 
             }
 
         } catch (err) {
