@@ -23,7 +23,7 @@ const updateRequest = async (requestId, status) => {
 const getAllUpdaterequestPaginated = async (page, limit, sort, category, status,seller,search) => {
     var skip = (page - 1) * limit;
     const query = {};
-    let sortQuery = {};
+    let sortQuery = { createdAt: -1 };
     if(seller)
     {
        query.seller_id=seller
@@ -80,6 +80,6 @@ module.exports = {
     getRequestsbyStatus,
     updateRequest,
     getAllUpdaterequestPaginated,
-    createUpdateRequest, // Export the new function
+    createUpdateRequest, 
     countUpdaterequest
 }

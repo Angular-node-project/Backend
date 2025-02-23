@@ -13,8 +13,7 @@ const getAllCart=async(id)=>{
 
 const updateCart=async(data)=>{
 
-//   console.log("Hola From Update ")
-//   console.log(data)
+
       const result = await Cart.findOneAndUpdate(
         { cart_id: data.cart_id }, 
         { $set: {

@@ -1,19 +1,21 @@
 const orderservice=require('../services/order.service');
 const {createOrderDto}=require('../validators/order.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-const productservice=require('../services/product.service')
+const productservice=require('../services/product.service');
+const productBranch=require("../services/productBranch.service");
 module.exports=(()=>{
 const router=require("express").Router();
 
 router.get("/", async (req, res, next) => {
             try {
                 var page = parseInt(req.query.page) || 1;
-                var limit = parseInt(req.query.limit) || 6;  
+                var limit = parseInt(req.query.limit) || 9;  
                 var status = req.query.status; 
                 var governorate=req.query.governorate;
+                var type=req.query.type;
       
-                if (page  || status ||governorate) {
-                    const result = await orderservice.getAllordersPaginated(page, limit,status,governorate);
+                if (page  || status ||governorate||type) {
+                    const result = await orderservice.getAllordersPaginated(page, limit,status,governorate,type);
                     return res.status(201).json(unifiedResponse(201, 'Paginated Orders returned successfully', result));
                 } else {
                     const orders = await orderservice.getorders();
@@ -50,35 +52,8 @@ router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
         const id=req.params.id;
         const status=req.params.status;
         const orders=await orderservice.ChangeOrderStatus(id,status);
-        const products=orders.product.map(p=>({
-            product_id:p.product_id,
-            quantity:p.qty
-        }));
-      
         if (status === "cancelled") {
-            for (const p of products) {
-                const existingProduct = await productservice.getProductbyid(p.product_id);
-        
-                if (existingProduct) {
-                  
-                    const currentQty = Number(existingProduct.qty) ;  
-                    const returnQty = Number(p.quantity) ;           
-        
-                    const updatedQty = currentQty + returnQty; 
-                    console.log("current"+ currentQty);
-                    console.log("return"+ returnQty);
-                    console.log("updated"+updatedQty)
-
-        
-                    if (!isNaN(updatedQty)) {
-                        await productservice.updateReturnedProduct(p.product_id,updatedQty );
-                    } else {
-                        console.error(`Invalid quantity for product ${p.product_id}:`, returnQty);
-                    }
-                } else {
-                    console.error(`Product not found: ${p.product_id}`);
-                }
-            }
+           await orderservice.cancelAllOrderBranchesService(id);
         }
         
         return res.status(201).json(unifiedResponse(201, 'orders status changed successfully', orders));
@@ -87,6 +62,8 @@ router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
         handleError(res, err);
     }
 })
+
+
 router.post("/cashier", async (req, res, next) => {
     try {
         const { error, value } = createOrderDto.validate(req.body,{abortEarly:false});
@@ -99,6 +76,29 @@ router.post("/cashier", async (req, res, next) => {
         return res.status(201).json(unifiedResponse(201, 'Order created successfully', order));
     } catch (err) {
         handleError(res, err);
+    }
+})
+
+
+
+router.post("/assign/branches",async(req,res,next)=>{
+    try{
+        var data = req.body.data;
+        if(data){
+            var result= await orderservice.assignOrderToBranchesService(data.data);
+            
+            if(result){
+                for(var item of data.data){
+                     await productBranch.decreaseProductByBranchId(item.product.product_id,item.branch.branch_id,item.qty);
+                }
+                await orderservice.ChangeOrderStatus(data.orderId,"processing");
+            }
+            return res.status(201).json(unifiedResponse(201, 'Orders  assigned successfully', result));
+        }
+        return res.status(401).json(unifiedResponse(401, "no data sent", order));
+
+    }catch(err){
+        handleError(res,err);
     }
 })
 

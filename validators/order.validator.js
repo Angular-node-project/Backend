@@ -24,15 +24,17 @@ const createOrderDto = Joi.object({
    totalPrice:Joi.number()
 });
 const createCashierOrderDto = Joi.object({
-  address: Joi.string().min(3).required().messages({
-    "string.pattern.base":"Address is Required"
-  }),
+  address: Joi.string().optional(),
   governorate: Joi.string()
-    .required(),
-    zipcode: Joi.number()
-    .required()
-    .min(4),
-    phone_number: Joi.string().required().pattern(/^(011|012|010|015)\d{8}$/),
+  .optional(),
+    zipcode: Joi.string()  // Use string instead of number for zip codes
+    .optional()
+    .allow(null, '')     // Explicitly allow null and empty strings
+    .regex(/^\d{5}(?:[-\s]\d{4})?$/) // US zip code format validation
+    .messages({
+      'string.pattern.base': 'Invalid zip code format'
+    }),
+    phone_number: Joi.string().default(null),
     product:Joi.required(),
     additional_data:Joi.string(),
     status:Joi.string()

@@ -1,5 +1,6 @@
-const { dropSearchIndex } = require("../models/product.model");
+
 const productrepo = require("../repos/product.repo");
+
 
 const createProduct = async (productData) => {
     return await productrepo.createProduct(productData);
@@ -8,6 +9,7 @@ const createProduct = async (productData) => {
 const updateProduct = async (productId, productData) => {
     return await productrepo.updateProduct(productId, productData);
 }
+
 const updateReturnedProduct = async (productId, Updatedqty) => {
     return await productrepo.updateReturnedProduct(productId, Updatedqty);
 }
@@ -92,6 +94,9 @@ const createUpdateRequest = async (sellerId, productId, updateData) => {
 const addReviewService=async(productId,customer,review)=>{
     return await productrepo.addReview(productId,customer,review);
 }
+const topNewProducts=async()=>{
+    return await productrepo.getTopNewProducts();
+}
 
 
 module.exports = {
@@ -112,5 +117,7 @@ module.exports = {
     addReviewService,
     createUpdateRequest,
     getProductsBySellerPaginated ,
-    updateReturnedProduct
+    updateReturnedProduct,
+    topNewProducts
+    
 }

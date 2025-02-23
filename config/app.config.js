@@ -1,16 +1,17 @@
 module.exports.APP_CONFIG = {
     MONGO_DEV_URI: process.env.MONGO_DEV_URI,
-    CORS_ORIGIN:process.env.CORS_ORIGIN,
-    JWT_SECRET:process.env.JWT_SECRET,
-    JWT_EXPIRY:process.env.JWT_EXPIRY,
-    MONGO_CLUSTER_URI:process.env.MONGO_CLUSTER_URI,
+    CORS_ORIGIN: process.env.CORS_ORIGIN,
+    JWT_SECRET: process.env.JWT_SECRET,
+    JWT_EXPIRY: process.env.JWT_EXPIRY,
+    MONGO_CLUSTER_URI: process.env.MONGO_CLUSTER_URI,
     APP_NAME: 'ecommerce',
-    HTTP_PORT:5000,
+    HTTP_PORT: 5000,
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
     IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
     IMAGEKIT_ENDPOINT_URL: process.env.IMAGEKIT_ENDPOINT_URL,
     IMAGEKIT_INSTANCE_ID: process.env.IMAGEKIT_INSTANCE_ID,
-     USER_EMAIL:process.env.USER_EMAIL,
-     USER_PASS:process.env.USER_PASS
-  };
-  
+    USER_EMAIL: process.env.USER_EMAIL,
+    USER_PASS: process.env.USER_PASS,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    MONGO_CLUSTER_STAGE_URI:process.env.MONGO_CLUSTER_STAGE_URI
+};

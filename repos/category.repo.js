@@ -8,6 +8,7 @@ const getCategories=async()=>{
 const getAllCategoriesPaginated=async(page,limit,status,name)=>{
     var skip =(page-1)*limit;
     const query={};
+    let sortQuery = { createdAt: -1 };
 
     if(name){
         query.name={$regex: name, $options: 'i'} ;
@@ -17,6 +18,7 @@ const getAllCategoriesPaginated=async(page,limit,status,name)=>{
         query.status=status ;
     }
     return await  category.find(query)
+                         .sort(sortQuery)
                          .skip(skip)
                          .limit(limit)
                          .exec();  
@@ -42,6 +44,9 @@ const softDeletecategory=async(categoryid)=>{
 const changestatus=async(categoryid,status)=>{
     return category.findOneAndUpdate({category_id:categoryid},{status:status},{new:true});
 }
+const updateCategory=async(categoryid,categorydata)=>{
+    return category.findOneAndUpdate({category_id:categoryid},categorydata,{new:true});
+}
 module.exports={
     createCategory,
     getCategories,
@@ -50,5 +55,6 @@ module.exports={
     changestatus,
     getActiveCategories,
     getAllCategoriesPaginated,
-    countAllCategories
+    countAllCategories,
+    updateCategory
 }

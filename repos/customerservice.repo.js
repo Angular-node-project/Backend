@@ -8,6 +8,7 @@ const getMessagebyCustomerEmail=async(email)=>{
 const getAllMessagesPaginated=async(page,limit,status,search)=>{
     var skip =(page-1)*limit;
     const query={};
+    let sortQuery = { createdAt: -1 };
 
     if(search){
         query.$or = [
@@ -20,6 +21,7 @@ const getAllMessagesPaginated=async(page,limit,status,search)=>{
         query.status=status ;
     }
     return await  customerservice.find(query)
+                        .sort(sortQuery)
                          .skip(skip)
                          .limit(limit)
                          .exec();  

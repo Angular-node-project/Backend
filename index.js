@@ -34,22 +34,32 @@ const routes = {
 
     'Seller.Admin.controller.js': '/api/admin/sellers',
     'category.Admin.controller.js': '/api/admin/category',
+    'branch.admin.controller.js': '/api/admin/branch',
+    'clerkBranch.admin.controller.js': '/api/admin/clerkBranch',
     'products.Admin.controller.js': '/api/admin/product',
     'order.Admin.controller.js': '/api/admin/order',
+    
     'products.seller.controller.js': '/api/seller/product',
+    'category.seller.controller.js': '/api/seller/category',
     'products.customer.controller.js': '/api/customer/product',
     'account.customer.controller.js': '/api/customer/account',
     'account.admin.controller.js': '/api/admin/account',
     'customerservice.admin.controller.js': '/api/admin/customerservice',
     'orders.seller.controller.js': '/api/seller/order',
-    'orders.cashier.controller.js':'/api/cashier/order',
-    'account.seller.controller.js':'/api/seller/account'
+    'account.seller.controller.js':'/api/seller/account',
+    'account.clerkBranch.controller.js':'/api/clerkBranch/account',
+    'admin.analysis.controller.js':'/api/admin/analysis',
+    'seller.analysis.controller.js':'/api/seller/analysis',
   },
   protected: {
     'carts.controller.js': { path: '/api/customer/cart', userType: "customer" },
     'orders.customer.controller.js': { path: '/api/customer/order', userType: "customer" },
     'role.admin.controller.js': { path: '/api/admin/role', userType: "admin" },
     'clerks.Admin.controller.js': {path:'/api/admin/clerk',userType:"admin"},
+    'products.clerkBranch.controller.js':{path:'/api/clerkBranch/products',userType:"clerkBranch"},
+    'orders.cashier.controller.js':{path:'/api/clerkBranch/cashier/order',userType:"clerkBranch"},
+   'branchorder.clerkBranch.controller.js':{path:'/api/clerkBranch/branchOrder',userType:"clerkBranch"},
+  
   }
 };
 

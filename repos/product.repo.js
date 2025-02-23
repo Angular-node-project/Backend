@@ -9,6 +9,7 @@ const createProduct = async (productData) => {
 const updateProduct = async (productid, productData) => {
     return product.findOneAndUpdate({ product_id: productid }, productData, { new: true })
 }
+
 const updateReturnedProduct = async (productid, updatedQty) => {
     return product.findOneAndUpdate(
         { product_id: productid }, 
@@ -20,6 +21,7 @@ const updateReturnedProduct = async (productid, updatedQty) => {
 const updateProductRequest = async (productid, updatedData) => {
 
     return sellerUpdateProductRequest.findOneAndUpdate({ product_id: productid }, updatedData, { new: true });
+
 
 };
 
@@ -69,6 +71,7 @@ const getProductsBySellerPaginated = async (sellerId, page = 1, limit = 8, sort,
                 price: 1,
                 status: 1,
                 categories: 1,
+                show:1,
                 qty: 1,
                 pics: 1,
                 reviews: 1,
@@ -91,8 +94,6 @@ const addProduct = async (sellerId, productData) => {
 
 
 
-
-
 const deleteProduct = async (sellerId, productId) => {
     return await product.findOneAndUpdate(
         { product_id: productId, seller_id: sellerId },
@@ -105,8 +106,8 @@ const deleteProduct = async (sellerId, productId) => {
 
 const getActivatedProductsPaginated = async (page, limit, sort, category) => {
     var skip = (page - 1) * limit;
-    const query = { status: 'active' };
-    let sortQuery = {};
+        const query = { status: 'active' ,show:{$in:['online','all']}};
+    let sortQuery = {createdAt:-1};
     if (category) {
         query.categories = { $elemMatch: { category_id: category } };
     }
@@ -123,7 +124,7 @@ const getActivatedProductsPaginated = async (page, limit, sort, category) => {
 }
 
 const countActivatedProducts = async (category) => {
-    const query = { status: 'active' };
+    const query = { status: 'active' ,show:{ $in:['online','all']}};
     if (category) {
         query.categories = { $elemMatch: { category_id: category } }
     }
@@ -178,6 +179,15 @@ const getAllProductsPaginated = async (page = 1, limit = 8, sort, category, stat
             }
         },
         { $unwind: "$seller" }, 
+        {
+            $lookup:{
+                from:"branchproducts",
+                localField:"product_id",
+                foreignField:"product_id",
+                as:"branches"
+            }
+             
+        },
         { $skip: skip },       
         { $limit: limit },     
         {
@@ -191,10 +201,21 @@ const getAllProductsPaginated = async (page = 1, limit = 8, sort, category, stat
                 qty: 1,  
                 pics: 1,
                 reviews: 1,
+                show:1,
                 seller: {
                     seller_id: 1,
                     name: 1,
-                } 
+                } ,
+                branches:{
+                    $map:{
+                        input:"$branches",
+                        as:"b",
+                        in: {
+                            branch_id: "$$b.branch.branch_id",
+                            qty: "$$b.qty"
+                        }
+                    }
+                }
             }
         }
     ];
@@ -251,6 +272,11 @@ const addReview = async (productId, customer, review) => {
     return result;
 }
 
+const getTopNewProducts=async()=>{
+    var products= await productModel.find({status:"active",show:{$in:['online','all']}}).sort({createdAt:-1}).limit(3);
+    return products;
+}
+
 
 module.exports = {
     getAllProductsPaginated
@@ -273,5 +299,7 @@ module.exports = {
     addReview,
     getProductsBySellerPaginated,
     countSellerProducts,
-    updateReturnedProduct
+    updateReturnedProduct,
+    getTopNewProducts
+  
 }

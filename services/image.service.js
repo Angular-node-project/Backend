@@ -17,24 +17,27 @@ var imagekit = new ImageKit({
 async function upload({ files }) {
   try {
     const fileIds = [];
-    const imageurls=[];
-      if (Array.isArray(files)) {
-        const promises = files.map(async (file) => {
-          console.log(file);
-          return imagekit.upload({
-            file: file.base64, // Base64 string
-            fileName: file.fileName, // File name
-          }).then((response) => {
-            if (response && response.fileId) {
-              fileIds.push(response.fileId);
-              imageurls.push(response.url);
-            }
+    const imageurls = [];
+    if (Array.isArray(files)) {
+      const promises = files.map(async (file) => {
+        if (file.base64 && /^data:image\/[a-zA-Z]+;base64,/.test(file.base64)) {
+          const response = await imagekit.upload({
+            file: file.base64,
+            fileName: file.fileName,
           });
+          if(response&&response.fileId){
+            fileIds.push(response.fileId);
+            imageurls.push(response.url);
+          }
+
+        }else if(typeof file.base64 === "string" && file.base64.startsWith("https")){
+          imageurls.push(file.base64);
+        }
         });
-  
-        await Promise.all(promises);
-        return { message: "success", fileIds, imageurls };
-      
+
+      await Promise.all(promises);
+      return { message: "success", fileIds, imageurls };
+
     } else {
       throw new Error("Upload failed due to invalid parameter!")
     }

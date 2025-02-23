@@ -7,7 +7,7 @@ const ClerkbranchSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    role:{ type: String, enum: ['manger', 'cashier','storeKeeper'], required: true },
+    role:{ type: String, enum: ['Manager', 'Cashier','StoreKeeper'], required: true },
     status: { type: String, enum: ['active', 'inactive'], required: true, default: 'active' },
 }, { timestamps: true });
 
