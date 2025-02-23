@@ -68,7 +68,10 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
                 order_id: { $first: "$order_id" },
                 branch: { $first: "$branch" },
                 status: { $first: "$status" },
-                totalPrice: { $first: "$orderDetails.totalPrice" },
+               // totalPrice: { $first: "$orderDetails.totalPrice" },
+                 totalPrice:{  $sum: { 
+                    $multiply: ["$qty", { $arrayElemAt: ["$productDetails.price", 0] }]
+                }},
                 customer_id: { $first: "$orderDetails.customer_id" },
                 customer_name: { $first: "$customerDetails.name" },
                 cashier_id: { $first: "$orderDetails.cashier_id" },

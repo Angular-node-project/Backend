@@ -179,7 +179,7 @@ const getCustomerOrders=async(customerId)=>{
     return orders
 }
 
-const getOrdersBySellerIdPaginated = async (sellerId, page = 1, limit = 6,governorate='') => {
+const getOrdersBySellerIdPaginated = async (sellerId, page = 1, limit = 8,governorate='') => {
     const orders = await orderRepo.getOrdersBySellerIdPaginated(sellerId, page, limit,governorate);
     const totalOrdersCount = await orderRepo.countOrdersBySellerId(sellerId);
     return {

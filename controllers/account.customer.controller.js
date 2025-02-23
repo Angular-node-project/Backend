@@ -1,9 +1,10 @@
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
-const { customerCreateDto, customerLoginDto, customerUpdateDto ,customerUpdateWithoutPasswordDto} = require("../validators/customer.validator");
+const { customerCreateDto, customerLoginDto, customerUpdateDto, customerUpdateWithoutPasswordDto } = require("../validators/customer.validator");
 const customerService = require("../services/customer.service");
 const bcrypt = require('bcrypt');
-const jsonwebtoken = require("../utils/jwtToken")
-const {authenticationMiddleware} = require("../middlewares/authentication.middleware");
+const jsonwebtoken = require("../utils/jwtToken");
+const orderservice=require("../services/order.service");
+const { authenticationMiddleware ,userTypeAccessMiddleware} = require("../middlewares/authentication.middleware");
 
 module.exports = (() => {
   const router = require("express").Router();
@@ -22,19 +23,19 @@ module.exports = (() => {
       var hashed_password = await bcrypt.hash(value.password, 10);
       value.password = hashed_password;
       const customer = await customerService.registerService(value);
-        if (customer) {
-          const claims = {
-            id: customer.customer_id,
-            email: customer.email,
-            name: customer.name,
-            user_type: 'customer'
-          }
-          var token = await jsonwebtoken.signToken({ claims });
-          const respons = {
-            customer,
-            token
-          }
-          return res.status(201).json(unifiedResponse(201, "customer registerd successfully", respons))
+      if (customer) {
+        const claims = {
+          id: customer.customer_id,
+          email: customer.email,
+          name: customer.name,
+          user_type: 'customer'
+        }
+        var token = await jsonwebtoken.signToken({ claims });
+        const respons = {
+          customer,
+          token
+        }
+        return res.status(201).json(unifiedResponse(201, "customer registerd successfully", respons))
       }
 
 
@@ -73,11 +74,11 @@ module.exports = (() => {
     }
   })
 
-  router.put("/profile",authenticationMiddleware, async (req, res, next) => {
+  router.put("/profile", userTypeAccessMiddleware("customer"), async (req, res, next) => {
 
     try {
       const { error, value } = customerUpdateDto.validate(req.body, { abortEarly: false });
-      let Ispass=false
+      let Ispass = false
       if (error) {
         const errors = error.details.map(e => e.message);
         return res.status(400).json(unifiedResponse(400, "validation error", errors));
@@ -90,18 +91,18 @@ module.exports = (() => {
       if (!customer)
         return res.status(400).json(unifiedResponse(400, "Customer Not Found"));
 
-      if(value.currentPassword){
+      if (value.currentPassword) {
         var hashed_password = await bcrypt.compare(value.currentPassword, customer.password);
         if (!hashed_password)
           return res.status(201).json(unifiedResponse(400, "Password didn't match", value))
-  
+
         var hashed_password = await bcrypt.hash(value.newPassword, 10);
         value.newPaswword = hashed_password;
-        Ispass=true
+        Ispass = true
       }
 
-      
-      let updatedCustomer = await customerService.updateProfile(value,Ispass,customer_id)
+
+      let updatedCustomer = await customerService.updateProfile(value, Ispass, customer_id)
 
       return res.status(201).json(unifiedResponse(201, "customer Info Updated successfully", updatedCustomer))
 
@@ -111,18 +112,31 @@ module.exports = (() => {
 
   });
 
-  router.get("/", authenticationMiddleware,async (req, res, next) => {
+  router.get("/", userTypeAccessMiddleware('customer'), async (req, res, next) => {
     try {
 
-         let customer_id=req.data.id
-        const customer = await customerService.getUserByCustomerIdService(customer_id)
-        console.log("Here is Customer Profile Info")
-        console.log(customer)
-        return res.status(201).json(unifiedResponse(201, 'Customer found successfully', customer));
+      let customer_id = req.data.id
+      const customer = await customerService.getUserByCustomerIdService(customer_id)
+      console.log("Here is Customer Profile Info")
+      console.log(customer)
+      return res.status(201).json(unifiedResponse(201, 'Customer found successfully', customer));
     } catch (err) {
-        handleError(res, err);
+      handleError(res, err);
     }
-})
+  })
+
+  router.put("/cancel/order/:order_id", userTypeAccessMiddleware('customer'), async (req, res, next) => {
+    try {
+      const id = req.params.order_id;
+      const status ="cancelled"
+      await orderservice.cancelAllOrderBranchesService(id);
+      await orderservice.ChangeOrderStatus(id, status);
+      return res.status(201).json(unifiedResponse(201, 'order cancelled succesfully', null));
+    }
+    catch (err) {
+      handleError(res, err);
+    }
+  })
 
   return router;
 })();
