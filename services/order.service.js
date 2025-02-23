@@ -199,6 +199,9 @@ const assignOrderToBranchesService=async(orderBranches)=>{
     return orderRepo.assignOrderToBranches(orderBranches);
 }
 
+const cancelAllOrderBranchesService=async(order_id)=>{
+    return await orderRepo.cancelAllOrderBranches(order_id);
+}
 
 
 module.exports={
@@ -214,7 +217,8 @@ module.exports={
     addCashierOrder,
     getOrdersBySellerIdPaginated,
     CheckProductAvailability,
-    assignOrderToBranchesService
+    assignOrderToBranchesService,
+    cancelAllOrderBranchesService
 }
 
 

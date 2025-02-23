@@ -9,7 +9,7 @@ const router=require("express").Router();
 router.get("/", async (req, res, next) => {
             try {
                 var page = parseInt(req.query.page) || 1;
-                var limit = parseInt(req.query.limit) || 6;  
+                var limit = parseInt(req.query.limit) || 9;  
                 var status = req.query.status; 
                 var governorate=req.query.governorate;
                 var type=req.query.type;
@@ -52,35 +52,8 @@ router.patch("/ChangeOrderStatus/:id/:status",async(req,res,next)=>{
         const id=req.params.id;
         const status=req.params.status;
         const orders=await orderservice.ChangeOrderStatus(id,status);
-        const products=orders.product.map(p=>({
-            product_id:p.product_id,
-            quantity:p.qty
-        }));
-      
         if (status === "cancelled") {
-            for (const p of products) {
-                const existingProduct = await productservice.getProductbyid(p.product_id);
-        
-                if (existingProduct) {
-                  
-                    const currentQty = Number(existingProduct.qty) ;  
-                    const returnQty = Number(p.quantity) ;           
-        
-                    const updatedQty = currentQty + returnQty; 
-                    console.log("current"+ currentQty);
-                    console.log("return"+ returnQty);
-                    console.log("updated"+updatedQty)
-
-        
-                    if (!isNaN(updatedQty)) {
-                        await productservice.updateReturnedProduct(p.product_id,updatedQty );
-                    } else {
-                        console.error(`Invalid quantity for product ${p.product_id}:`, returnQty);
-                    }
-                } else {
-                    console.error(`Product not found: ${p.product_id}`);
-                }
-            }
+           await orderservice.cancelAllOrderBranchesService(id);
         }
         
         return res.status(201).json(unifiedResponse(201, 'orders status changed successfully', orders));

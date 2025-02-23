@@ -6,7 +6,7 @@ module.exports = (() => {
         try {
 
             var page = parseInt(req.query.page) || 1;
-            var limit = parseInt(req.query.limit) || 6;
+            var limit = parseInt(req.query.limit) || 9;
             var status = req.query.status;
             var search = req.query.search;
             var branch_id = req.data.branch.branch_id;
@@ -22,17 +22,28 @@ module.exports = (() => {
         }
     })
 
-  router.put("/changestatus/:orderId/:status",async(req,res,next)=>{
-    try{
-      var order_Id=req.params.orderId;
-      var branch_Id=req.data.branch.branch_id;
-      var status=req.params.status;
-      var result= await branchOrderService.changeBranchOrderStatusService(order_Id,branch_Id,status);
-      return res.status(201).json(unifiedResponse(201, 'order branch status changed', result));
-    }catch(err){
-        handleError(res,err);
-    }
-  }) 
-    
+    router.put("/changestatus/:orderId/:status", async (req, res, next) => {
+        try {
+            var order_Id = req.params.orderId;
+            var branch_Id = req.data.branch.branch_id;
+            var status = req.params.status;
+            var result = await branchOrderService.changeBranchOrderStatusService(order_Id, branch_Id, status);
+            return res.status(201).json(unifiedResponse(201, 'order branch status changed', result));
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
+
+    router.put("/cancel/:orderId", async (req, res, next) => {
+        try {
+            var order_Id = req.params.orderId;
+            var branch_Id = req.data.branch.branch_id;
+            var result = await branchOrderService.cancelBranchOrderService(order_Id, branch_Id);
+            return res.status(201).json(unifiedResponse(201, 'order branch cancelled successfully', result));
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
+
     return router;
 })()
