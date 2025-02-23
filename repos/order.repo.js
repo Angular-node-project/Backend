@@ -176,8 +176,17 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
     }
     const pipeline = [
         { $match: query },
+        {$sort:{createdAt:-1}},
         { $skip: skip },
         { $limit: limit },
+        {
+            $lookup: {
+                from: "branchorders",
+                localField: "order_id",
+                foreignField: "order_id",
+                as: "branch_orders"
+            }
+        },
         {
             $lookup: {
                 from: "customers",
@@ -196,6 +205,37 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
             }
         },
         { $unwind: { path: "$cashier", preserveNullAndEmptyArrays: true } },
+        {
+            $addFields: {
+                deducedStatus: {
+                    $switch: {
+                        branches: [
+                            {
+                                case: { $in: ["pending", "$branch_orders.status"] },
+                                then: "pending"
+                            },
+                            {
+                                case: { $allElementsTrue: { $map: { input: "$branch_orders.status", as: "s", in: { $eq: ["$$s", "cancelled"] } } } },
+                                then: "cancelled"
+                            },
+                            {
+                                case: { $in: ["processing", "$branch_orders.status"] },
+                                then: "processing"
+                            },
+                            {
+                                case: { $in: ["shipping", "$branch_orders.status"] },
+                                then: "shipping"
+                            },
+                            {
+                                case: { $allElementsTrue: { $map: { input: "$branch_orders.status", as: "s", in: { $eq: ["$$s", "delivered"] } } } },
+                                then: "delivered"
+                            }
+                        ],
+                        default: "unknown"
+                    }
+                }
+            }
+        },
         {
             $addFields: {
                 product: {
@@ -220,7 +260,8 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
                 governorate: 1,
                 phone_number: 1,
                 product: 1,
-                status: 1,
+                createdAt:1,
+                status: "$deducedStatus",
             }
         }
     ];
