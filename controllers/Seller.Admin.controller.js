@@ -3,6 +3,8 @@ const productservice = require("../services/product.service");
 const orderservice = require("../services/order.service");
 const bcrypt = require('bcrypt');
 const sendEmail =require("../utils/email");
+const {sellerRegisterDto}=require("../validators/seller.validator")
+
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 module.exports = (() => {
     const router = require("express").Router();
@@ -108,5 +110,52 @@ module.exports = (() => {
         }
 
     })
+    router.post("/AddSeller", async (req, res, next) => {
+        try {
+            const { error, value } = sellerRegisterDto.validate(req.body, { abortEarly: false });
+             if (error) {
+                const errors = error.details.map(e => e.message);
+                return res.status(400).json(unifiedResponse(400, "validation error", errors));
+            }
+
+            let isEmailExist = await sellerservice.isEmailExistService(value.email);
+            if (isEmailExist) {
+                return res.status(500).json(unifiedResponse(500, "seller already registerd try to login", null));
+            }
+            var randomPassword = Math.random().toString(36).slice(-8);
+            var email=await sendEmail.sendEmail(value.email,'Green Store',`Hello ${value.name} Your Login password is ${randomPassword}`)
+            var hashedPassword = await bcrypt.hash(randomPassword, 10);
+            value.password=hashedPassword;
+            value.registeration_number=Math.random().toString(36).slice(-8);
+            value.status='active'
+            const seller= await sellerservice.createSellerService(value);
+            if(seller){
+                return res.status(201).json(unifiedResponse(201, "seller added  successfully", seller));
+            }
+
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
+    router.patch("/updateSeller/:id", async (req, res, next) => {
+        try {
+            const id=req.params.id;
+
+            const { error, value } = sellerRegisterDto.validate(req.body, { abortEarly: false });
+             if (error) {
+                const errors = error.details.map(e => e.message);
+                return res.status(400).json(unifiedResponse(400, "validation error", errors));
+            }
+           value.status="active"
+            const seller= await sellerservice.updateSellerFromAdminService(id,value);
+            if(seller){
+                return res.status(201).json(unifiedResponse(201, "seller Updated  successfully", seller));
+            }
+
+        } catch (err) {
+            handleError(res, err);
+        }
+    })
+
     return router;
 })();

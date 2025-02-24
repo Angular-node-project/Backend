@@ -37,6 +37,10 @@ const getSellerByEmailService=async(email)=>{
 const updateSellerService=async(seller)=>{
     return await sellersrepo.updateSeller(seller);
 }
+const updateSellerFromAdminService=async(sellerid,sellerdata)=>{
+ return await sellersrepo.updateSellerFromAdmin(sellerid,sellerdata)
+
+}
 module.exports =
 {
     getAllsellersPaginated,
@@ -48,5 +52,6 @@ module.exports =
     createSellerService,
     isEmailExistService,
     getSellerByEmailService,
-    updateSellerService
+    updateSellerService,
+    updateSellerFromAdminService
 }
