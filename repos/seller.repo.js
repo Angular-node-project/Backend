@@ -78,7 +78,9 @@ const updateSeller=async(seller)=>{
     var res=await sellerModel.findOneAndUpdate({seller_id:seller.seller_id},{$set:seller},{new:true,runValidators:true});
     return res;
 }
-
+const updateSellerFromAdmin=async(sellerid,sellerdata)=>{
+   return await sellerModel.findOneAndUpdate({seller_id:sellerid},sellerdata,{new:true});
+}
 module.exports=
 {
     getAllSellersPaginated,
@@ -92,5 +94,6 @@ module.exports=
     createSeller,
     isEmailExist,
     getSellerByEmail,
-    updateSeller
+    updateSeller,
+     updateSellerFromAdmin
 }
