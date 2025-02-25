@@ -171,12 +171,14 @@ const getCustomerOrders = async (customerId) => {
 const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) => {
     var skip = (page - 1) * limit;
     const query = { "product.seller_id": sellerId };
+
     if (governorate) {
         query.governorate = { $regex: governorate, $options: 'i' };
     }
+
     const pipeline = [
         { $match: query },
-        {$sort:{createdAt:-1}},
+        { $sort: { createdAt: -1 } },
         { $skip: skip },
         { $limit: limit },
         {
@@ -208,30 +210,52 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
         {
             $addFields: {
                 deducedStatus: {
-                    $switch: {
-                        branches: [
-                            {
-                                case: { $in: ["pending", "$branch_orders.status"] },
-                                then: "pending"
-                            },
-                            {
-                                case: { $allElementsTrue: { $map: { input: "$branch_orders.status", as: "s", in: { $eq: ["$$s", "cancelled"] } } } },
-                                then: "cancelled"
-                            },
-                            {
-                                case: { $in: ["processing", "$branch_orders.status"] },
-                                then: "processing"
-                            },
-                            {
-                                case: { $in: ["shipping", "$branch_orders.status"] },
-                                then: "shipping"
-                            },
-                            {
-                                case: { $allElementsTrue: { $map: { input: "$branch_orders.status", as: "s", in: { $eq: ["$$s", "delivered"] } } } },
-                                then: "delivered"
+                    $cond: {
+                        if: { $eq: [{ $size: "$branch_orders" }, 0] },
+                        then: "pending",
+                        else: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: { $in: ["pending", "$branch_orders.status"] },
+                                        then: "pending"
+                                    },
+                                    {
+                                        case: {
+                                            $allElementsTrue: {
+                                                $map: {
+                                                    input: "$branch_orders.status",
+                                                    as: "s",
+                                                    in: { $eq: ["$$s", "cancelled"] }
+                                                }
+                                            }
+                                        },
+                                        then: "cancelled"
+                                    },
+                                    {
+                                        case: { $in: ["processing", "$branch_orders.status"] },
+                                        then: "processing"
+                                    },
+                                    {
+                                        case: { $in: ["shipped", "$branch_orders.status"] },
+                                        then: "shipped"
+                                    },
+                                    {
+                                        case: {
+                                            $allElementsTrue: {
+                                                $map: {
+                                                    input: "$branch_orders.status",
+                                                    as: "s",
+                                                    in: { $eq: ["$$s", "delivered"] }
+                                                }
+                                            }
+                                        },
+                                        then: "delivered"
+                                    }
+                                ],
+                                default: "pending"
                             }
-                        ],
-                        default: "unknown"
+                        }
                     }
                 }
             }
@@ -260,7 +284,7 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
                 governorate: 1,
                 phone_number: 1,
                 product: 1,
-                createdAt:1,
+                createdAt: 1,
                 status: "$deducedStatus",
             }
         }
