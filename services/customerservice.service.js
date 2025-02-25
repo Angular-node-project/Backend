@@ -18,9 +18,13 @@ const getAllmessagesPaginated = async (page = 1, limit = 6,status='',search='') 
 const SendMessage=async(email)=>{
     return await customerserviceRepo.SendMessage(email);
 }
+const CustomerSendMessage=async(data)=>{
+    return await customerserviceRepo.CustomerSendMessage(data);
+}
 module.exports={
     getAllmessagesPaginated,
     getAllMessages,
     getMessagebyCustomerEmail,
-    SendMessage
+    SendMessage,
+    CustomerSendMessage
 }

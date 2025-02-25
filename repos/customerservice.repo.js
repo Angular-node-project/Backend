@@ -37,10 +37,14 @@ const countAllmessages=async(status)=>{
 const SendMessage=async(email)=>{
     return customerservice.findOneAndUpdate({email:email},{status:"resolved"},{new:true});
 }
+const CustomerSendMessage=async(data)=>{
+    return customerservice.create(data);
+}
 module.exports={
     getAllMessagesPaginated,
     countAllmessages,
     getAllMessages,
     getMessagebyCustomerEmail,
-    SendMessage
+    SendMessage,
+    CustomerSendMessage
 }

@@ -2,6 +2,7 @@ const clerkbranchservice = require("../services/clerkBranch.service");
 const { clerkBranchCreateDto } = require('../validators/clerkBranch.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const bcrypt = require('bcrypt');
+const sendEmail =require("../utils/email");
 module.exports = (() => {
     const router = require("express").Router();
     router.post("/", async (req, res, next) => {
@@ -16,7 +17,10 @@ module.exports = (() => {
             if (isEmailExist) {
                 return res.status(500).json(unifiedResponse(500, "Clerk already Exsist try to login", null));
             }
-            value.password=await bcrypt.hash("123456",10);
+             var randomPassword = Math.random().toString(36).slice(-8);
+              var email=await sendEmail.sendEmail(value.email,'Green Store',`Hello ${value.name} Your Login password is ${randomPassword}`)
+               var hashedPassword = await bcrypt.hash(randomPassword, 10);
+                value.password=hashedPassword;
             const clerkBranch= await clerkbranchservice.createClerkBranchService(value);
             if(clerkBranch){
                 return res.status(201).json(unifiedResponse(201, "register successfully", clerkBranch));

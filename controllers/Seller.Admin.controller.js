@@ -126,7 +126,7 @@ module.exports = (() => {
             var email=await sendEmail.sendEmail(value.email,'Green Store',`Hello ${value.name} Your Login password is ${randomPassword}`)
             var hashedPassword = await bcrypt.hash(randomPassword, 10);
             value.password=hashedPassword;
-            value.registeration_number=Math.random().toString(36).slice(-8);
+          
             value.status='active'
             const seller= await sellerservice.createSellerService(value);
             if(seller){

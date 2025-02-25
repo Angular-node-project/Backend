@@ -45,6 +45,7 @@ const routes = {
     'account.clerkBranch.controller.js':'/api/clerkBranch/account',
     
     'seller.analysis.controller.js':'/api/seller/analysis',
+    'customerservice.customer.controller.js':'/api/customer/customerservice'
   },
   protected: {
     'carts.controller.js': { path: '/api/customer/cart', userType: "customer" },

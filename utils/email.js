@@ -1,7 +1,8 @@
 const nodemailer = require("nodemailer");
 const { APP_CONFIG } = require("../config/app.config");
 const { number } = require("joi");
-const sendEmail = async (toEmail, subject, text) => {
+
+const sendEmail = async (toEmail,subject, text,fromEmail = APP_CONFIG.USER_EMAIL) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -11,7 +12,7 @@ const sendEmail = async (toEmail, subject, text) => {
     });
 
     const mailOptions = {
-        from: process.env.USER_EMAIL,
+        from: fromEmail,
         to: toEmail,
         subject: subject,
         text: text,
