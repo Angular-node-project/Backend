@@ -43,6 +43,7 @@ const routes = {
     'orders.seller.controller.js': '/api/seller/order',
     'account.seller.controller.js':'/api/seller/account',
     'account.clerkBranch.controller.js':'/api/clerkBranch/account',
+    'account.admin.controller.js': '/api/admin/account',
     
     'seller.analysis.controller.js':'/api/seller/analysis',
     'customerservice.customer.controller.js':'/api/customer/customerservice'
@@ -58,7 +59,6 @@ const routes = {
     'clerkBranch.admin.controller.js':{path: '/api/admin/clerkBranch',userType:"admin"},
     'products.Admin.controller.js': {path:'/api/admin/product',userType:"admin"},
     'order.Admin.controller.js': {path:'/api/admin/order',userType:"admin"},
-    'account.admin.controller.js': {path:'/api/admin/account',userType:"admin"},
     'customerservice.admin.controller.js': {path:'/api/admin/customerservice',userType:"admin"},
     'admin.analysis.controller.js':{path:'/api/admin/analysis',userType:"admin"},
     'products.clerkBranch.controller.js':{path:'/api/clerkBranch/products',userType:"clerkBranch"},

@@ -7,7 +7,7 @@ const { authorizationMiddleware } = require("../middlewares/authorization.middle
 module.exports = (() => {
     const router = require("express").Router();
 
-    router.get("/",authorizationMiddleware('clerks','show'), async (req, res, next) => {
+    router.get("/",authorizationMiddleware('systemClerks','show'), async (req, res, next) => {
         try {
             var page = parseInt(req.query.page) || 1;
             var limit = parseInt(req.query.limit) || 8;

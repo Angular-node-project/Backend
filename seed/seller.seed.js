@@ -4,7 +4,7 @@ const seller = require("../models/seller.model");
 
 const seedseller= async () => {
   try {
-    await mongoose.connect("mongodb+srv://sarahsalem9898:tCIooq7nagBwiJZm@angular-node-cluster.qaz70.mongodb.net/ecommerce-stage", {
+    await mongoose.connect("mongodb+srv://sarahsalem9898:tCIooq7nagBwiJZm@angular-node-cluster.qaz70.mongodb.net/ecommerce-pro", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

@@ -52,13 +52,14 @@ const permissions = [
   { controller: "sellerRequests", action: "show" },
   { controller: "sellerRequests", action: "changeStatus" },
 
-
+  {controller:"orders",action:"show"},
+  {controller:"orders",action:"changeStatus"}
 
 ];
 
 async function seedPermissions() {
   try {
-    await mongoose.connect("mongodb+srv://sarahsalem9898:tCIooq7nagBwiJZm@angular-node-cluster.qaz70.mongodb.net/ecommerce", {
+    await mongoose.connect("mongodb+srv://sarahsalem9898:tCIooq7nagBwiJZm@angular-node-cluster.qaz70.mongodb.net/ecommerce-pro", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
