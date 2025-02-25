@@ -242,6 +242,9 @@ const countAllProducts=async(category,status)=>{
 const countSellerProducts = async (sellerId) => {
     return await product.countDocuments({ seller_id: sellerId });
 }
+const countSellerProductsByStatus = async (sellerId, status) => {
+    return await product.countDocuments({ seller_id: sellerId, status: status });
+}
 
 //* Decrease Stock of products when order is created
 const decreaseStock = async (products) => {
@@ -301,6 +304,7 @@ module.exports = {
     getProductsBySellerPaginated,
     countSellerProducts,
     updateReturnedProduct,
-    getTopNewProducts
+    getTopNewProducts,
+    countSellerProductsByStatus
   
 }
