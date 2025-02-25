@@ -235,7 +235,7 @@ const ReceiptGenerator = async (data,email,orderId) => {
                     <!-- Header -->
                     <tr>
                         <td class="header">
-                            <img src="https://ik.imagekit.io/woiv2eo8w/4deaeee7fc349932ee0eeb1c09d03de8.jpg?updatedAt=1740398527662" alt="Company Logo" width="150">
+                            <img src="https://ik.imagekit.io/woiv2eo8w/Logo2.jpg?updatedAt=1740511208993" alt="Company Logo" width="150">
                             <h1 style="color: #ffffff; margin: 15px 0 0 0;">Payment Receipt</h1>
                         </td>
                     </tr>
