@@ -22,7 +22,7 @@ module.exports = (() => {
             const order = await orderService.addOrder(value)
             email=req.data.email
             html=await sendemail.ReceiptGenerator(value,email,order.data.order_id)
-            sendemail.sendReceiptEmail('ali.elshanawany2000@yahoo.com','Receipt',html)
+            sendemail.sendReceiptEmail(email,'Receipt',html)
             return res.status(201).json(unifiedResponse(201, 'Order created successfully', order));
         } catch (err) {
             handleError(res, err);

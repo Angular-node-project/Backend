@@ -200,9 +200,9 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
         { $unwind: { path: "$customer", preserveNullAndEmptyArrays: true } },
         {
             $lookup: {
-                from: "clerks",
+                from: "clerkbranches",
                 localField: "cashier_id",
-                foreignField: "clerk_id",
+                foreignField: "clerkBranch_id",
                 as: "cashier"
             }
         },
