@@ -1,5 +1,6 @@
 const Product = require("../models/product.model");
 const Order = require("../models/order.model");
+const Seller = require("../models/seller.model");
 
 async function countSellerProducts(sellerId) {
     try {
@@ -7,6 +8,15 @@ async function countSellerProducts(sellerId) {
         return count;
     } catch (error) {
         console.error("Error counting seller products:", error);
+        throw error;
+    }
+}
+async function countSellerProductsByStatus(sellerId, status) {
+    try {
+        const count = await Product.countDocuments({ seller_id: sellerId, status: status });
+        return count;
+    } catch (error) {
+        console.error("Error counting seller products by status:", error);
         throw error;
     }
 }
@@ -26,4 +36,5 @@ async function countOrdersForSeller(sellerId, status) {
 module.exports = {
     countSellerProducts,
     countOrdersForSeller,
+    countSellerProductsByStatus
 };

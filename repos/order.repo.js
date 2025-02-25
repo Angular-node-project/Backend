@@ -261,7 +261,7 @@ const getOrdersBySellerIdPaginated = async (sellerId, page, limit, governorate) 
                 phone_number: 1,
                 product: 1,
                 createdAt:1,
-                status: "$deducedStatus",
+                status: 1,
             }
         }
     ];
