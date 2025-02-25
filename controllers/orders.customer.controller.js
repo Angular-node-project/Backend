@@ -3,6 +3,7 @@ const {createOrderDto}=require('../validators/order.validator');
 const { unifiedResponse, handleError } = require('../utils/responseHandler');
 const { APP_CONFIG } = require("../config/app.config");
 const stripe=require("stripe")(APP_CONFIG.STRIPE_SECRET_KEY)
+const sendemail = require("../utils/email")
 
 module.exports = (() => {
     const router = require("express").Router();
@@ -19,6 +20,9 @@ module.exports = (() => {
 
             // Service call
             const order = await orderService.addOrder(value)
+            email=req.data.email
+            html=await sendemail.ReceiptGenerator(value,email,order.data.order_id)
+            sendemail.sendReceiptEmail('ali.elshanawany2000@yahoo.com','Receipt',html)
             return res.status(201).json(unifiedResponse(201, 'Order created successfully', order));
         } catch (err) {
             handleError(res, err);
@@ -53,17 +57,19 @@ module.exports = (() => {
                     product_data: {
                         name: product.name // Use the product's name
                     },
-                    unit_amount: product.price * 100 // Convert price to cents (Stripe requires amounts in cents)
+                    unit_amount: ((product.price) * 100).toFixed(0) // Convert price to cents (Stripe requires amounts in cents)
                 },
                 quantity: product.qty // Use the product's quantity
-            }));
+            }
+        )
+        );
             console.log(value)
             //* Create Session
             const session= await stripe.checkout.sessions.create({
                 line_items:line_items,
                 mode:"payment",
                 success_url:"http://localhost:4200/sucess",
-                cancel_url:"http://localhost:4200/failed"
+                cancel_url:"http://localhost:4200/checkout"
                 
             })
             // console.log(session.url)
