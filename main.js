@@ -8,7 +8,8 @@ const ecommerceApp = require("./index");
     await DATA_BASE.connectToMongoUsingURI(
         {
            // uri: APP_CONFIG.MONGO_CLUSTER_URI
-           uri:APP_CONFIG.MONGO_CLUSTER_STAGE_URI
+           //uri:APP_CONFIG.MONGO_CLUSTER_STAGE_URI
+           uri:APP_CONFIG.MONGO_CLUSTER_PROD_URI
             ,
             callback: () => {
                 console.log("App database has connected successfully");

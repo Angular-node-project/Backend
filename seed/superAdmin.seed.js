@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const Clerk = require("../models/clerk.model");
 const Role = require("../models/role.model"); 
-const dbURI = "mongodb+srv://sarahsalem9898:tCIooq7nagBwiJZm@angular-node-cluster.qaz70.mongodb.net/ecommerce-stage";
+const dbURI = "mongodb+srv://sarahsalem9898:tCIooq7nagBwiJZm@angular-node-cluster.qaz70.mongodb.net/ecommerce-pro";
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

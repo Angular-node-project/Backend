@@ -220,11 +220,12 @@ const getAllProductsPaginated = async (page = 1, limit = 8, sort, category, stat
         }
     ];
 
-    if (Object.keys(sortQuery).length > 0) {
-        pipeline.splice(3, 0, { $sort: sortQuery });  
-    }
+    // if (Object.keys(sortQuery).length > 0) {
+    //     pipeline.splice(3, 0, { $sort: sortQuery });  
+    // }
 
-    return await product.aggregate(pipeline);
+    var result= await product.aggregate(pipeline);
+    return result;
 };
 
 

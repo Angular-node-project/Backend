@@ -96,12 +96,11 @@ const getProductBranchbyId = async (productId, branchId) => {
 };
 
 
-const decreaseBranchStock = async (products) => {
-
-
+const decreaseBranchStock = async (products,branch) => {
+    var branch_Id=branch.branch_id;
     for (const key in products) {
         await productBranchModel.findOneAndUpdate(
-            { product_id: key },
+            { product_id: key ,"branch.branch_id":branch_Id},
             { $inc: { qty: -products[key] } },
             { new: true }
         );
