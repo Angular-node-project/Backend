@@ -32,6 +32,19 @@ module.exports = (() => {
             handleError(res, error);
         }
     });
+    router.get('/topSellingProducts/:sellerId', async (req, res, next) => {
+        try {
+            const { sellerId } = req.params;
+            const limit = parseInt(req.query.limit) || 5; 
+    
+            const products = await sellerService.getTopSellingProducts(sellerId, limit);
+            return res.status(200).json(unifiedResponse(200, "topSellingProducts", products));
+        } catch (error) {
+            handleError(res, error);
+        }
+    });
+    
+
 
     return router;
 })();
