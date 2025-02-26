@@ -32,9 +32,51 @@ async function countOrdersForSeller(sellerId, status) {
         throw error;
     }
 }
+async function getTopSellingProducts(sellerId, limit = 5) {
+    try {
+        const topProducts = await Order.aggregate([
+            { $unwind: "$product" }, 
+            { $match: { "product.seller_id": sellerId, "status": "delivered"  } }, 
+            { 
+                $group: { 
+                    _id: "$product.product_id", 
+                    name: { $first: "$product.name" }, 
+                    totalSold: { $sum: "$product.qty" } 
+                } 
+            }, 
+            { $sort: { totalSold: -1 } }, 
+            { $limit: limit }, 
+            { 
+                $lookup: { 
+                    from: "products", 
+                    localField: "_id", 
+                    foreignField: "product_id", 
+                    as: "productDetails" 
+                } 
+            },
+            { $unwind: "$productDetails" }, 
+            {
+                $project: {
+                    _id: 0,
+                    product_id: "$_id",
+                    name: 1,
+                    totalSold: 1,
+                    price: "$productDetails.price",
+                    pics: "$productDetails.pics"
+                }
+            }
+        ]);
+
+        return topProducts;
+    } catch (error) {
+        console.error("Error fetching top-selling products:", error);
+        throw error;
+    }
+}
 
 module.exports = {
     countSellerProducts,
     countOrdersForSeller,
-    countSellerProductsByStatus
+    countSellerProductsByStatus,
+    getTopSellingProducts
 };
