@@ -26,7 +26,7 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
 
     const pipeline = [
         { $match: query },
-        { $sort: sortQuery },
+      
         {
             $lookup: {
                 from: "products",
@@ -91,6 +91,7 @@ const getAllBrnachOrdersPaginated = async (page, limit, status, search, branch_i
                 }
             }
         },
+        {$sort:{createdAt:-1}},
         { $skip: skip },
         { $limit: limit }
     ];
